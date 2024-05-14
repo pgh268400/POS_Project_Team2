@@ -10,16 +10,11 @@ using System.Windows.Forms;
 
 namespace POS_Project_Team2
 {
-    public partial class MainForm : Form
+    public partial class PaymentForm : Form
     {
-        public MainForm()
+        public PaymentForm()
         {
             InitializeComponent();
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
