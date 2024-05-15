@@ -17,6 +17,10 @@ namespace POS_Project_Team2
             InitializeComponent();
         }
 
+
+
+
+
         private void PaymentForm_Load(object sender, EventArgs e)
         {
 
@@ -28,6 +32,11 @@ namespace POS_Project_Team2
         }
 
         private void panel3_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void btn_SelectProduct_Click(object sender, EventArgs e)
         {
 
         }
