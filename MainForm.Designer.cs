@@ -284,7 +284,7 @@
             // 
             // listView1
             // 
-            listView1.Location = new Point(15, 24);
+            listView1.Location = new Point(15, 25);
             listView1.Name = "listView1";
             listView1.Size = new Size(243, 142);
             listView1.TabIndex = 0;
