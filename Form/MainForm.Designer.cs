@@ -35,9 +35,9 @@
             button_get_receipt = new Button();
             button_get_stock = new Button();
             button_get_tpt = new Button();
-            groupBox1 = new GroupBox();
+            group_get = new GroupBox();
             button_payment = new Button();
-            groupBox2 = new GroupBox();
+            group_main = new GroupBox();
             groupBox3 = new GroupBox();
             label9 = new Label();
             label8 = new Label();
@@ -49,17 +49,17 @@
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
-            groupBox4 = new GroupBox();
+            group_etc = new GroupBox();
             button_refund = new Button();
             listView1 = new ListView();
             picture_box_alarm = new PictureBox();
             picture_box_menu = new PictureBox();
             pictureBox2 = new PictureBox();
             realtime_timer = new System.Windows.Forms.Timer(components);
-            groupBox1.SuspendLayout();
-            groupBox2.SuspendLayout();
+            group_get.SuspendLayout();
+            group_main.SuspendLayout();
             groupBox3.SuspendLayout();
-            groupBox4.SuspendLayout();
+            group_etc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picture_box_alarm).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picture_box_menu).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
@@ -120,19 +120,19 @@
             button_get_tpt.Text = "교통카드\r\n잔액 조회";
             button_get_tpt.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
+            // group_get
             // 
-            groupBox1.Controls.Add(button_get_all);
-            groupBox1.Controls.Add(button_get_tpt);
-            groupBox1.Controls.Add(button_get_goods);
-            groupBox1.Controls.Add(button_get_stock);
-            groupBox1.Controls.Add(button_get_receipt);
-            groupBox1.Location = new Point(20, 225);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(275, 256);
-            groupBox1.TabIndex = 6;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "조회";
+            group_get.Controls.Add(button_get_all);
+            group_get.Controls.Add(button_get_tpt);
+            group_get.Controls.Add(button_get_goods);
+            group_get.Controls.Add(button_get_stock);
+            group_get.Controls.Add(button_get_receipt);
+            group_get.Location = new Point(20, 225);
+            group_get.Name = "group_get";
+            group_get.Size = new Size(275, 256);
+            group_get.TabIndex = 6;
+            group_get.TabStop = false;
+            group_get.Text = "조회";
             // 
             // button_payment
             // 
@@ -144,19 +144,19 @@
             button_payment.UseVisualStyleBackColor = true;
             button_payment.Click += button6_Click;
             // 
-            // groupBox2
+            // group_main
             // 
-            groupBox2.Controls.Add(groupBox3);
-            groupBox2.Controls.Add(label3);
-            groupBox2.Controls.Add(label2);
-            groupBox2.Controls.Add(label1);
-            groupBox2.Controls.Add(button_payment);
-            groupBox2.Location = new Point(313, 225);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(413, 304);
-            groupBox2.TabIndex = 9;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "메인";
+            group_main.Controls.Add(groupBox3);
+            group_main.Controls.Add(label3);
+            group_main.Controls.Add(label2);
+            group_main.Controls.Add(label1);
+            group_main.Controls.Add(button_payment);
+            group_main.Location = new Point(313, 225);
+            group_main.Name = "group_main";
+            group_main.Size = new Size(413, 304);
+            group_main.TabIndex = 9;
+            group_main.TabStop = false;
+            group_main.Text = "메인";
             // 
             // groupBox3
             // 
@@ -264,16 +264,16 @@
             label1.TabIndex = 8;
             label1.Text = "금일 총 판매 N건";
             // 
-            // groupBox4
+            // group_etc
             // 
-            groupBox4.Controls.Add(button_refund);
-            groupBox4.Controls.Add(listView1);
-            groupBox4.Location = new Point(732, 225);
-            groupBox4.Name = "groupBox4";
-            groupBox4.Size = new Size(264, 304);
-            groupBox4.TabIndex = 10;
-            groupBox4.TabStop = false;
-            groupBox4.Text = "기타";
+            group_etc.Controls.Add(button_refund);
+            group_etc.Controls.Add(listView1);
+            group_etc.Location = new Point(732, 225);
+            group_etc.Name = "group_etc";
+            group_etc.Size = new Size(264, 304);
+            group_etc.TabIndex = 10;
+            group_etc.TabStop = false;
+            group_etc.Text = "기타";
             // 
             // button_refund
             // 
@@ -336,21 +336,21 @@
             Controls.Add(pictureBox2);
             Controls.Add(picture_box_menu);
             Controls.Add(picture_box_alarm);
-            Controls.Add(groupBox4);
-            Controls.Add(groupBox2);
-            Controls.Add(groupBox1);
+            Controls.Add(group_etc);
+            Controls.Add(group_main);
+            Controls.Add(group_get);
             Controls.Add(label_realtime_clock);
             Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
             ForeColor = SystemColors.ControlText;
             Name = "MainForm";
             Text = "POS System";
             Load += MainForm_Load;
-            groupBox1.ResumeLayout(false);
-            groupBox2.ResumeLayout(false);
-            groupBox2.PerformLayout();
+            group_get.ResumeLayout(false);
+            group_main.ResumeLayout(false);
+            group_main.PerformLayout();
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
-            groupBox4.ResumeLayout(false);
+            group_etc.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)picture_box_alarm).EndInit();
             ((System.ComponentModel.ISupportInitialize)picture_box_menu).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
@@ -366,9 +366,9 @@
         private Button button_get_receipt;
         private Button button_get_stock;
         private Button button_get_tpt;
-        private GroupBox groupBox1;
+        private GroupBox group_get;
         private Button button_payment;
-        private GroupBox groupBox2;
+        private GroupBox group_main;
         private GroupBox groupBox3;
         private Label label3;
         private Label label2;
@@ -380,7 +380,7 @@
         private Label label9;
         private Label label8;
         private Label label7;
-        private GroupBox groupBox4;
+        private GroupBox group_etc;
         private ListView listView1;
         private Button button_refund;
         private PictureBox picture_box_alarm;

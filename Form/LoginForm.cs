@@ -1,65 +1,64 @@
-namespace POS_Project_Team2
+ï»¿namespace POS_Project_Team2
 {
-    /*
-       »ç¿ëÀÚ ÀÔÀå¿¡¼­ °¡Àå Ã³À½ ¸¸³ª´Â
-       ·Î±×ÀÎ Ã¢ (Entry Point)
-     */
+    using System.Drawing.Drawing2D;
     public partial class LoginForm : Form
     {
+        /*
+          ì‚¬ìš©ì ì…ì¥ì—ì„œ ê°€ì¥ ì²˜ìŒ ë§Œë‚˜ëŠ”
+          ë¡œê·¸ì¸ ì°½ (Entry Point)
+        */
+
         public LoginForm()
         {
-            // ½ÇÇà½Ã Ã¢À» È­¸é Áß¾Ó¿¡ À§Ä¡½ÃÅ°±â
+            // ì‹¤í–‰ì‹œ ì°½ì„ í™”ë©´ ì¤‘ì•™ì— ìœ„ì¹˜ì‹œí‚¤ê¸°
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            // µğÀÚÀÌ³Ê Áö¿øÀ» À§ÇÑ ÇÔ¼ö, Àı´ë·Î ÀÌ ÇÔ¼ö¸¦ °ÇµéÁö ¸» °Í.
             InitializeComponent();
         }
 
-        private void LoginForm_Load(object sender, EventArgs e)
+        // ì‚¬ê° íŒ¨ë„ ê¹ì•„ì„œ ë­‰íˆ­í•˜ê²Œ ë§Œë“¤ê¸° (ë””ìì¸)
+        private void panel_background_Paint(object sender, PaintEventArgs e)
         {
-            // ID, PW ÀÔ·ÂÃ¢¿¡ KeyPress ÀÌº¥Æ® ÇÚµé·¯ µî·Ï
-            textbox_id.KeyPress += new KeyPressEventHandler(get_enter);
-            textbox_pw.KeyPress += new KeyPressEventHandler(get_enter);
+            GraphicsPath path = new GraphicsPath();
+            int radius = 20;
+            int diameter = radius * 2;
+            Rectangle bounds = new Rectangle(0, 0, panel_background.Width, panel_background.Height);
 
-            // ÆíÀÇ¸¦ À§ÇØ ID, PW¸¦ ¹Ì¸® ÀÔ·ÂÇØ³õ´Â´Ù.
-            textbox_id.Text = "admin";
-            textbox_pw.Text = "admin";
+            path.AddArc(bounds.X, bounds.Y, diameter, diameter, 180, 90);
+            path.AddArc(bounds.X + bounds.Width - diameter, bounds.Y, diameter, diameter, 270, 90);
+            path.AddArc(bounds.X + bounds.Width - diameter, bounds.Y + bounds.Height - diameter, diameter, diameter, 0, 90);
+            path.AddArc(bounds.X, bounds.Y + bounds.Height - diameter, diameter, diameter, 90, 90);
+            path.CloseAllFigures();
 
-            // ºñ¹Ğ¹øÈ£¿¡ Æ÷Ä¿½º¸¦ °Ç´Ù.
-            textbox_pw.Focus();
+            panel_background.Region = new Region(path);
         }
 
-        // Á¾·á ¹öÆ°
-        private void button_exit_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
 
-        // ·Î±×ÀÎ ¹öÆ°
+        // ë¡œê·¸ì¸ ë²„íŠ¼
         private void button_login_Click(object sender, EventArgs e)
         {
             /*
-               ¿ÜºÎ ¶óÀÌºê·¯¸®¸¦ »ç¿ëÇÒ ¼ö ¾øÀ¸¹Ç·Î,
-               DB ¿¬°á ¹× ·Î±×ÀÎ Ã³¸®´Â ¹®ÀÚ¿­ Æò¹® ºñ±³·Î ´ëÃ¼ÇÑ´Ù.
+               ì™¸ë¶€ ë¼ì´ë¸ŒëŸ¬ë¦¬ë¥¼ ì‚¬ìš©í•  ìˆ˜ ì—†ìœ¼ë¯€ë¡œ,
+               DB ì—°ê²° ë° ë¡œê·¸ì¸ ì²˜ë¦¬ëŠ” ë¬¸ìì—´ í‰ë¬¸ ë¹„êµë¡œ ëŒ€ì²´í•œë‹¤.
                id : admin, pw : admin
-               ¾ç ¿·¿¡ °ø¹éÀÌ ÀÖ¾îµµ ¹®Á¦ ¾øÀÌ ·Î±×ÀÎ µÇµµ·Ï Trim Ã³¸®ÈÄ ºñ±³ÇÑ´Ù.
+               ì–‘ ì˜†ì— ê³µë°±ì´ ìˆì–´ë„ ë¬¸ì œ ì—†ì´ ë¡œê·¸ì¸ ë˜ë„ë¡ Trim ì²˜ë¦¬í›„ ë¹„êµí•œë‹¤.
              */
-            if (textbox_id.Text.Trim() == "admin" && textbox_pw.Text.Trim() == "admin")
+            if (textbox_id.Text.Trim() == "admin" && textbox_pw.Text.Trim() == "admin" || textbox_id.Text.Trim() == "admin@naver.com" && textbox_pw.Text.Trim() == "admin")
             {
                 /*
-                  ·Î±×ÀÎ ¼º°ø½Ã ¸ŞÀÎ È­¸éÀ¸·Î ÀÌµ¿ :
-                  ·Î±×ÀÎ Ã¢ ¼û±â±â
-                  Close°¡ ¾Æ´Ñ Hide¸¦ ÇÏ´Â ÀÌÀ¯´Â, º» ÇÁ·Î±×·¥ÀÇ ½ÃÀÛÁ¡ÀÎ LoginFormÀÌ ´İÈ÷¸é
-                  ÇÁ·Î±×·¥ÀÌ Á¾·áµÇ±â ¶§¹®ÀÌ´Ù. µû¶ó¼­ º»ÀÎÀº ¼û±è Ã³¸®ÇÑ´Ù.
+                  ë¡œê·¸ì¸ ì„±ê³µì‹œ ë©”ì¸ í™”ë©´ìœ¼ë¡œ ì´ë™ :
+                  ë¡œê·¸ì¸ ì°½ ìˆ¨ê¸°ê¸°
+                  Closeê°€ ì•„ë‹Œ Hideë¥¼ í•˜ëŠ” ì´ìœ ëŠ”, ë³¸ í”„ë¡œê·¸ë¨ì˜ ì‹œì‘ì ì¸ LoginFormì´ ë‹«íˆë©´
+                  í”„ë¡œê·¸ë¨ì´ ì¢…ë£Œë˜ê¸° ë•Œë¬¸ì´ë‹¤. ë”°ë¼ì„œ ë³¸ì¸ì€ ìˆ¨ê¹€ ì²˜ë¦¬í•œë‹¤.
                 */
                 this.Hide();
 
                 /*
-                  ¿©±â¼­ ¸ŞÀÎ È­¸éÀ» ¶ç¿ì´Âµ¥ Áß¿äÇÑ Á¡Àº,
-                  ¸ŞÀÎ ÆûÀ» ²°À»¶§ ÇÁ·Î±×·¥ÀÌ Á¾·áµÇ°Ô ÇØ¾ß ÇÏ´Âµ¥,
-                  ÇöÀç HideµÈ »óÅÂÀÇ ·Î±×ÀÎ ÆûÀ» ²¨¾ß ¿ÏÀüÈ÷ Á¾·á°¡ µÈ´Ù.
-                  µû¶ó¼­ ¸ŞÀÎ ÆûÀ» ²°À»¶§ ÇØ´ç LoginFormÀÌ °°ÀÌ Á¾·áµÇµµ·Ï
-                  ÀÌº¥Æ® ÇÚµé·¯¸¦ °É¾îÁà¾ß ÇÑ´Ù.
+                  ì—¬ê¸°ì„œ ë©”ì¸ í™”ë©´ì„ ë„ìš°ëŠ”ë° ì¤‘ìš”í•œ ì ì€,
+                  ë©”ì¸ í¼ì„ ê»ì„ë•Œ í”„ë¡œê·¸ë¨ì´ ì¢…ë£Œë˜ê²Œ í•´ì•¼ í•˜ëŠ”ë°,
+                  í˜„ì¬ Hideëœ ìƒíƒœì˜ ë¡œê·¸ì¸ í¼ì„ êº¼ì•¼ ì™„ì „íˆ ì¢…ë£Œê°€ ëœë‹¤.
+                  ë”°ë¼ì„œ ë©”ì¸ í¼ì„ ê»ì„ë•Œ í•´ë‹¹ LoginFormì´ ê°™ì´ ì¢…ë£Œë˜ë„ë¡
+                  ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬ë¥¼ ê±¸ì–´ì¤˜ì•¼ í•œë‹¤.
                  */
 
                 MainForm main_form = new MainForm();
@@ -68,21 +67,48 @@ namespace POS_Project_Team2
             }
             else
             {
-                // ·Î±×ÀÎ ½ÇÆĞ
-                MessageBox.Show("·Î±×ÀÎ¿¡ ½ÇÆĞÇß½À´Ï´Ù.", "¾Ë¸²", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // ë¡œê·¸ì¸ ì‹¤íŒ¨
+                MessageBox.Show("ë¡œê·¸ì¸ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.", "ì•Œë¦¼", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        // ? ¹öÆ° = Á¤º¸ ¹öÆ°
-        private void button_information_Click(object sender, EventArgs e)
+        private void button_online_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("¾ÆÀÌµğ / ºñ¹Ğ¹øÈ£ ºĞ½Ç, »ç¿ë¹ı ¹× È¸¿ø°¡ÀÔ ¹®ÀÇ´Â admin@naver.com À¸·Î ¹®ÀÇ ¹Ù¶ø´Ï´Ù.", "¾Ë¸²", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("ì˜¨ë¼ì¸ ëª¨ë“œëŠ” í˜„ì¬ ì‚¬ìš©í•˜ì‹¤ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.", "ì•Œë¦¼", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
         }
 
-        // ID, PW ÅØ½ºÆ® ¹Ú½º¿¡¼­ ¿£ÅÍÅ° ÀÔ·Â½Ã ¼öÇàÇÏ´Â ÀÌº¥Æ® ÇÚµé·¯
+        private void button_offline_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("í˜„ì¬ ì˜¤í”„ë¼ì¸ ëª¨ë“œì…ë‹ˆë‹¤.", "ì•Œë¦¼", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // ? ë²„íŠ¼ = ì •ë³´ ë²„íŠ¼
+
+        private void button_information_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("ì•„ì´ë”” / ë¹„ë°€ë²ˆí˜¸ ë¶„ì‹¤, ì‚¬ìš©ë²• ë° íšŒì›ê°€ì… ë¬¸ì˜ëŠ” admin@naver.com ìœ¼ë¡œ ë¬¸ì˜ ë°”ëë‹ˆë‹¤.", "ì•Œë¦¼", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        }
+
+        private void DesignTest_Load(object sender, EventArgs e)
+        {
+            // ID, PW ì…ë ¥ì°½ì— KeyPress ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬ ë“±ë¡
+            textbox_id.KeyPress += new KeyPressEventHandler(get_enter);
+            textbox_pw.KeyPress += new KeyPressEventHandler(get_enter);
+
+            // í¸ì˜ë¥¼ ìœ„í•´ ID, PWë¥¼ ë¯¸ë¦¬ ì…ë ¥í•´ë†“ëŠ”ë‹¤.
+            textbox_id.Text = "admin@naver.com";
+            textbox_pw.Text = "admin";
+
+            // ë¹„ë°€ë²ˆí˜¸ì— í¬ì»¤ìŠ¤ë¥¼ ê±´ë‹¤.
+            textbox_pw.Focus();
+        }
+
+        // ID, PW í…ìŠ¤íŠ¸ ë°•ìŠ¤ì—ì„œ ì—”í„°í‚¤ ì…ë ¥ì‹œ ìˆ˜í–‰í•˜ëŠ” ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬
         private void get_enter(object sender, KeyPressEventArgs e)
         {
-            // ¿£ÅÍÅ° ´©¸£¸é ·Î±×ÀÎ ¹öÆ° Å¬¸¯ ÀÌº¥Æ® ¹ß»ı
+            // ì—”í„°í‚¤ ëˆ„ë¥´ë©´ ë¡œê·¸ì¸ ë²„íŠ¼ í´ë¦­ ì´ë²¤íŠ¸ ë°œìƒ
             if (e.KeyChar == (char)Keys.Enter)
             {
                 button_login_Click(sender, e);
