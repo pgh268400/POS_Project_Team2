@@ -70,7 +70,7 @@
             label_realtime_clock.Name = "label_realtime_clock";
             label_realtime_clock.Size = new Size(103, 19);
             label_realtime_clock.TabIndex = 0;
-            label_realtime_clock.Text = "현재 날짜 시간";
+            label_realtime_clock.Text = "현재 날짜 시간"; 
             // 
             // button1
             // 
@@ -223,8 +223,7 @@
             label5.Name = "label5";
             label5.Size = new Size(70, 19);
             label5.TabIndex = 13;
-            label5.Text = "결제 금액";
-            label5.Click += label5_Click;
+            label5.Text = "결제 금액"; 
             // 
             // label4
             // 

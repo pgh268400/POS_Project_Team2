@@ -47,14 +47,14 @@ namespace POS_Project_Team2
                 */
                 this.Hide();
 
-
                 /*
                   여기서 메인 화면을 띄우는데 중요한 점은,
                   메인 폼을 껐을때 프로그램이 종료되게 해야 하는데,
                   현재 Hide된 상태의 로그인 폼을 꺼야 완전히 종료가 된다.
-                  따라서 메인 폼을 껐을때 해당 LoginForm이 종료되도록
+                  따라서 메인 폼을 껐을때 해당 LoginForm이 같이 종료되도록
                   이벤트 핸들러를 걸어줘야 한다.
                  */
+
                 MainForm main_form = new MainForm();
                 main_form.Closed += (s, args) => this.Close(); // important!
                 main_form.ShowDialog();
@@ -81,7 +81,5 @@ namespace POS_Project_Team2
                 button_login_Click(sender, e);
             }
         }
-
-
     }
 }

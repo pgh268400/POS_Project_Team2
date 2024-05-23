@@ -402,7 +402,7 @@
             Controls.Add(panel2);
             Controls.Add(panel1);
             Name = "PaymentForm";
-            Text = "PaymentForm";
+            Text = "POS System";
             Load += PaymentForm_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
