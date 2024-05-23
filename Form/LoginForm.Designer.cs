@@ -104,7 +104,8 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(322, 149);
+            BackColor = Color.White;
+            ClientSize = new Size(315, 146);
             Controls.Add(button_information);
             Controls.Add(button_exit);
             Controls.Add(button_login);

@@ -20,6 +20,13 @@ namespace POS_Project_Team2
             // ID, PW 입력창에 KeyPress 이벤트 핸들러 등록
             textbox_id.KeyPress += new KeyPressEventHandler(get_enter);
             textbox_pw.KeyPress += new KeyPressEventHandler(get_enter);
+
+            // 편의를 위해 ID, PW를 미리 입력해놓는다.
+            textbox_id.Text = "admin";
+            textbox_pw.Text = "admin";
+
+            // 비밀번호에 포커스를 건다.
+            textbox_pw.Focus();
         }
 
         // 종료 버튼

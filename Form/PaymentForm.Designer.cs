@@ -37,26 +37,26 @@
             label1 = new Label();
             groupBox1 = new GroupBox();
             groupBox2 = new GroupBox();
-            label9 = new Label();
+            label_change = new Label();
             label7 = new Label();
             label8 = new Label();
-            label_Paid = new Label();
+            label_paid = new Label();
             label4 = new Label();
             label3 = new Label();
             label2 = new Label();
-            totalAmount = new Label();
+            label_total_amount = new Label();
             panel2 = new Panel();
-            btn_Cash = new Button();
-            btn_Mobile = new Button();
-            btn_Waiting = new Button();
-            btn_AllCancel = new Button();
-            btn_Card = new Button();
-            btn_SelectProduct = new Button();
+            button_cash = new Button();
+            button_mobile = new Button();
+            button_wait = new Button();
+            button_all_cancle = new Button();
+            button_card = new Button();
+            button_select_product = new Button();
             panel3 = new Panel();
-            labelAmountMoney = new Label();
-            labelNumProduct = new Label();
+            label_amount_money = new Label();
+            label_num_product = new Label();
             splitter2 = new Splitter();
-            label5 = new Label();
+            label_sum = new Label();
             splitter1 = new Splitter();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -140,7 +140,7 @@
             // 
             groupBox1.Controls.Add(groupBox2);
             groupBox1.Controls.Add(label2);
-            groupBox1.Controls.Add(totalAmount);
+            groupBox1.Controls.Add(label_total_amount);
             groupBox1.Controls.Add(label1);
             groupBox1.Location = new Point(353, 273);
             groupBox1.Name = "groupBox1";
@@ -150,10 +150,10 @@
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(label9);
+            groupBox2.Controls.Add(label_change);
             groupBox2.Controls.Add(label7);
             groupBox2.Controls.Add(label8);
-            groupBox2.Controls.Add(label_Paid);
+            groupBox2.Controls.Add(label_paid);
             groupBox2.Controls.Add(label4);
             groupBox2.Controls.Add(label3);
             groupBox2.Location = new Point(6, 43);
@@ -162,16 +162,16 @@
             groupBox2.TabIndex = 19;
             groupBox2.TabStop = false;
             // 
-            // label9
+            // label_change
             // 
-            label9.AutoSize = true;
-            label9.Font = new Font("맑은 고딕", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            label9.ForeColor = Color.Red;
-            label9.Location = new Point(169, 46);
-            label9.Name = "label9";
-            label9.Size = new Size(27, 25);
-            label9.TabIndex = 20;
-            label9.Text = "N";
+            label_change.AutoSize = true;
+            label_change.Font = new Font("맑은 고딕", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            label_change.ForeColor = Color.Red;
+            label_change.Location = new Point(169, 46);
+            label_change.Name = "label_change";
+            label_change.Size = new Size(27, 25);
+            label_change.TabIndex = 20;
+            label_change.Text = "N";
             // 
             // label7
             // 
@@ -187,22 +187,23 @@
             // 
             label8.AutoSize = true;
             label8.Font = new Font("맑은 고딕", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label8.Location = new Point(226, 48);
+            label8.Location = new Point(226, 49);
             label8.Name = "label8";
             label8.Size = new Size(26, 21);
             label8.TabIndex = 21;
             label8.Text = "원";
             // 
-            // label_Paid
+            // label_paid
             // 
-            label_Paid.AutoSize = true;
-            label_Paid.Font = new Font("맑은 고딕", 11.25F, FontStyle.Regular, GraphicsUnit.Point);
-            label_Paid.Location = new Point(170, 19);
-            label_Paid.Name = "label_Paid";
-            label_Paid.Size = new Size(20, 20);
-            label_Paid.TabIndex = 21;
-            label_Paid.Text = "N";
-            label_Paid.Click += label_Paid_Click;
+            label_paid.AutoSize = true;
+            label_paid.Font = new Font("맑은 고딕", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            label_paid.ForeColor = Color.Blue;
+            label_paid.Location = new Point(169, 15);
+            label_paid.Name = "label_paid";
+            label_paid.Size = new Size(27, 25);
+            label_paid.TabIndex = 21;
+            label_paid.Text = "N";
+            label_paid.Click += label_Paid_Click;
             // 
             // label4
             // 
@@ -228,31 +229,31 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("맑은 고딕", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            label2.Location = new Point(238, 19);
+            label2.Location = new Point(232, 19);
             label2.Name = "label2";
             label2.Size = new Size(26, 21);
             label2.TabIndex = 19;
             label2.Text = "원";
             // 
-            // totalAmount
+            // label_total_amount
             // 
-            totalAmount.AutoSize = true;
-            totalAmount.Font = new Font("맑은 고딕", 18F, FontStyle.Regular, GraphicsUnit.Point);
-            totalAmount.ForeColor = Color.Red;
-            totalAmount.Location = new Point(173, 12);
-            totalAmount.Name = "totalAmount";
-            totalAmount.Size = new Size(32, 32);
-            totalAmount.TabIndex = 18;
-            totalAmount.Text = "N";
+            label_total_amount.AutoSize = true;
+            label_total_amount.Font = new Font("맑은 고딕", 18F, FontStyle.Regular, GraphicsUnit.Point);
+            label_total_amount.ForeColor = Color.Red;
+            label_total_amount.Location = new Point(173, 12);
+            label_total_amount.Name = "label_total_amount";
+            label_total_amount.Size = new Size(32, 32);
+            label_total_amount.TabIndex = 18;
+            label_total_amount.Text = "N";
             // 
             // panel2
             // 
-            panel2.Controls.Add(btn_Cash);
-            panel2.Controls.Add(btn_Mobile);
-            panel2.Controls.Add(btn_Waiting);
-            panel2.Controls.Add(btn_AllCancel);
-            panel2.Controls.Add(btn_Card);
-            panel2.Controls.Add(btn_SelectProduct);
+            panel2.Controls.Add(button_cash);
+            panel2.Controls.Add(button_mobile);
+            panel2.Controls.Add(button_wait);
+            panel2.Controls.Add(button_all_cancle);
+            panel2.Controls.Add(button_card);
+            panel2.Controls.Add(button_select_product);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(lvwProducts);
             panel2.Controls.Add(groupBox1);
@@ -261,112 +262,113 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(800, 410);
             panel2.TabIndex = 19;
+            panel2.Paint += panel2_Paint;
             // 
-            // btn_Cash
+            // button_cash
             // 
-            btn_Cash.BackColor = Color.ForestGreen;
-            btn_Cash.Font = new Font("맑은 고딕", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            btn_Cash.ForeColor = Color.White;
-            btn_Cash.Location = new Point(626, 217);
-            btn_Cash.Name = "btn_Cash";
-            btn_Cash.Size = new Size(171, 54);
-            btn_Cash.TabIndex = 31;
-            btn_Cash.Text = "현금";
-            btn_Cash.UseVisualStyleBackColor = false;
+            button_cash.BackColor = Color.ForestGreen;
+            button_cash.Font = new Font("맑은 고딕", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            button_cash.ForeColor = Color.White;
+            button_cash.Location = new Point(626, 216);
+            button_cash.Name = "button_cash";
+            button_cash.Size = new Size(171, 54);
+            button_cash.TabIndex = 31;
+            button_cash.Text = "현금";
+            button_cash.UseVisualStyleBackColor = false;
             // 
-            // btn_Mobile
+            // button_mobile
             // 
-            btn_Mobile.BackColor = Color.ForestGreen;
-            btn_Mobile.Font = new Font("맑은 고딕", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            btn_Mobile.ForeColor = Color.White;
-            btn_Mobile.Location = new Point(626, 271);
-            btn_Mobile.Name = "btn_Mobile";
-            btn_Mobile.Size = new Size(171, 54);
-            btn_Mobile.TabIndex = 30;
-            btn_Mobile.Text = "모바일";
-            btn_Mobile.UseVisualStyleBackColor = false;
+            button_mobile.BackColor = Color.ForestGreen;
+            button_mobile.Font = new Font("맑은 고딕", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            button_mobile.ForeColor = Color.White;
+            button_mobile.Location = new Point(626, 270);
+            button_mobile.Name = "button_mobile";
+            button_mobile.Size = new Size(171, 54);
+            button_mobile.TabIndex = 30;
+            button_mobile.Text = "모바일";
+            button_mobile.UseVisualStyleBackColor = false;
             // 
-            // btn_Waiting
+            // button_wait
             // 
-            btn_Waiting.BackColor = Color.FromArgb(64, 64, 64);
-            btn_Waiting.Font = new Font("맑은 고딕", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            btn_Waiting.ForeColor = Color.White;
-            btn_Waiting.Location = new Point(715, 335);
-            btn_Waiting.Name = "btn_Waiting";
-            btn_Waiting.Size = new Size(82, 55);
-            btn_Waiting.TabIndex = 29;
-            btn_Waiting.Text = "대기";
-            btn_Waiting.UseVisualStyleBackColor = false;
+            button_wait.BackColor = Color.FromArgb(64, 64, 64);
+            button_wait.Font = new Font("맑은 고딕", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            button_wait.ForeColor = Color.White;
+            button_wait.Location = new Point(715, 343);
+            button_wait.Name = "button_wait";
+            button_wait.Size = new Size(82, 55);
+            button_wait.TabIndex = 29;
+            button_wait.Text = "대기";
+            button_wait.UseVisualStyleBackColor = false;
             // 
-            // btn_AllCancel
+            // button_all_cancle
             // 
-            btn_AllCancel.BackColor = Color.FromArgb(255, 128, 128);
-            btn_AllCancel.Font = new Font("맑은 고딕", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            btn_AllCancel.ForeColor = Color.White;
-            btn_AllCancel.Location = new Point(629, 335);
-            btn_AllCancel.Name = "btn_AllCancel";
-            btn_AllCancel.Size = new Size(82, 55);
-            btn_AllCancel.TabIndex = 25;
-            btn_AllCancel.Text = "전체 취소";
-            btn_AllCancel.UseVisualStyleBackColor = false;
+            button_all_cancle.BackColor = Color.FromArgb(255, 128, 128);
+            button_all_cancle.Font = new Font("맑은 고딕", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            button_all_cancle.ForeColor = Color.White;
+            button_all_cancle.Location = new Point(627, 343);
+            button_all_cancle.Name = "button_all_cancle";
+            button_all_cancle.Size = new Size(82, 55);
+            button_all_cancle.TabIndex = 25;
+            button_all_cancle.Text = "전체 취소";
+            button_all_cancle.UseVisualStyleBackColor = false;
             // 
-            // btn_Card
+            // button_card
             // 
-            btn_Card.BackColor = Color.ForestGreen;
-            btn_Card.Font = new Font("맑은 고딕", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            btn_Card.ForeColor = Color.White;
-            btn_Card.Location = new Point(626, 161);
-            btn_Card.Name = "btn_Card";
-            btn_Card.Size = new Size(171, 54);
-            btn_Card.TabIndex = 22;
-            btn_Card.Text = "신용카드";
-            btn_Card.UseVisualStyleBackColor = false;
+            button_card.BackColor = Color.ForestGreen;
+            button_card.Font = new Font("맑은 고딕", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            button_card.ForeColor = Color.White;
+            button_card.Location = new Point(626, 160);
+            button_card.Name = "button_card";
+            button_card.Size = new Size(171, 54);
+            button_card.TabIndex = 22;
+            button_card.Text = "신용카드/체크카드";
+            button_card.UseVisualStyleBackColor = false;
             // 
-            // btn_SelectProduct
+            // button_select_product
             // 
-            btn_SelectProduct.BackColor = Color.BlueViolet;
-            btn_SelectProduct.Font = new Font("맑은 고딕", 18F, FontStyle.Bold, GraphicsUnit.Point);
-            btn_SelectProduct.ForeColor = SystemColors.ButtonHighlight;
-            btn_SelectProduct.Location = new Point(626, 6);
-            btn_SelectProduct.Name = "btn_SelectProduct";
-            btn_SelectProduct.Size = new Size(171, 148);
-            btn_SelectProduct.TabIndex = 21;
-            btn_SelectProduct.Text = "상품 선택";
-            btn_SelectProduct.UseVisualStyleBackColor = false;
-            btn_SelectProduct.Click += btn_SelectProduct_Click;
+            button_select_product.BackColor = Color.BlueViolet;
+            button_select_product.Font = new Font("맑은 고딕", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            button_select_product.ForeColor = SystemColors.ButtonHighlight;
+            button_select_product.Location = new Point(626, 6);
+            button_select_product.Name = "button_select_product";
+            button_select_product.Size = new Size(171, 148);
+            button_select_product.TabIndex = 21;
+            button_select_product.Text = "상품 선택";
+            button_select_product.UseVisualStyleBackColor = false;
+            button_select_product.Click += btn_SelectProduct_Click;
             // 
             // panel3
             // 
             panel3.BackColor = SystemColors.ActiveBorder;
-            panel3.Controls.Add(labelAmountMoney);
-            panel3.Controls.Add(labelNumProduct);
+            panel3.Controls.Add(label_amount_money);
+            panel3.Controls.Add(label_num_product);
             panel3.Controls.Add(splitter2);
-            panel3.Controls.Add(label5);
+            panel3.Controls.Add(label_sum);
             panel3.Controls.Add(splitter1);
             panel3.Location = new Point(27, 228);
             panel3.Name = "panel3";
             panel3.Size = new Size(596, 39);
             panel3.TabIndex = 20;
             // 
-            // labelAmountMoney
+            // label_amount_money
             // 
-            labelAmountMoney.AutoSize = true;
-            labelAmountMoney.Font = new Font("맑은 고딕", 11.25F, FontStyle.Regular, GraphicsUnit.Point);
-            labelAmountMoney.Location = new Point(514, 9);
-            labelAmountMoney.Name = "labelAmountMoney";
-            labelAmountMoney.Size = new Size(20, 20);
-            labelAmountMoney.TabIndex = 4;
-            labelAmountMoney.Text = "N";
+            label_amount_money.AutoSize = true;
+            label_amount_money.Font = new Font("맑은 고딕", 11.25F, FontStyle.Regular, GraphicsUnit.Point);
+            label_amount_money.Location = new Point(514, 9);
+            label_amount_money.Name = "label_amount_money";
+            label_amount_money.Size = new Size(20, 20);
+            label_amount_money.TabIndex = 4;
+            label_amount_money.Text = "N";
             // 
-            // labelNumProduct
+            // label_num_product
             // 
-            labelNumProduct.AutoSize = true;
-            labelNumProduct.Font = new Font("맑은 고딕", 11.25F, FontStyle.Regular, GraphicsUnit.Point);
-            labelNumProduct.Location = new Point(364, 9);
-            labelNumProduct.Name = "labelNumProduct";
-            labelNumProduct.Size = new Size(20, 20);
-            labelNumProduct.TabIndex = 3;
-            labelNumProduct.Text = "N";
+            label_num_product.AutoSize = true;
+            label_num_product.Font = new Font("맑은 고딕", 11.25F, FontStyle.Regular, GraphicsUnit.Point);
+            label_num_product.Location = new Point(364, 9);
+            label_num_product.Name = "label_num_product";
+            label_num_product.Size = new Size(20, 20);
+            label_num_product.TabIndex = 3;
+            label_num_product.Text = "N";
             // 
             // splitter2
             // 
@@ -376,15 +378,15 @@
             splitter2.TabIndex = 2;
             splitter2.TabStop = false;
             // 
-            // label5
+            // label_sum
             // 
-            label5.AutoSize = true;
-            label5.Font = new Font("맑은 고딕", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            label5.Location = new Point(123, 9);
-            label5.Name = "label5";
-            label5.Size = new Size(42, 21);
-            label5.TabIndex = 1;
-            label5.Text = "합계";
+            label_sum.AutoSize = true;
+            label_sum.Font = new Font("맑은 고딕", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            label_sum.Location = new Point(123, 9);
+            label_sum.Name = "label_sum";
+            label_sum.Size = new Size(42, 21);
+            label_sum.TabIndex = 1;
+            label_sum.Text = "합계";
             // 
             // splitter1
             // 
@@ -398,6 +400,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
             ClientSize = new Size(800, 450);
             Controls.Add(panel2);
             Controls.Add(panel1);
@@ -429,26 +432,26 @@
         private Label label1;
         private GroupBox groupBox1;
         private Label label2;
-        private Label totalAmount;
+        private Label label_total_amount;
         private GroupBox groupBox2;
-        private Label label9;
+        private Label label_change;
         private Label label7;
         private Label label8;
-        private Label label_Paid;
+        private Label label_paid;
         private Label label4;
         private Label label3;
         private Panel panel2;
         private Panel panel3;
-        private Label labelAmountMoney;
-        private Label labelNumProduct;
+        private Label label_amount_money;
+        private Label label_num_product;
         private Splitter splitter2;
-        private Label label5;
+        private Label label_sum;
         private Splitter splitter1;
-        private Button btn_Waiting;
-        private Button btn_AllCancel;
-        private Button btn_Card;
-        private Button btn_SelectProduct;
-        private Button btn_Cash;
-        private Button btn_Mobile;
+        private Button button_wait;
+        private Button button_all_cancle;
+        private Button button_card;
+        private Button button_select_product;
+        private Button button_cash;
+        private Button button_mobile;
     }
 }
