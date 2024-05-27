@@ -11,6 +11,9 @@ namespace POS_Project_Team2
 
         public MainForm()
         {
+            // 실행시 창을 화면 중앙에 위치시키기
+            this.StartPosition = FormStartPosition.CenterScreen;
+
             InitializeComponent();
         }
 
@@ -37,6 +40,7 @@ namespace POS_Project_Team2
             if (payment_form == null)
             {
                 payment_form = new PaymentForm();
+                payment_form.FormClosed += PaymentForm_FormClosed; // 폼이 닫힐 때 이벤트 핸들러 등록
                 payment_form.Show();
             }
             // 이미 생성된 폼이 있으면 생성은 필요 없고 최상단으로 끌어와서 표시 해주면 된다.
@@ -45,6 +49,13 @@ namespace POS_Project_Team2
                 // Activate() 를 사용하면 폼을 최상단으로 표시해줄 수 있다.
                 payment_form.Activate();
             }
+        }
+
+        private void PaymentForm_FormClosed(object? sender, FormClosedEventArgs e)
+        {
+            // 폼이 닫힐 때 payment_form 변수를 null로 설정
+            // 이거 없으면 결제창 닫고 다시 열려고 할 때 결제창 안열린다.
+            payment_form = null;
         }
     }
 }

@@ -56,11 +56,11 @@
             label_title.AutoSize = true;
             label_title.Font = new Font("맑은 고딕", 16F, FontStyle.Bold, GraphicsUnit.Point);
             label_title.ForeColor = Color.White;
-            label_title.Location = new Point(158, 22);
+            label_title.Location = new Point(170, 29);
             label_title.Name = "label_title";
-            label_title.Size = new Size(133, 30);
+            label_title.Size = new Size(117, 30);
             label_title.TabIndex = 0;
-            label_title.Text = "POS LOGIN";
+            label_title.Text = "Welcome!";
             // 
             // textbox_id
             // 
@@ -172,7 +172,7 @@
             button_information.UseVisualStyleBackColor = false;
             button_information.Click += button_information_Click;
             // 
-            // DesignTest
+            // LoginForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -186,8 +186,8 @@
             Controls.Add(button_offline);
             Controls.Add(panel_background);
             Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            Name = "DesignTest";
-            Text = "로그인";
+            Name = "LoginForm";
+            Text = "POS System";
             Load += DesignTest_Load;
             panel_background.ResumeLayout(false);
             panel_background.PerformLayout();

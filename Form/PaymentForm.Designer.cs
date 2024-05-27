@@ -102,9 +102,10 @@
             // label_realtime_clock
             // 
             label_realtime_clock.AutoSize = true;
-            label_realtime_clock.Location = new Point(164, 14);
+            label_realtime_clock.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            label_realtime_clock.Location = new Point(165, 9);
             label_realtime_clock.Name = "label_realtime_clock";
-            label_realtime_clock.Size = new Size(87, 15);
+            label_realtime_clock.Size = new Size(103, 19);
             label_realtime_clock.TabIndex = 17;
             label_realtime_clock.Text = "현재 날짜 시간";
             // 
