@@ -282,7 +282,7 @@
             button_mobile.BackColor = Color.ForestGreen;
             button_mobile.Font = new Font("맑은 고딕", 12F, FontStyle.Bold, GraphicsUnit.Point);
             button_mobile.ForeColor = Color.White;
-            button_mobile.Location = new Point(626, 270);
+            button_mobile.Location = new Point(627, 272);
             button_mobile.Name = "button_mobile";
             button_mobile.Size = new Size(171, 54);
             button_mobile.TabIndex = 30;
