@@ -17,6 +17,19 @@ namespace POS_Project_Team2
             InitializeComponent();
         }
 
+        private void set_picture_box_transparent()
+        {
+            // picturebox 투명으로 설정하기
+            picture_box_alarm.BackColor = Color.Transparent;
+
+            // picturebox 투명을 위해선 자신이 겹쳐있는 컨트롤을 부모로 설정해야 제대로 설정된다 : 중요
+            picture_box_alarm.Parent = picture_box_top;
+
+            picture_box_menu.BackColor = Color.Transparent;
+            picture_box_menu.Parent = picture_box_top;
+
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             // RealTimeClock 싱글톤 인스턴스를 가져와서 레이블을 등록
@@ -25,6 +38,8 @@ namespace POS_Project_Team2
             // 타이머를 시작 (이미 시작된 경우에도 문제가 없음)
             RealTimeClock.Instance.start_clock();
 
+            // picturebox 배경 투명으로 설정하기
+            set_picture_box_transparent();
         }
 
         private void button6_Click(object sender, EventArgs e)

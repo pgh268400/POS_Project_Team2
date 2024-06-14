@@ -186,6 +186,7 @@
             Controls.Add(button_offline);
             Controls.Add(panel_background);
             Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            MaximizeBox = false;
             Name = "LoginForm";
             Text = "POS System";
             Load += DesignTest_Load;

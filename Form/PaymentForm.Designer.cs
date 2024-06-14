@@ -31,8 +31,10 @@
             pictureBox1 = new PictureBox();
             pictureBox3 = new PictureBox();
             panel1 = new Panel();
+            label_wait3 = new Label();
+            label_wait2 = new Label();
+            label_wait1 = new Label();
             label_realtime_clock = new Label();
-            label_waiting_page = new Label();
             lvwProducts = new ListView();
             label1 = new Label();
             groupBox1 = new GroupBox();
@@ -89,8 +91,9 @@
             // 
             // panel1
             // 
-            panel1.Controls.Add(label_realtime_clock);
-            panel1.Controls.Add(label_waiting_page);
+            panel1.Controls.Add(label_wait3);
+            panel1.Controls.Add(label_wait2);
+            panel1.Controls.Add(label_wait1);
             panel1.Controls.Add(pictureBox1);
             panel1.Controls.Add(pictureBox3);
             panel1.Dock = DockStyle.Top;
@@ -99,25 +102,45 @@
             panel1.Size = new Size(800, 40);
             panel1.TabIndex = 15;
             // 
+            // label_wait3
+            // 
+            label_wait3.AutoSize = true;
+            label_wait3.Font = new Font("맑은 고딕", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_wait3.Location = new Point(301, 9);
+            label_wait3.Name = "label_wait3";
+            label_wait3.Size = new Size(68, 20);
+            label_wait3.TabIndex = 18;
+            label_wait3.Text = "대기열 3";
+            // 
+            // label_wait2
+            // 
+            label_wait2.AutoSize = true;
+            label_wait2.Font = new Font("맑은 고딕", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_wait2.Location = new Point(168, 9);
+            label_wait2.Name = "label_wait2";
+            label_wait2.Size = new Size(68, 20);
+            label_wait2.TabIndex = 17;
+            label_wait2.Text = "대기열 2";
+            // 
+            // label_wait1
+            // 
+            label_wait1.AutoSize = true;
+            label_wait1.Font = new Font("맑은 고딕", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_wait1.Location = new Point(49, 9);
+            label_wait1.Name = "label_wait1";
+            label_wait1.Size = new Size(68, 20);
+            label_wait1.TabIndex = 16;
+            label_wait1.Text = "대기열 1";
+            // 
             // label_realtime_clock
             // 
             label_realtime_clock.AutoSize = true;
             label_realtime_clock.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            label_realtime_clock.Location = new Point(165, 9);
+            label_realtime_clock.Location = new Point(27, 379);
             label_realtime_clock.Name = "label_realtime_clock";
             label_realtime_clock.Size = new Size(103, 19);
             label_realtime_clock.TabIndex = 17;
             label_realtime_clock.Text = "현재 날짜 시간";
-            // 
-            // label_waiting_page
-            // 
-            label_waiting_page.AutoSize = true;
-            label_waiting_page.Font = new Font("맑은 고딕", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label_waiting_page.Location = new Point(49, 9);
-            label_waiting_page.Name = "label_waiting_page";
-            label_waiting_page.Size = new Size(53, 20);
-            label_waiting_page.TabIndex = 16;
-            label_waiting_page.Text = "대기 1";
             // 
             // lvwProducts
             // 
@@ -249,6 +272,7 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(label_realtime_clock);
             panel2.Controls.Add(button_cash);
             panel2.Controls.Add(button_mobile);
             panel2.Controls.Add(button_wait);
@@ -328,7 +352,7 @@
             // button_select_product
             // 
             button_select_product.BackColor = Color.BlueViolet;
-            button_select_product.Font = new Font("맑은 고딕", 18F, FontStyle.Bold, GraphicsUnit.Point);
+            button_select_product.Font = new Font("맑은 고딕", 17F, FontStyle.Bold, GraphicsUnit.Point);
             button_select_product.ForeColor = SystemColors.ButtonHighlight;
             button_select_product.Location = new Point(626, 6);
             button_select_product.Name = "button_select_product";
@@ -373,7 +397,7 @@
             // 
             // splitter2
             // 
-            splitter2.Location = new Point(302, 0);
+            splitter2.Location = new Point(305, 0);
             splitter2.Name = "splitter2";
             splitter2.Size = new Size(153, 39);
             splitter2.TabIndex = 2;
@@ -393,7 +417,7 @@
             // 
             splitter1.Location = new Point(0, 0);
             splitter1.Name = "splitter1";
-            splitter1.Size = new Size(302, 39);
+            splitter1.Size = new Size(305, 39);
             splitter1.TabIndex = 0;
             splitter1.TabStop = false;
             // 
@@ -417,6 +441,7 @@
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             ResumeLayout(false);
@@ -427,7 +452,7 @@
         private PictureBox pictureBox1;
         private PictureBox pictureBox3;
         private Panel panel1;
-        private Label label_waiting_page;
+        private Label label_wait1;
         private Label label_realtime_clock;
         private ListView lvwProducts;
         private Label label1;
@@ -454,5 +479,7 @@
         private Button button_select_product;
         private Button button_cash;
         private Button button_mobile;
+        private Label label_wait2;
+        private Label label_wait3;
     }
 }

@@ -50,25 +50,27 @@
             label2 = new Label();
             label1 = new Label();
             group_etc = new GroupBox();
+            button3 = new Button();
+            button2 = new Button();
+            button1 = new Button();
             button_refund = new Button();
-            listView1 = new ListView();
             picture_box_alarm = new PictureBox();
             picture_box_menu = new PictureBox();
-            pictureBox2 = new PictureBox();
             realtime_timer = new System.Windows.Forms.Timer(components);
+            picture_box_top = new PictureBox();
             group_get.SuspendLayout();
             group_main.SuspendLayout();
             groupBox3.SuspendLayout();
             group_etc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picture_box_alarm).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picture_box_menu).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)picture_box_top).BeginInit();
             SuspendLayout();
             // 
             // label_realtime_clock
             // 
             label_realtime_clock.AutoSize = true;
-            label_realtime_clock.Location = new Point(17, 17);
+            label_realtime_clock.Location = new Point(24, 352);
             label_realtime_clock.Name = "label_realtime_clock";
             label_realtime_clock.Size = new Size(103, 19);
             label_realtime_clock.TabIndex = 0;
@@ -76,49 +78,60 @@
             // 
             // button_get_all
             // 
-            button_get_all.Location = new Point(20, 45);
+            button_get_all.BackColor = Color.ForestGreen;
+            button_get_all.Font = new Font("맑은 고딕", 14F, FontStyle.Bold, GraphicsUnit.Point);
+            button_get_all.ForeColor = Color.White;
+            button_get_all.Location = new Point(20, 25);
             button_get_all.Name = "button_get_all";
-            button_get_all.Size = new Size(231, 45);
+            button_get_all.Size = new Size(231, 77);
             button_get_all.TabIndex = 1;
             button_get_all.Text = "통합 조회";
-            button_get_all.UseVisualStyleBackColor = true;
+            button_get_all.UseVisualStyleBackColor = false;
             // 
             // button_get_goods
             // 
+            button_get_goods.BackColor = SystemColors.WindowFrame;
+            button_get_goods.ForeColor = SystemColors.ControlLightLight;
             button_get_goods.Location = new Point(20, 108);
             button_get_goods.Name = "button_get_goods";
             button_get_goods.Size = new Size(112, 45);
             button_get_goods.TabIndex = 2;
             button_get_goods.Text = "상품 조회";
-            button_get_goods.UseVisualStyleBackColor = true;
+            button_get_goods.UseVisualStyleBackColor = false;
             // 
             // button_get_receipt
             // 
+            button_get_receipt.BackColor = SystemColors.WindowFrame;
+            button_get_receipt.ForeColor = SystemColors.ControlLightLight;
             button_get_receipt.Location = new Point(138, 108);
             button_get_receipt.Name = "button_get_receipt";
             button_get_receipt.Size = new Size(113, 45);
             button_get_receipt.TabIndex = 3;
             button_get_receipt.Text = "영수증 조회";
-            button_get_receipt.UseVisualStyleBackColor = true;
+            button_get_receipt.UseVisualStyleBackColor = false;
             // 
             // button_get_stock
             // 
+            button_get_stock.BackColor = SystemColors.WindowFrame;
+            button_get_stock.ForeColor = SystemColors.ControlLightLight;
             button_get_stock.Location = new Point(20, 172);
             button_get_stock.Name = "button_get_stock";
             button_get_stock.Size = new Size(112, 45);
             button_get_stock.TabIndex = 4;
             button_get_stock.Text = "재고 조회";
-            button_get_stock.UseVisualStyleBackColor = true;
+            button_get_stock.UseVisualStyleBackColor = false;
             // 
             // button_get_tpt
             // 
+            button_get_tpt.BackColor = SystemColors.WindowFrame;
             button_get_tpt.Font = new Font("맑은 고딕", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            button_get_tpt.ForeColor = SystemColors.ControlLightLight;
             button_get_tpt.Location = new Point(138, 172);
             button_get_tpt.Name = "button_get_tpt";
             button_get_tpt.Size = new Size(113, 45);
             button_get_tpt.TabIndex = 5;
             button_get_tpt.Text = "교통카드\r\n잔액 조회";
-            button_get_tpt.UseVisualStyleBackColor = true;
+            button_get_tpt.UseVisualStyleBackColor = false;
             // 
             // group_get
             // 
@@ -127,7 +140,7 @@
             group_get.Controls.Add(button_get_goods);
             group_get.Controls.Add(button_get_stock);
             group_get.Controls.Add(button_get_receipt);
-            group_get.Location = new Point(20, 225);
+            group_get.Location = new Point(24, 67);
             group_get.Name = "group_get";
             group_get.Size = new Size(275, 256);
             group_get.TabIndex = 6;
@@ -136,12 +149,15 @@
             // 
             // button_payment
             // 
+            button_payment.BackColor = Color.BlueViolet;
+            button_payment.Font = new Font("맑은 고딕", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            button_payment.ForeColor = SystemColors.Window;
             button_payment.Location = new Point(15, 24);
             button_payment.Name = "button_payment";
             button_payment.Size = new Size(178, 81);
             button_payment.TabIndex = 7;
             button_payment.Text = "결제";
-            button_payment.UseVisualStyleBackColor = true;
+            button_payment.UseVisualStyleBackColor = false;
             button_payment.Click += button6_Click;
             // 
             // group_main
@@ -151,7 +167,7 @@
             group_main.Controls.Add(label2);
             group_main.Controls.Add(label1);
             group_main.Controls.Add(button_payment);
-            group_main.Location = new Point(313, 225);
+            group_main.Location = new Point(317, 67);
             group_main.Name = "group_main";
             group_main.Size = new Size(413, 304);
             group_main.TabIndex = 9;
@@ -203,12 +219,13 @@
             // 
             // button_receipt
             // 
+            button_receipt.BackColor = Color.LightGray;
             button_receipt.Location = new Point(252, 19);
             button_receipt.Name = "button_receipt";
             button_receipt.Size = new Size(121, 37);
             button_receipt.TabIndex = 15;
             button_receipt.Text = "영수증 출력";
-            button_receipt.UseVisualStyleBackColor = true;
+            button_receipt.UseVisualStyleBackColor = false;
             // 
             // label6
             // 
@@ -266,37 +283,67 @@
             // 
             // group_etc
             // 
+            group_etc.Controls.Add(button3);
+            group_etc.Controls.Add(button2);
+            group_etc.Controls.Add(button1);
             group_etc.Controls.Add(button_refund);
-            group_etc.Controls.Add(listView1);
-            group_etc.Location = new Point(732, 225);
+            group_etc.Location = new Point(736, 67);
             group_etc.Name = "group_etc";
             group_etc.Size = new Size(264, 304);
             group_etc.TabIndex = 10;
             group_etc.TabStop = false;
             group_etc.Text = "기타";
             // 
+            // button3
+            // 
+            button3.BackColor = SystemColors.WindowFrame;
+            button3.ForeColor = SystemColors.ControlLightLight;
+            button3.Location = new Point(15, 120);
+            button3.Name = "button3";
+            button3.Size = new Size(243, 45);
+            button3.TabIndex = 8;
+            button3.Text = "대기열 3";
+            button3.UseVisualStyleBackColor = false;
+            // 
+            // button2
+            // 
+            button2.BackColor = SystemColors.WindowFrame;
+            button2.ForeColor = SystemColors.ControlLightLight;
+            button2.Location = new Point(15, 72);
+            button2.Name = "button2";
+            button2.Size = new Size(243, 45);
+            button2.TabIndex = 7;
+            button2.Text = "대기열 2";
+            button2.UseVisualStyleBackColor = false;
+            // 
+            // button1
+            // 
+            button1.BackColor = SystemColors.WindowFrame;
+            button1.ForeColor = SystemColors.ControlLightLight;
+            button1.Location = new Point(15, 25);
+            button1.Name = "button1";
+            button1.Size = new Size(243, 45);
+            button1.TabIndex = 6;
+            button1.Text = "대기열 1";
+            button1.UseVisualStyleBackColor = false;
+            // 
             // button_refund
             // 
+            button_refund.BackColor = Color.Red;
+            button_refund.Font = new Font("맑은 고딕", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            button_refund.ForeColor = SystemColors.Window;
             button_refund.Location = new Point(15, 172);
             button_refund.Name = "button_refund";
             button_refund.Size = new Size(243, 112);
             button_refund.TabIndex = 1;
             button_refund.Text = "환불";
-            button_refund.UseVisualStyleBackColor = true;
-            // 
-            // listView1
-            // 
-            listView1.Location = new Point(15, 25);
-            listView1.Name = "listView1";
-            listView1.Size = new Size(243, 142);
-            listView1.TabIndex = 0;
-            listView1.UseCompatibleStateImageBehavior = false;
-            listView1.View = View.Details;
+            button_refund.UseVisualStyleBackColor = false;
             // 
             // picture_box_alarm
             // 
+            picture_box_alarm.BackColor = Color.Transparent;
             picture_box_alarm.Image = Properties.Resources.notifications_24dp_FILL0_wght400_GRAD0_opsz24;
-            picture_box_alarm.Location = new Point(910, 17);
+            picture_box_alarm.Location = new Point(920, 7);
             picture_box_alarm.Name = "picture_box_alarm";
             picture_box_alarm.Size = new Size(37, 39);
             picture_box_alarm.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -306,42 +353,42 @@
             // picture_box_menu
             // 
             picture_box_menu.Image = Properties.Resources.menu_24dp_FILL0_wght400_GRAD0_opsz24;
-            picture_box_menu.Location = new Point(953, 17);
+            picture_box_menu.Location = new Point(963, 7);
             picture_box_menu.Name = "picture_box_menu";
             picture_box_menu.Size = new Size(37, 39);
             picture_box_menu.SizeMode = PictureBoxSizeMode.StretchImage;
             picture_box_menu.TabIndex = 13;
             picture_box_menu.TabStop = false;
             // 
-            // pictureBox2
-            // 
-            pictureBox2.Image = Properties.Resources.광운문구_축소;
-            pictureBox2.Location = new Point(412, 17);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(197, 194);
-            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox2.TabIndex = 14;
-            pictureBox2.TabStop = false;
-            // 
             // realtime_timer
             // 
             realtime_timer.Interval = 1000;
+            // 
+            // picture_box_top
+            // 
+            picture_box_top.Image = Properties.Resources.kwangwoon_top;
+            picture_box_top.Location = new Point(0, -1);
+            picture_box_top.Name = "picture_box_top";
+            picture_box_top.Size = new Size(1016, 53);
+            picture_box_top.TabIndex = 15;
+            picture_box_top.TabStop = false;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(1016, 545);
-            Controls.Add(pictureBox2);
+            ClientSize = new Size(1016, 395);
             Controls.Add(picture_box_menu);
             Controls.Add(picture_box_alarm);
+            Controls.Add(picture_box_top);
             Controls.Add(group_etc);
             Controls.Add(group_main);
             Controls.Add(group_get);
             Controls.Add(label_realtime_clock);
             Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
             ForeColor = SystemColors.ControlText;
+            MaximizeBox = false;
             Name = "MainForm";
             Text = "POS System";
             Load += MainForm_Load;
@@ -353,7 +400,7 @@
             group_etc.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)picture_box_alarm).EndInit();
             ((System.ComponentModel.ISupportInitialize)picture_box_menu).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)picture_box_top).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -381,11 +428,13 @@
         private Label label8;
         private Label label7;
         private GroupBox group_etc;
-        private ListView listView1;
         private Button button_refund;
         private PictureBox picture_box_alarm;
         private PictureBox picture_box_menu;
-        private PictureBox pictureBox2;
         private System.Windows.Forms.Timer realtime_timer;
+        private PictureBox picture_box_top;
+        private Button button3;
+        private Button button2;
+        private Button button1;
     }
 }

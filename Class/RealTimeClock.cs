@@ -13,7 +13,7 @@ namespace POS_Project_Team2.Class
         private static RealTimeClock instance;
 
         // 타이머와 현재 시간을 저장할 변수
-        private Timer realtime_timer;
+        private Timer real_time_timer;
         private DateTime currentTime;
 
         // 등록된 라벨을 저장할 배열
@@ -25,9 +25,9 @@ namespace POS_Project_Team2.Class
 
         public RealTimeClock()
         {
-            this.realtime_timer = new Timer();
-            this.realtime_timer.Interval = 1000; // 1초 간격
-            this.realtime_timer.Tick += Realtime_timer_Tick;
+            this.real_time_timer = new Timer();
+            this.real_time_timer.Interval = 1000; // 1초 간격
+            this.real_time_timer.Tick += RealTimeTimerTick;
             this.labels = new Label[0]; // 초기에는 아무 레이블도 없음
         }
 
@@ -49,10 +49,10 @@ namespace POS_Project_Team2.Class
         public void start_clock()
         {
             // 타이머 시작 전에 현재 시간을 표시
-            Realtime_timer_Tick(null, EventArgs.Empty);
+            RealTimeTimerTick(null, EventArgs.Empty);
 
             // 이후 타이머 실행
-            this.realtime_timer.Start();
+            this.real_time_timer.Start();
         }
 
         // 라벨을 등록하는 메서드
@@ -76,7 +76,7 @@ namespace POS_Project_Team2.Class
         }
 
         // 타이머 틱 이벤트 핸들러
-        private void Realtime_timer_Tick(object sender, EventArgs e)
+        private void RealTimeTimerTick(object sender, EventArgs e)
         {
             // 현재 시간을 갱신
             currentTime = DateTime.Now;
@@ -84,7 +84,8 @@ namespace POS_Project_Team2.Class
             // 모든 등록된 Label에 현재 시간 표시
             foreach (var label in labels)
             {
-                label.Text = currentTime.ToString("HH:mm:ss");
+                // label.Text = currentTime.ToString("HH:mm:ss");
+                label.Text = currentTime.ToString("⏰ yyyy-MM-dd tt h시 mm분");
             }
         }
     }
