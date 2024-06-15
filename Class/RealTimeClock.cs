@@ -84,7 +84,7 @@ namespace POS_Project_Team2.Class
             // 모든 등록된 Label에 현재 시간 표시
             foreach (var label in labels)
             {
-                // label.Text = currentTime.ToString("HH:mm:ss");
+                //label.Text = currentTime.ToString("HH:mm:ss");
                 label.Text = currentTime.ToString("⏰ yyyy-MM-dd tt h시 mm분");
             }
         }

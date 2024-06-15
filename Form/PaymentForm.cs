@@ -7,6 +7,8 @@ namespace POS_Project_Team2
         // 대기열 라벨을 담는 배열
         private Label[] labels_wait;
 
+        public DataForm data_form;
+        List<(string ItemName, int ItemCost, int ItemCount)> Products = new List<(string ItemName, int ItemCost, int ItemCount)>();
         public PaymentForm()
         {
             InitializeComponent();
@@ -50,6 +52,47 @@ namespace POS_Project_Team2
 
         }
 
+
+        //ListView의 보여질 목록
+       
+        private void list_view_control(List<(string ItemName, int ItemCost, int ItemCount)> products)
+        {
+            lvwProducts.Clear();    //기존에 있던 물품 지움. 이전 물건들 List Products에 저장되어있어서 지우지않으면 중복으로 생김
+
+            lvwProducts.BeginUpdate();  //업데이트 끝날 때까지 UI 중지
+
+            lvwProducts.View = View.Details;    //뷰모드 지정
+
+            int index = 1;  //No 나타내는 index 값
+
+            foreach(var product in products)    //products 리스트 돌면서 선택된 '물품 넘버', '이름', '갯수', '가격', '총가격' ListView에 추가
+            {
+                ListViewItem lvi = new ListViewItem(index.ToString());
+                ++index;    //물품 하나 출력할 때마다 No 수 늘려주기
+                
+                lvi.SubItems.Add(product.ItemName); 
+                lvi.SubItems.Add(product.ItemCount.ToString());
+                lvi.SubItems.Add(product.ItemCost.ToString()); 
+                
+                int total_cost = product.ItemCost * product.ItemCount;  //총가격 가격 * 갯수
+
+                lvi.SubItems.Add(total_cost.ToString());
+
+
+                lvwProducts.Items.Add(lvi); //Listview에 추가
+            }
+
+            //Column 설정
+            lvwProducts.Columns.Add("No", 30, HorizontalAlignment.Left);
+            lvwProducts.Columns.Add("물품명",200 , HorizontalAlignment.Left);
+            lvwProducts.Columns.Add("수량", 70, HorizontalAlignment.Left);
+            lvwProducts.Columns.Add("단가", 70, HorizontalAlignment.Left);
+            lvwProducts.Columns.Add("금액", 70, HorizontalAlignment.Left);
+
+            lvwProducts.EndUpdate();    //업데이트 끝
+
+        }
+
         private void PaymentForm_Load(object sender, EventArgs e)
         {
             // 실시간 시계 등록 및 시작
@@ -57,6 +100,8 @@ namespace POS_Project_Team2
 
             // 대기열 라벨 이벤트 핸들러 등록 및 초기화
             init_label_wait();
+
+
         }
 
         // 마우스가 라벨 위에 있을 때 호출되는 메소드
@@ -119,14 +164,23 @@ namespace POS_Project_Team2
 
         }
 
+        //물품 선택 버튼 클릭 시 물품 선택하는 DataForm 열고 물품 값 가져오는 메서드
         private void btn_SelectProduct_Click(object sender, EventArgs e)
         {
-
+            using(DataForm data_form = new DataForm())  
+            {
+                if(data_form.ShowDialog() == DialogResult.OK)   //DataForm 열기
+                {
+                    Products.AddRange(data_form.items); //List Products에 List items 추가
+                    list_view_control(Products);    //Listview에 선택된 물품 추가
+                }
+            }
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)
         {
 
         }
+       
     }
 }
