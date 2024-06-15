@@ -63,6 +63,16 @@ namespace POS_Project_Team2.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap alarm_white {
+            get {
+                object obj = ResourceManager.GetObject("alarm_white", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap kwangwoon_top {
             get {
                 object obj = ResourceManager.GetObject("kwangwoon top", resourceCulture);
@@ -76,6 +86,16 @@ namespace POS_Project_Team2.Properties {
         internal static System.Drawing.Bitmap menu_24dp_FILL0_wght400_GRAD0_opsz24 {
             get {
                 object obj = ResourceManager.GetObject("menu_24dp_FILL0_wght400_GRAD0_opsz24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap menu_white {
+            get {
+                object obj = ResourceManager.GetObject("menu_white", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

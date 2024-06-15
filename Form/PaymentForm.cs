@@ -8,7 +8,7 @@ namespace POS_Project_Team2
         private Label[] labels_wait;
 
         public DataForm data_form;
-        List<(string ItemName, int ItemCost, int ItemCount)> Products = new List<(string ItemName, int ItemCost, int ItemCount)>();
+        List<(string item_name, int item_cost, int item_count)> Products = new List<(string item_name, int item_cost, int item_count)>();
         public PaymentForm()
         {
             InitializeComponent();
@@ -32,9 +32,11 @@ namespace POS_Project_Team2
         // 대기열 라벨 초기화
         private void init_label_wait()
         {
-            // 대기열 라벨을 배열에 담는다.
-            // 참고로 label 들은 이미 InitializeComponent 부분에서 new로 생성되어 있으므로,
-            // 배열 내부에서 포인터로 참조하는 형태로 작동한다.
+            /*
+              대기열 라벨을 배열에 담는다.
+              참고로 label 들은 이미 InitializeComponent 부분에서 new로 생성되어 있으므로,
+              배열 내부에서 포인터로 참조하는 형태로 작동한다.
+            */
             labels_wait = new Label[] { label_wait1, label_wait2, label_wait3 };
 
             // 대기 1,2,3 에 클릭 이벤트, 마우스 이벤트 추가
@@ -49,13 +51,10 @@ namespace POS_Project_Team2
             label_wait1.ForeColor = Color.Black;
             label_wait2.ForeColor = Color.Gray;
             label_wait3.ForeColor = Color.Gray;
-
         }
 
-
         //ListView의 보여질 목록
-       
-        private void list_view_control(List<(string ItemName, int ItemCost, int ItemCount)> products)
+        private void list_view_control(List<(string item_name, int item_cost, int item_count)> products)
         {
             lvwProducts.Clear();    //기존에 있던 물품 지움. 이전 물건들 List Products에 저장되어있어서 지우지않으면 중복으로 생김
 
@@ -65,16 +64,16 @@ namespace POS_Project_Team2
 
             int index = 1;  //No 나타내는 index 값
 
-            foreach(var product in products)    //products 리스트 돌면서 선택된 '물품 넘버', '이름', '갯수', '가격', '총가격' ListView에 추가
+            foreach (var product in products)    //products 리스트 돌면서 선택된 '물품 넘버', '이름', '갯수', '가격', '총가격' ListView에 추가
             {
                 ListViewItem lvi = new ListViewItem(index.ToString());
                 ++index;    //물품 하나 출력할 때마다 No 수 늘려주기
-                
-                lvi.SubItems.Add(product.ItemName); 
-                lvi.SubItems.Add(product.ItemCount.ToString());
-                lvi.SubItems.Add(product.ItemCost.ToString()); 
-                
-                int total_cost = product.ItemCost * product.ItemCount;  //총가격 가격 * 갯수
+
+                lvi.SubItems.Add(product.item_name);
+                lvi.SubItems.Add(product.item_count.ToString());
+                lvi.SubItems.Add(product.item_cost.ToString());
+
+                int total_cost = product.item_cost * product.item_count;  //총가격 가격 * 갯수
 
                 lvi.SubItems.Add(total_cost.ToString());
 
@@ -84,7 +83,7 @@ namespace POS_Project_Team2
 
             //Column 설정
             lvwProducts.Columns.Add("No", 30, HorizontalAlignment.Left);
-            lvwProducts.Columns.Add("물품명",200 , HorizontalAlignment.Left);
+            lvwProducts.Columns.Add("물품명", 200, HorizontalAlignment.Left);
             lvwProducts.Columns.Add("수량", 70, HorizontalAlignment.Left);
             lvwProducts.Columns.Add("단가", 70, HorizontalAlignment.Left);
             lvwProducts.Columns.Add("금액", 70, HorizontalAlignment.Left);
@@ -167,9 +166,9 @@ namespace POS_Project_Team2
         //물품 선택 버튼 클릭 시 물품 선택하는 DataForm 열고 물품 값 가져오는 메서드
         private void btn_SelectProduct_Click(object sender, EventArgs e)
         {
-            using(DataForm data_form = new DataForm())  
+            using (DataForm data_form = new DataForm())
             {
-                if(data_form.ShowDialog() == DialogResult.OK)   //DataForm 열기
+                if (data_form.ShowDialog() == DialogResult.OK)   //DataForm 열기
                 {
                     Products.AddRange(data_form.items); //List Products에 List items 추가
                     list_view_control(Products);    //Listview에 선택된 물품 추가
@@ -181,6 +180,6 @@ namespace POS_Project_Team2
         {
 
         }
-       
+
     }
 }

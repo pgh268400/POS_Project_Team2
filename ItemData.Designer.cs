@@ -389,7 +389,7 @@ namespace POS_Project_Team2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public ItemListRow AddItemListRow(string Number, string Name, string Cost, string Stock) {
+            public ItemListRow AddItemListRow(int Number, string Name, string Cost, string Stock) {
                 ItemListRow rowItemListRow = ((ItemListRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Number,
@@ -427,7 +427,7 @@ namespace POS_Project_Team2 {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             private void InitClass() {
-                this.columnNumber = new global::System.Data.DataColumn("Number", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columnNumber = new global::System.Data.DataColumn("Number", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnNumber);
                 this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnName);
@@ -577,10 +577,10 @@ namespace POS_Project_Team2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public string Number {
+            public int Number {
                 get {
                     try {
-                        return ((string)(this[this.tableItemList.NumberColumn]));
+                        return ((int)(this[this.tableItemList.NumberColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("\'ItemList\' 테이블의 \'Number\' 열의 값이 DBNull입니다.", e);

@@ -94,7 +94,7 @@
             button_get_goods.ForeColor = SystemColors.ControlLightLight;
             button_get_goods.Location = new Point(20, 108);
             button_get_goods.Name = "button_get_goods";
-            button_get_goods.Size = new Size(112, 45);
+            button_get_goods.Size = new Size(112, 57);
             button_get_goods.TabIndex = 2;
             button_get_goods.Text = "상품 조회";
             button_get_goods.UseVisualStyleBackColor = false;
@@ -105,7 +105,7 @@
             button_get_receipt.ForeColor = SystemColors.ControlLightLight;
             button_get_receipt.Location = new Point(138, 108);
             button_get_receipt.Name = "button_get_receipt";
-            button_get_receipt.Size = new Size(113, 45);
+            button_get_receipt.Size = new Size(113, 57);
             button_get_receipt.TabIndex = 3;
             button_get_receipt.Text = "영수증 조회";
             button_get_receipt.UseVisualStyleBackColor = false;
@@ -114,9 +114,9 @@
             // 
             button_get_stock.BackColor = SystemColors.WindowFrame;
             button_get_stock.ForeColor = SystemColors.ControlLightLight;
-            button_get_stock.Location = new Point(20, 172);
+            button_get_stock.Location = new Point(20, 167);
             button_get_stock.Name = "button_get_stock";
-            button_get_stock.Size = new Size(112, 45);
+            button_get_stock.Size = new Size(112, 57);
             button_get_stock.TabIndex = 4;
             button_get_stock.Text = "재고 조회";
             button_get_stock.UseVisualStyleBackColor = false;
@@ -126,9 +126,9 @@
             button_get_tpt.BackColor = SystemColors.WindowFrame;
             button_get_tpt.Font = new Font("맑은 고딕", 9F, FontStyle.Regular, GraphicsUnit.Point);
             button_get_tpt.ForeColor = SystemColors.ControlLightLight;
-            button_get_tpt.Location = new Point(138, 172);
+            button_get_tpt.Location = new Point(138, 167);
             button_get_tpt.Name = "button_get_tpt";
-            button_get_tpt.Size = new Size(113, 45);
+            button_get_tpt.Size = new Size(113, 57);
             button_get_tpt.TabIndex = 5;
             button_get_tpt.Text = "교통카드\r\n잔액 조회";
             button_get_tpt.UseVisualStyleBackColor = false;
@@ -342,7 +342,7 @@
             // picture_box_alarm
             // 
             picture_box_alarm.BackColor = Color.Transparent;
-            picture_box_alarm.Image = Properties.Resources.notifications_24dp_FILL0_wght400_GRAD0_opsz24;
+            picture_box_alarm.Image = Properties.Resources.alarm_white;
             picture_box_alarm.Location = new Point(920, 7);
             picture_box_alarm.Name = "picture_box_alarm";
             picture_box_alarm.Size = new Size(37, 39);
@@ -352,7 +352,7 @@
             // 
             // picture_box_menu
             // 
-            picture_box_menu.Image = Properties.Resources.menu_24dp_FILL0_wght400_GRAD0_opsz24;
+            picture_box_menu.Image = Properties.Resources.menu_white;
             picture_box_menu.Location = new Point(963, 7);
             picture_box_menu.Name = "picture_box_menu";
             picture_box_menu.Size = new Size(37, 39);
