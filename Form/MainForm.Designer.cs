@@ -87,6 +87,7 @@
             button_get_all.TabIndex = 1;
             button_get_all.Text = "통합 조회";
             button_get_all.UseVisualStyleBackColor = false;
+            button_get_all.Click += button_get_all_Click;
             // 
             // button_get_goods
             // 
@@ -120,18 +121,20 @@
             button_get_stock.TabIndex = 4;
             button_get_stock.Text = "재고 조회";
             button_get_stock.UseVisualStyleBackColor = false;
+            button_get_stock.Click += button_get_stock_Click;
             // 
             // button_get_tpt
             // 
             button_get_tpt.BackColor = SystemColors.WindowFrame;
-            button_get_tpt.Font = new Font("맑은 고딕", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            button_get_tpt.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
             button_get_tpt.ForeColor = SystemColors.ControlLightLight;
             button_get_tpt.Location = new Point(138, 167);
             button_get_tpt.Name = "button_get_tpt";
             button_get_tpt.Size = new Size(113, 57);
             button_get_tpt.TabIndex = 5;
-            button_get_tpt.Text = "교통카드\r\n잔액 조회";
+            button_get_tpt.Text = "총 결제\r\n내역 조회";
             button_get_tpt.UseVisualStyleBackColor = false;
+            button_get_tpt.Click += button_get_tpt_Click;
             // 
             // group_get
             // 

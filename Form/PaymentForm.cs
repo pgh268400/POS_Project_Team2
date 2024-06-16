@@ -8,7 +8,7 @@ namespace POS_Project_Team2
         private Label[] labels_wait;
 
         public DataForm data_form;
-        List<(string item_name, int item_cost, int item_count)> Products = new List<(string item_name, int item_cost, int item_count)>();
+        List<(string item_name, int item_cost, int item_count)> products = new List<(string item_name, int item_cost, int item_count)>();
         public PaymentForm()
         {
             InitializeComponent();
@@ -100,7 +100,8 @@ namespace POS_Project_Team2
             // 대기열 라벨 이벤트 핸들러 등록 및 초기화
             init_label_wait();
 
-
+            // 리스트뷰 너비 비율 조정
+            FormHelper.adjust_column_widths(lvwProducts, new int[] { 10, 40, 20, 15, 15 });
         }
 
         // 마우스가 라벨 위에 있을 때 호출되는 메소드
@@ -170,8 +171,8 @@ namespace POS_Project_Team2
             {
                 if (data_form.ShowDialog() == DialogResult.OK)   //DataForm 열기
                 {
-                    Products.AddRange(data_form.items); //List Products에 List items 추가
-                    list_view_control(Products);    //Listview에 선택된 물품 추가
+                    products.AddRange(data_form.items); //List Products에 List items 추가
+                    list_view_control(products);    //Listview에 선택된 물품 추가
                 }
             }
         }
@@ -180,6 +181,5 @@ namespace POS_Project_Team2
         {
 
         }
-
     }
 }

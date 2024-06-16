@@ -116,7 +116,7 @@
             Controls.Add(groupbox_search);
             Controls.Add(groupbox_current_stock);
             Name = "DataForm";
-            Text = "DataForm";
+            Text = "POS System";
             Load += DataForm_Load;
             ((System.ComponentModel.ISupportInitialize)datagridview).EndInit();
             groupbox_current_stock.ResumeLayout(false);
