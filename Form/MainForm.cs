@@ -41,7 +41,7 @@ namespace POS_Project_Team2
         {
 
             // 결제를 누르면 PaymentForm으로 이동
-            FormHelper.open(new PaymentForm());
+            FormHelper.show(new PaymentForm());
         }
 
 
@@ -54,7 +54,7 @@ namespace POS_Project_Team2
         private void button_get_stock_Click(object sender, EventArgs e)
         {
 
-            FormHelper.open(new DataForm());
+            FormHelper.show(new DataForm());
         }
 
         // 총 결제 내역 조회

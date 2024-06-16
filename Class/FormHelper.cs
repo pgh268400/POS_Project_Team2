@@ -14,7 +14,7 @@
 
         // 폼을 여는 함수.
         // 열려 있지 않다면 열고 열려있으면 해당 폼을 활성화한다.
-        public static void open(Form form)
+        public static void show(Form form)
         {
             string form_name = form.Name;
 
@@ -67,8 +67,6 @@
             for (int i = 0; i < column_widths.Length; i++)
                 list_view.Columns[i].Width = (int)(total_width * column_widths[i] / 100.0);
         }
-
-
     }
 
 }

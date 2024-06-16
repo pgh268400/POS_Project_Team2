@@ -56,11 +56,11 @@ namespace POS_Project_Team2
         //ListView의 보여질 목록
         private void list_view_control(List<(string item_name, int item_cost, int item_count)> products)
         {
-            lvwProducts.Clear();    //기존에 있던 물품 지움. 이전 물건들 List Products에 저장되어있어서 지우지않으면 중복으로 생김
+            listview_product.Clear();    //기존에 있던 물품 지움. 이전 물건들 List Products에 저장되어있어서 지우지않으면 중복으로 생김
 
-            lvwProducts.BeginUpdate();  //업데이트 끝날 때까지 UI 중지
+            listview_product.BeginUpdate();  //업데이트 끝날 때까지 UI 중지
 
-            lvwProducts.View = View.Details;    //뷰모드 지정
+            listview_product.View = View.Details;    //뷰모드 지정
 
             int index = 1;  //No 나타내는 index 값
 
@@ -78,17 +78,17 @@ namespace POS_Project_Team2
                 lvi.SubItems.Add(total_cost.ToString());
 
 
-                lvwProducts.Items.Add(lvi); //Listview에 추가
+                listview_product.Items.Add(lvi); //Listview에 추가
             }
 
             //Column 설정
-            lvwProducts.Columns.Add("No", 30, HorizontalAlignment.Left);
-            lvwProducts.Columns.Add("물품명", 200, HorizontalAlignment.Left);
-            lvwProducts.Columns.Add("수량", 70, HorizontalAlignment.Left);
-            lvwProducts.Columns.Add("단가", 70, HorizontalAlignment.Left);
-            lvwProducts.Columns.Add("금액", 70, HorizontalAlignment.Left);
+            listview_product.Columns.Add("No", 30, HorizontalAlignment.Left);
+            listview_product.Columns.Add("물품명", 200, HorizontalAlignment.Left);
+            listview_product.Columns.Add("수량", 70, HorizontalAlignment.Left);
+            listview_product.Columns.Add("단가", 70, HorizontalAlignment.Left);
+            listview_product.Columns.Add("금액", 70, HorizontalAlignment.Left);
 
-            lvwProducts.EndUpdate();    //업데이트 끝
+            listview_product.EndUpdate();    //업데이트 끝
 
         }
 
@@ -101,7 +101,7 @@ namespace POS_Project_Team2
             init_label_wait();
 
             // 리스트뷰 너비 비율 조정
-            FormHelper.adjust_column_widths(lvwProducts, new int[] { 10, 40, 20, 15, 15 });
+            FormHelper.adjust_column_widths(listview_product, new int[] { 10, 40, 20, 15, 15 });
         }
 
         // 마우스가 라벨 위에 있을 때 호출되는 메소드
@@ -154,15 +154,6 @@ namespace POS_Project_Team2
 
         }
 
-        private void label_Paid_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel3_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
 
         //물품 선택 버튼 클릭 시 물품 선택하는 DataForm 열고 물품 값 가져오는 메서드
         private void btn_SelectProduct_Click(object sender, EventArgs e)
@@ -177,9 +168,5 @@ namespace POS_Project_Team2
             }
         }
 
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }
