@@ -71,9 +71,9 @@
             // label_realtime_clock
             // 
             label_realtime_clock.AutoSize = true;
-            label_realtime_clock.Location = new Point(24, 352);
+            label_realtime_clock.Location = new Point(20, 282);
             label_realtime_clock.Name = "label_realtime_clock";
-            label_realtime_clock.Size = new Size(124, 23);
+            label_realtime_clock.Size = new Size(103, 19);
             label_realtime_clock.TabIndex = 0;
             label_realtime_clock.Text = "현재 날짜 시간";
             // 
@@ -144,9 +144,10 @@
             group_get.Controls.Add(button_get_goods);
             group_get.Controls.Add(button_get_stock);
             group_get.Controls.Add(button_get_receipt);
+            group_get.Controls.Add(label_realtime_clock);
             group_get.Location = new Point(24, 67);
             group_get.Name = "group_get";
-            group_get.Size = new Size(275, 284);
+            group_get.Size = new Size(275, 318);
             group_get.TabIndex = 6;
             group_get.TabStop = false;
             group_get.Text = "조회";
@@ -173,7 +174,7 @@
             group_main.Controls.Add(button_payment);
             group_main.Location = new Point(317, 67);
             group_main.Name = "group_main";
-            group_main.Size = new Size(413, 304);
+            group_main.Size = new Size(413, 318);
             group_main.TabIndex = 9;
             group_main.TabStop = false;
             group_main.Text = "메인";
@@ -199,7 +200,7 @@
             label9.AutoSize = true;
             label9.Location = new Point(158, 120);
             label9.Name = "label9";
-            label9.Size = new Size(40, 23);
+            label9.Size = new Size(34, 19);
             label9.TabIndex = 18;
             label9.Text = "N원";
             // 
@@ -208,7 +209,7 @@
             label8.AutoSize = true;
             label8.Location = new Point(158, 94);
             label8.Name = "label8";
-            label8.Size = new Size(40, 23);
+            label8.Size = new Size(34, 19);
             label8.TabIndex = 17;
             label8.Text = "N원";
             // 
@@ -217,7 +218,7 @@
             label7.AutoSize = true;
             label7.Location = new Point(158, 70);
             label7.Name = "label7";
-            label7.Size = new Size(40, 23);
+            label7.Size = new Size(34, 19);
             label7.TabIndex = 16;
             label7.Text = "N원";
             // 
@@ -236,7 +237,7 @@
             label6.AutoSize = true;
             label6.Location = new Point(22, 120);
             label6.Name = "label6";
-            label6.Size = new Size(78, 23);
+            label6.Size = new Size(65, 19);
             label6.TabIndex = 14;
             label6.Text = "거스름돈";
             // 
@@ -245,7 +246,7 @@
             label5.AutoSize = true;
             label5.Location = new Point(17, 94);
             label5.Name = "label5";
-            label5.Size = new Size(84, 23);
+            label5.Size = new Size(70, 19);
             label5.TabIndex = 13;
             label5.Text = "결제 금액";
             // 
@@ -254,7 +255,7 @@
             label4.AutoSize = true;
             label4.Location = new Point(17, 70);
             label4.Name = "label4";
-            label4.Size = new Size(84, 23);
+            label4.Size = new Size(70, 19);
             label4.TabIndex = 12;
             label4.Text = "총 구매액";
             // 
@@ -263,7 +264,7 @@
             label3.AutoSize = true;
             label3.Location = new Point(214, 86);
             label3.Name = "label3";
-            label3.Size = new Size(143, 23);
+            label3.Size = new Size(119, 19);
             label3.TabIndex = 10;
             label3.Text = "금일 총 수익 N원";
             // 
@@ -272,7 +273,7 @@
             label2.AutoSize = true;
             label2.Location = new Point(214, 56);
             label2.Name = "label2";
-            label2.Size = new Size(143, 23);
+            label2.Size = new Size(119, 19);
             label2.TabIndex = 9;
             label2.Text = "금일 총 환불 N건";
             // 
@@ -281,7 +282,7 @@
             label1.AutoSize = true;
             label1.Location = new Point(214, 24);
             label1.Name = "label1";
-            label1.Size = new Size(143, 23);
+            label1.Size = new Size(119, 19);
             label1.TabIndex = 8;
             label1.Text = "금일 총 판매 N건";
             // 
@@ -293,7 +294,7 @@
             group_etc.Controls.Add(button_refund);
             group_etc.Location = new Point(736, 67);
             group_etc.Name = "group_etc";
-            group_etc.Size = new Size(264, 304);
+            group_etc.Size = new Size(264, 318);
             group_etc.TabIndex = 10;
             group_etc.TabStop = false;
             group_etc.Text = "기타";
@@ -394,10 +395,10 @@
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(10F, 23F);
+            AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(1016, 395);
+            ClientSize = new Size(1016, 398);
             Controls.Add(button4);
             Controls.Add(picture_box_menu);
             Controls.Add(picture_box_alarm);
@@ -405,7 +406,6 @@
             Controls.Add(group_etc);
             Controls.Add(group_main);
             Controls.Add(group_get);
-            Controls.Add(label_realtime_clock);
             Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
             ForeColor = SystemColors.ControlText;
             MaximizeBox = false;
@@ -413,6 +413,7 @@
             Text = "POS System";
             Load += MainForm_Load;
             group_get.ResumeLayout(false);
+            group_get.PerformLayout();
             group_main.ResumeLayout(false);
             group_main.PerformLayout();
             groupBox3.ResumeLayout(false);
@@ -422,7 +423,6 @@
             ((System.ComponentModel.ISupportInitialize)picture_box_menu).EndInit();
             ((System.ComponentModel.ISupportInitialize)picture_box_top).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion

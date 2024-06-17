@@ -82,7 +82,7 @@ namespace POS_Project_Team2
 
         private void button_receipt_Click(object sender, EventArgs e)
         {
-            
+
             // 영수증 출력을 위해 PayMentLogShowForm으로 이동
             PayMentLogShowForm log_form = new PayMentLogShowForm();
 

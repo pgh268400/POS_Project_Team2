@@ -223,6 +223,12 @@ namespace POS_Project_Team2
 
                 // 변경된 재고 데이터 xml에 저장
                 SaveDataTable(dataset.Tables["ItemList"], "item_data.xml");
+
+                // data grid view 선택 색상 원래대로 돌리기
+                for (int i = 0; i < datagridview_stock.Rows.Count; i++)
+                {
+                    datagridview_stock.Rows[i].DefaultCellStyle.BackColor = Color.White;
+                }
             }
         }
 
@@ -312,7 +318,7 @@ namespace POS_Project_Team2
             {
                 dataset.Tables["ItemList"].ImportRow(row);      //이전에 카피해둔 원본 데이터 ItemList에 삽입
             }
-            SaveDataTable(dataset.Tables["ItemList"], "item_data.xml"); 
+            SaveDataTable(dataset.Tables["ItemList"], "item_data.xml");
         }
 
         //애플리케이션 종료 시 실행
