@@ -50,9 +50,9 @@
             label2 = new Label();
             label1 = new Label();
             group_etc = new GroupBox();
-            button3 = new Button();
-            button2 = new Button();
-            button1 = new Button();
+            button_wait3 = new Button();
+            button_wait2 = new Button();
+            button_wait1 = new Button();
             button_refund = new Button();
             picture_box_alarm = new PictureBox();
             picture_box_menu = new PictureBox();
@@ -287,9 +287,9 @@
             // 
             // group_etc
             // 
-            group_etc.Controls.Add(button3);
-            group_etc.Controls.Add(button2);
-            group_etc.Controls.Add(button1);
+            group_etc.Controls.Add(button_wait3);
+            group_etc.Controls.Add(button_wait2);
+            group_etc.Controls.Add(button_wait1);
             group_etc.Controls.Add(button_refund);
             group_etc.Location = new Point(736, 67);
             group_etc.Name = "group_etc";
@@ -298,38 +298,41 @@
             group_etc.TabStop = false;
             group_etc.Text = "기타";
             // 
-            // button3
+            // button_wait3
             // 
-            button3.BackColor = SystemColors.WindowFrame;
-            button3.ForeColor = SystemColors.ControlLightLight;
-            button3.Location = new Point(15, 120);
-            button3.Name = "button3";
-            button3.Size = new Size(243, 45);
-            button3.TabIndex = 8;
-            button3.Text = "대기열 3";
-            button3.UseVisualStyleBackColor = false;
+            button_wait3.BackColor = SystemColors.WindowFrame;
+            button_wait3.ForeColor = SystemColors.ControlLightLight;
+            button_wait3.Location = new Point(15, 120);
+            button_wait3.Name = "button_wait3";
+            button_wait3.Size = new Size(243, 45);
+            button_wait3.TabIndex = 8;
+            button_wait3.Text = "대기열 3";
+            button_wait3.UseVisualStyleBackColor = false;
+            button_wait3.Click += button_wait3_Click;
             // 
-            // button2
+            // button_wait2
             // 
-            button2.BackColor = SystemColors.WindowFrame;
-            button2.ForeColor = SystemColors.ControlLightLight;
-            button2.Location = new Point(15, 72);
-            button2.Name = "button2";
-            button2.Size = new Size(243, 45);
-            button2.TabIndex = 7;
-            button2.Text = "대기열 2";
-            button2.UseVisualStyleBackColor = false;
+            button_wait2.BackColor = SystemColors.WindowFrame;
+            button_wait2.ForeColor = SystemColors.ControlLightLight;
+            button_wait2.Location = new Point(15, 72);
+            button_wait2.Name = "button_wait2";
+            button_wait2.Size = new Size(243, 45);
+            button_wait2.TabIndex = 7;
+            button_wait2.Text = "대기열 2";
+            button_wait2.UseVisualStyleBackColor = false;
+            button_wait2.Click += button2_Click;
             // 
-            // button1
+            // button_wait1
             // 
-            button1.BackColor = SystemColors.WindowFrame;
-            button1.ForeColor = SystemColors.ControlLightLight;
-            button1.Location = new Point(15, 25);
-            button1.Name = "button1";
-            button1.Size = new Size(243, 45);
-            button1.TabIndex = 6;
-            button1.Text = "대기열 1";
-            button1.UseVisualStyleBackColor = false;
+            button_wait1.BackColor = SystemColors.WindowFrame;
+            button_wait1.ForeColor = SystemColors.ControlLightLight;
+            button_wait1.Location = new Point(15, 25);
+            button_wait1.Name = "button_wait1";
+            button_wait1.Size = new Size(243, 45);
+            button_wait1.TabIndex = 6;
+            button_wait1.Text = "대기열 1";
+            button_wait1.UseVisualStyleBackColor = false;
+            button_wait1.Click += button_wait1_Click;
             // 
             // button_refund
             // 

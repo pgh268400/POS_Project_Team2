@@ -13,6 +13,24 @@ namespace POS_Project_Team2
         int selected;
         int listview_item_count = 1;    //listview_item의 No 컨트롤
 
+        // 결제창이 아닌 일반 메인창에서 보기 위해 접근했을때 모든 컨트롤을
+        // 비활성화 시키는 메서드
+        public void block_all()
+        {
+            textbox_search.Enabled = false;
+            textbox_count.Enabled = false;
+            button_search.Enabled = false;
+            button_select.Enabled = false;
+            button_select_cancle.Enabled = false;
+            button_pay_cancle.Enabled = false;
+            listview_item.Enabled = false;
+            datagridview_stock.Enabled = false;
+            button_add_into_payment.Enabled = false;
+
+            // 라벨에 읽기 모드라고 출력
+            label_mode.Text = "* 현재 읽기 모드입니다.";
+            label_tip.Text = "";
+        }
         // 아이템 추가 및 바인딩 진행
         private void set_item_and_bind()
         {
@@ -174,13 +192,38 @@ namespace POS_Project_Team2
 
         private void button_pay_cancle_Click(object sender, EventArgs e)
         {
-
+            listview_item.Clear();
+            RestoreOriginalData();
         }
 
         private void listview_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            // double click 시 해당 아이템 삭제
-            listview_item.Items.Remove(listview_item.SelectedItems[0]);
+            if (listview_item.SelectedItems.Count > 0)
+            {
+                // 선택된 아이템 가져오기
+                ListViewItem selectedItem = listview_item.SelectedItems[0];
+                string item_name = selectedItem.SubItems[1].Text;
+                int item_count = int.Parse(selectedItem.SubItems[2].Text);
+
+                // 해당 아이템의 재고를 복원
+                for (int i = 0; i < datagridview_stock.Rows.Count; i++)
+                {
+                    var cell_value = datagridview_stock.Rows[i].Cells[1].Value;
+
+                    if (cell_value != null && cell_value.ToString() == item_name)
+                    {
+                        int stock = Convert.ToInt32(datagridview_stock.Rows[i].Cells[3].Value.ToString());
+                        datagridview_stock.Rows[i].Cells[3].Value = stock + item_count;
+                        break;
+                    }
+                }
+
+                // 선택된 아이템 삭제
+                listview_item.Items.Remove(selectedItem);
+
+                // 변경된 재고 데이터 xml에 저장
+                SaveDataTable(dataset.Tables["ItemList"], "item_data.xml");
+            }
         }
 
         // 물품명 텍스트 박스에서 엔터 입력 => 버튼 클릭

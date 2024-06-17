@@ -201,5 +201,19 @@ namespace POS_Project_Team2.Class
             // 참고로 total log 는 모든 내역을 기록해야 하므로,
             // 추가시만 더 추가될뿐, 삭제는 없다.
         }
+
+        // 모든 로그 파일을 삭제하는 함수
+        public void delete_all_log()
+        {
+            this.payment_log.Clear();
+            this.refund_log.Clear();
+            this.total_log.Clear();
+            this.receipt_log.Clear();
+
+            write_csv(payment_log_path, payment_log);
+            write_csv(refund_log_path, refund_log);
+            write_csv(total_log_path, total_log);
+            write_csv(receipt_log_path, receipt_log);
+        }
     }
 }

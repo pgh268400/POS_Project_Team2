@@ -36,6 +36,7 @@
             columnHeader5 = new ColumnHeader();
             columnHeader6 = new ColumnHeader();
             button_refresh = new Button();
+            label_recepit = new Label();
             SuspendLayout();
             // 
             // listView1
@@ -43,7 +44,7 @@
             listView1.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5, columnHeader6 });
             listView1.Location = new Point(12, 12);
             listView1.Name = "listView1";
-            listView1.Size = new Size(589, 426);
+            listView1.Size = new Size(622, 426);
             listView1.TabIndex = 0;
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.View = View.Details;
@@ -78,7 +79,7 @@
             // 
             // button_refresh
             // 
-            button_refresh.Location = new Point(507, 444);
+            button_refresh.Location = new Point(540, 444);
             button_refresh.Name = "button_refresh";
             button_refresh.Size = new Size(94, 29);
             button_refresh.TabIndex = 1;
@@ -86,17 +87,29 @@
             button_refresh.UseVisualStyleBackColor = true;
             button_refresh.Click += button_refresh_Click;
             // 
+            // label_recepit
+            // 
+            label_recepit.AutoSize = true;
+            label_recepit.Font = new Font("맑은 고딕", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label_recepit.Location = new Point(12, 448);
+            label_recepit.Name = "label_recepit";
+            label_recepit.Size = new Size(51, 20);
+            label_recepit.TabIndex = 2;
+            label_recepit.Text = "Hello!";
+            // 
             // PayMentLogShowForm
             // 
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(613, 483);
+            ClientSize = new Size(654, 486);
+            Controls.Add(label_recepit);
             Controls.Add(button_refresh);
             Controls.Add(listView1);
             Name = "PayMentLogShowForm";
             Text = "POS System";
             Load += PayMentLogShowForm_Load;
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -109,5 +122,6 @@
         private ColumnHeader columnHeader5;
         private ColumnHeader columnHeader6;
         private Button button_refresh;
+        private Label label_recepit;
     }
 }
