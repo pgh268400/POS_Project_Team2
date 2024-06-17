@@ -257,6 +257,13 @@ namespace POS_Project_Team2
         // 선택 취소하기 버튼
         private void button_select_cancle_Click(object sender, EventArgs e)
         {
+            // 현재 아이템이 선택중인지 체크한다.
+            if (textbox_count.Enabled == false)
+            {
+                MessageBox.Show("현재 물품 선택중이 아닙니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             // 현재 선택된 상태를 원래대로 돌리는 기능을 수행한다.
 
             // 물품명과 수량 입력 텍스트 박스를 초기화 한다.

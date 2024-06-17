@@ -479,5 +479,10 @@
         private ColumnHeader columnHeader4;
         private ColumnHeader columnHeader5;
         private Button button1;
+
+        private Button button_wait1;
+        private Button button_wait2;
+        private Button button_wait3;
+
     }
 }
