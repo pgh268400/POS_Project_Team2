@@ -94,9 +94,9 @@
             // 
             button_get_goods.BackColor = SystemColors.WindowFrame;
             button_get_goods.ForeColor = SystemColors.ControlLightLight;
-            button_get_goods.Location = new Point(20, 108);
+            button_get_goods.Location = new Point(252, 60);
             button_get_goods.Name = "button_get_goods";
-            button_get_goods.Size = new Size(112, 57);
+            button_get_goods.Size = new Size(121, 37);
             button_get_goods.TabIndex = 2;
             button_get_goods.Text = "상품 조회";
             button_get_goods.UseVisualStyleBackColor = false;
@@ -105,9 +105,9 @@
             // 
             button_get_receipt.BackColor = SystemColors.WindowFrame;
             button_get_receipt.ForeColor = SystemColors.ControlLightLight;
-            button_get_receipt.Location = new Point(138, 108);
+            button_get_receipt.Location = new Point(252, 103);
             button_get_receipt.Name = "button_get_receipt";
-            button_get_receipt.Size = new Size(113, 57);
+            button_get_receipt.Size = new Size(121, 57);
             button_get_receipt.TabIndex = 3;
             button_get_receipt.Text = "영수증 조회";
             button_get_receipt.UseVisualStyleBackColor = false;
@@ -116,9 +116,9 @@
             // 
             button_get_stock.BackColor = SystemColors.WindowFrame;
             button_get_stock.ForeColor = SystemColors.ControlLightLight;
-            button_get_stock.Location = new Point(20, 167);
+            button_get_stock.Location = new Point(20, 108);
             button_get_stock.Name = "button_get_stock";
-            button_get_stock.Size = new Size(112, 57);
+            button_get_stock.Size = new Size(112, 116);
             button_get_stock.TabIndex = 4;
             button_get_stock.Text = "재고 조회";
             button_get_stock.UseVisualStyleBackColor = false;
@@ -129,9 +129,9 @@
             button_get_tpt.BackColor = SystemColors.WindowFrame;
             button_get_tpt.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
             button_get_tpt.ForeColor = SystemColors.ControlLightLight;
-            button_get_tpt.Location = new Point(138, 167);
+            button_get_tpt.Location = new Point(138, 108);
             button_get_tpt.Name = "button_get_tpt";
-            button_get_tpt.Size = new Size(113, 57);
+            button_get_tpt.Size = new Size(113, 116);
             button_get_tpt.TabIndex = 5;
             button_get_tpt.Text = "총 결제\r\n내역 조회";
             button_get_tpt.UseVisualStyleBackColor = false;
@@ -141,9 +141,7 @@
             // 
             group_get.Controls.Add(button_get_all);
             group_get.Controls.Add(button_get_tpt);
-            group_get.Controls.Add(button_get_goods);
             group_get.Controls.Add(button_get_stock);
-            group_get.Controls.Add(button_get_receipt);
             group_get.Location = new Point(24, 67);
             group_get.Name = "group_get";
             group_get.Size = new Size(275, 284);
@@ -182,6 +180,8 @@
             // 
             groupBox3.Controls.Add(label9);
             groupBox3.Controls.Add(label8);
+            groupBox3.Controls.Add(button_get_goods);
+            groupBox3.Controls.Add(button_get_receipt);
             groupBox3.Controls.Add(label7);
             groupBox3.Controls.Add(button_receipt);
             groupBox3.Controls.Add(label6);
@@ -197,7 +197,7 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(158, 120);
+            label9.Location = new Point(179, 104);
             label9.Name = "label9";
             label9.Size = new Size(40, 23);
             label9.TabIndex = 18;
@@ -206,7 +206,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(158, 94);
+            label8.Location = new Point(179, 78);
             label8.Name = "label8";
             label8.Size = new Size(40, 23);
             label8.TabIndex = 17;
@@ -215,7 +215,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(158, 70);
+            label7.Location = new Point(179, 54);
             label7.Name = "label7";
             label7.Size = new Size(40, 23);
             label7.TabIndex = 16;
@@ -234,7 +234,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(22, 120);
+            label6.Location = new Point(43, 104);
             label6.Name = "label6";
             label6.Size = new Size(78, 23);
             label6.TabIndex = 14;
@@ -243,7 +243,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(17, 94);
+            label5.Location = new Point(38, 78);
             label5.Name = "label5";
             label5.Size = new Size(84, 23);
             label5.TabIndex = 13;
@@ -252,7 +252,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(17, 70);
+            label4.Location = new Point(38, 54);
             label4.Name = "label4";
             label4.Size = new Size(84, 23);
             label4.TabIndex = 12;
@@ -457,5 +457,10 @@
         private Button button2;
         private Button button1;
         private Button button4;
+        private Button button_wait1;
+        private Button button_wait2;
+        private Button button_wait3;
+
+
     }
 }
