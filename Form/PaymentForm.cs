@@ -1,4 +1,5 @@
 ﻿using POS_Project_Team2.Class;
+using System.Xml.Linq;
 
 namespace POS_Project_Team2
 {
@@ -76,8 +77,6 @@ namespace POS_Project_Team2
                 int total_cost = product.item_cost * product.item_count;  //총가격 가격 * 갯수
 
                 lvi.SubItems.Add(total_cost.ToString());
-
-
                 listview_product.Items.Add(lvi); //Listview에 추가
             }
 
@@ -170,22 +169,77 @@ namespace POS_Project_Team2
             }
         }
 
-        //결제 버튼 클릭 시DataForm에서 재고처리 미리 해서 메시지만 띄움 >> MainForm에서 업데이트 되도록 해야함
+        // 결제 버튼 클릭 시DataForm에서 재고처리 미리 해서 메시지만 띄움 >> MainForm에서 업데이트 되도록 해야함
         private void button_card_Click(object sender, EventArgs e)
         {
-            if(listview_product.Items.Count > 0)
+            if (listview_product.Items.Count > 0)
             {
+                // 포인트 정립 상태. 기본은 null이다.
+                string name = "null";
+                string phone_number = "null";
+
+                // 포인트를 적립할 건지 메세지 박스를 띄운다.
+                DialogResult result = MessageBox.Show("포인트를 적립하시겠습니까?", "포인트 적립", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    // 이 포인트의 경우 유저의 전화번호 뒷자리와 이름을 입력받아야 한다.
+                    // 이를 위한 폼을 띄운다.
+
+
+
+                    PointForm point_form = new PointForm();
+                    if (point_form.ShowDialog() == DialogResult.OK)
+                    {
+                        // 포인트 폼에서 이름과 전화번호 뒷자리를 가져온다.
+                        name = point_form.name;
+                        phone_number = point_form.phone_number;
+
+
+                        // 포인트 적립이 완료되었음을 알린다.
+                        MessageBox.Show($"{name} 님 {phone_number} 번호로 포인트가 적립되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        // 포인트 적립을 취소하는 경우 아무것도 하지 않는다.
+                    }
+
+                }
+
+                // 결제 내역을 로그에 기록한다.
+                Logger logger = new Logger();
+
+                // products 를 로그에 기록한다.
+                // products를 for문을 돌면서 순회하고,
+                // (아이템 이름, 아이템 가격, 아이템 개수, 총 금액, name, phonenumber)
+                // 형태로 string [] 으로 바꾼다.
+                // 이를 logger.append_payment_log() 메소드에 넘겨주면 된다.
+                foreach (var product in products)
+                {
+                    int total_cost = product.item_cost * product.item_count;
+                    string[] log_entry = new string[]
+                    {
+                product.item_name,
+                product.item_cost.ToString(),
+                product.item_count.ToString(),
+                total_cost.ToString(),
+                name,
+                phone_number
+                    };
+
+                    // logger.append_payment_log() 메소드에 넘겨주면 된다.
+                    logger.append_payment_log(log_entry);
+                }
+
                 listview_product.Clear();
-
                 MessageBox.Show("결제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
                 this.Close();
+
             }
             else
             {
                 MessageBox.Show("상품을 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            
+
         }
 
         //취소 버튼 클릭 시 담았던 재고 원상 복구
@@ -199,6 +253,9 @@ namespace POS_Project_Team2
             this.Close();
         }
 
-        
+        private void button1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("결제시 포인트 등록이 가능합니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }

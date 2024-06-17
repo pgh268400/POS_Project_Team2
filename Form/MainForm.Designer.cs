@@ -58,6 +58,7 @@
             picture_box_menu = new PictureBox();
             realtime_timer = new System.Windows.Forms.Timer(components);
             picture_box_top = new PictureBox();
+            button4 = new Button();
             group_get.SuspendLayout();
             group_main.SuspendLayout();
             groupBox3.SuspendLayout();
@@ -72,7 +73,7 @@
             label_realtime_clock.AutoSize = true;
             label_realtime_clock.Location = new Point(24, 352);
             label_realtime_clock.Name = "label_realtime_clock";
-            label_realtime_clock.Size = new Size(103, 19);
+            label_realtime_clock.Size = new Size(124, 23);
             label_realtime_clock.TabIndex = 0;
             label_realtime_clock.Text = "현재 날짜 시간";
             // 
@@ -145,7 +146,7 @@
             group_get.Controls.Add(button_get_receipt);
             group_get.Location = new Point(24, 67);
             group_get.Name = "group_get";
-            group_get.Size = new Size(275, 256);
+            group_get.Size = new Size(275, 284);
             group_get.TabIndex = 6;
             group_get.TabStop = false;
             group_get.Text = "조회";
@@ -198,7 +199,7 @@
             label9.AutoSize = true;
             label9.Location = new Point(158, 120);
             label9.Name = "label9";
-            label9.Size = new Size(34, 19);
+            label9.Size = new Size(40, 23);
             label9.TabIndex = 18;
             label9.Text = "N원";
             // 
@@ -207,7 +208,7 @@
             label8.AutoSize = true;
             label8.Location = new Point(158, 94);
             label8.Name = "label8";
-            label8.Size = new Size(34, 19);
+            label8.Size = new Size(40, 23);
             label8.TabIndex = 17;
             label8.Text = "N원";
             // 
@@ -216,7 +217,7 @@
             label7.AutoSize = true;
             label7.Location = new Point(158, 70);
             label7.Name = "label7";
-            label7.Size = new Size(34, 19);
+            label7.Size = new Size(40, 23);
             label7.TabIndex = 16;
             label7.Text = "N원";
             // 
@@ -235,7 +236,7 @@
             label6.AutoSize = true;
             label6.Location = new Point(22, 120);
             label6.Name = "label6";
-            label6.Size = new Size(65, 19);
+            label6.Size = new Size(78, 23);
             label6.TabIndex = 14;
             label6.Text = "거스름돈";
             // 
@@ -244,7 +245,7 @@
             label5.AutoSize = true;
             label5.Location = new Point(17, 94);
             label5.Name = "label5";
-            label5.Size = new Size(70, 19);
+            label5.Size = new Size(84, 23);
             label5.TabIndex = 13;
             label5.Text = "결제 금액";
             // 
@@ -253,7 +254,7 @@
             label4.AutoSize = true;
             label4.Location = new Point(17, 70);
             label4.Name = "label4";
-            label4.Size = new Size(70, 19);
+            label4.Size = new Size(84, 23);
             label4.TabIndex = 12;
             label4.Text = "총 구매액";
             // 
@@ -262,7 +263,7 @@
             label3.AutoSize = true;
             label3.Location = new Point(214, 86);
             label3.Name = "label3";
-            label3.Size = new Size(119, 19);
+            label3.Size = new Size(143, 23);
             label3.TabIndex = 10;
             label3.Text = "금일 총 수익 N원";
             // 
@@ -271,7 +272,7 @@
             label2.AutoSize = true;
             label2.Location = new Point(214, 56);
             label2.Name = "label2";
-            label2.Size = new Size(119, 19);
+            label2.Size = new Size(143, 23);
             label2.TabIndex = 9;
             label2.Text = "금일 총 환불 N건";
             // 
@@ -280,7 +281,7 @@
             label1.AutoSize = true;
             label1.Location = new Point(214, 24);
             label1.Name = "label1";
-            label1.Size = new Size(119, 19);
+            label1.Size = new Size(143, 23);
             label1.TabIndex = 8;
             label1.Text = "금일 총 판매 N건";
             // 
@@ -376,12 +377,25 @@
             picture_box_top.TabIndex = 15;
             picture_box_top.TabStop = false;
             // 
+            // button4
+            // 
+            button4.BackColor = Color.Red;
+            button4.Font = new Font("맑은 고딕", 11F, FontStyle.Bold, GraphicsUnit.Point);
+            button4.ForeColor = SystemColors.Window;
+            button4.Location = new Point(44, 297);
+            button4.Name = "button4";
+            button4.Size = new Size(231, 48);
+            button4.TabIndex = 9;
+            button4.Text = "모든 기록 삭제";
+            button4.UseVisualStyleBackColor = false;
+            // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 17F);
+            AutoScaleDimensions = new SizeF(10F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1016, 395);
+            Controls.Add(button4);
             Controls.Add(picture_box_menu);
             Controls.Add(picture_box_alarm);
             Controls.Add(picture_box_top);
@@ -439,5 +453,6 @@
         private Button button3;
         private Button button2;
         private Button button1;
+        private Button button4;
     }
 }

@@ -39,7 +39,6 @@ namespace POS_Project_Team2
 
         private void button6_Click(object sender, EventArgs e)
         {
-
             // 결제를 누르면 PaymentForm으로 이동
             FormHelper.show(new PaymentForm());
         }
@@ -60,7 +59,8 @@ namespace POS_Project_Team2
         // 총 결제 내역 조회
         private void button_get_tpt_Click(object sender, EventArgs e)
         {
-
+            // 총 결제 내역 창 열기
+            FormHelper.show(new PayMentLogShowForm());
         }
     }
 }
