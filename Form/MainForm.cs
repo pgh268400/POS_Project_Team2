@@ -36,6 +36,11 @@ namespace POS_Project_Team2
 
             // picturebox 배경 투명으로 설정하기
             set_picture_box_transparent();
+
+            // 영수증, 상품 조회, 영수증 조회 숨기기
+            button_receipt.Hide();
+            button_get_goods.Hide();
+            button_get_receipt.Hide();
         }
 
         private void button6_Click(object sender, EventArgs e)
