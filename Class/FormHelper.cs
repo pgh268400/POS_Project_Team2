@@ -68,5 +68,4 @@
                 list_view.Columns[i].Width = (int)(total_width * column_widths[i] / 100.0);
         }
     }
-
 }

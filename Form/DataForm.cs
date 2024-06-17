@@ -1,25 +1,56 @@
-﻿namespace POS_Project_Team2
+﻿using System.Data;
+
+namespace POS_Project_Team2
 {
     public partial class DataForm : Form
     {
-        ItemData dataset;
+        public ItemData dataset;
+        DataTable originalData;
 
         // PayMentForm 과 공유할 결제 내역을 담는 리스트
         public List<(string item_name, int item_cost, int item_count)> items = new();
 
         int selected;
+        int listview_item_count = 1;    //listview_item의 No 컨트롤
 
+        // 결제창이 아닌 일반 메인창에서 보기 위해 접근했을때 모든 컨트롤을
+        // 비활성화 시키는 메서드
+        public void block_all()
+        {
+            textbox_search.Enabled = false;
+            textbox_count.Enabled = false;
+            button_search.Enabled = false;
+            button_select.Enabled = false;
+            button_select_cancle.Enabled = false;
+            button_pay_cancle.Enabled = false;
+            listview_item.Enabled = false;
+            datagridview_stock.Enabled = false;
+            button_add_into_payment.Enabled = false;
 
+            // 라벨에 읽기 모드라고 출력
+            label_mode.Text = "* 현재 읽기 모드입니다.";
+            label_tip.Text = "";
+        }
         // 아이템 추가 및 바인딩 진행
         private void set_item_and_bind()
         {
             // 강의에서 배운 dataset 을 활용해서 데이터를 저장후, 이를 datagridview에 바인딩하는 방법을 사용
             dataset = new ItemData();
 
-            dataset.Tables["ItemList"].Rows.Add(new object[] { 1, "싸인펜", 1000, 10 });
-            dataset.Tables["ItemList"].Rows.Add(new object[] { 2, "붓", 2000, 20 });
-            dataset.Tables["ItemList"].Rows.Add(new object[] { 3, "지우개", 800, 30 });
-            dataset.Tables["ItemList"].Rows.Add(new object[] { 4, "제도샤프", 1500, 40 });
+            //업데이트 된 재고 데이터 불러오기 위해서 Load
+            LoadDataTable(dataset.Tables["ItemList"], "item_data.xml");
+
+            //데이터 없으면 기본 데이터 추가
+            if (dataset.Tables["ItemList"].Rows.Count == 0)
+            {
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 1, "싸인펜", 1000, 10 });
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 2, "붓", 2000, 20 });
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 3, "지우개", 800, 30 });
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 4, "제도샤프", 1500, 40 });
+            }
+
+            // 원본 데이터 복사
+            originalData = dataset.Tables["ItemList"].Copy();
 
             datagridview_stock.DataSource = dataset.Tables["ItemList"];
         }
@@ -29,6 +60,9 @@
 
             // 아이템 추가 및 바인딩 진행
             set_item_and_bind();
+
+            // 애플리케이션 종료 시 파일 제거 이벤트 등록
+            Application.ApplicationExit += new EventHandler(OnApplicationExit);
         }
 
         private void DataForm_Load(object sender, EventArgs e)
@@ -98,10 +132,8 @@
                 return;
             }
 
-            items.Add((item_name, item_cost, item_count));   // 이름 가격 갯수 가지는 List items에 추가
-
             // 이 items 를 현재 리스트뷰에 추가
-            ListViewItem lvi = new ListViewItem((items.Count).ToString());
+            ListViewItem lvi = new ListViewItem((listview_item_count).ToString());
             lvi.SubItems.Add(item_name);
             lvi.SubItems.Add(item_count.ToString());
             lvi.SubItems.Add(item_cost.ToString());
@@ -109,10 +141,13 @@
 
             listview_item.Items.Add(lvi); // Listview에 추가
 
+            listview_item_count++;
+
             // 선택하기가 완료된 경우 재고 개수를 data grid view에 반영시킨다.
             datagridview_stock.Rows[selected].Cells[3].Value = stock - item_count;
 
-
+            // 변경된 제고 데이터 xml에 저장
+            SaveDataTable(dataset.Tables["ItemList"], "item_data.xml");
 
             // 물품명과 수량 입력 텍스트 박스를 초기화 한다.
             textbox_search.Text = "";
@@ -157,13 +192,38 @@
 
         private void button_pay_cancle_Click(object sender, EventArgs e)
         {
-
+            listview_item.Clear();
+            RestoreOriginalData();
         }
 
         private void listview_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            // double click 시 해당 아이템 삭제
-            listview_item.Items.Remove(listview_item.SelectedItems[0]);
+            if (listview_item.SelectedItems.Count > 0)
+            {
+                // 선택된 아이템 가져오기
+                ListViewItem selectedItem = listview_item.SelectedItems[0];
+                string item_name = selectedItem.SubItems[1].Text;
+                int item_count = int.Parse(selectedItem.SubItems[2].Text);
+
+                // 해당 아이템의 재고를 복원
+                for (int i = 0; i < datagridview_stock.Rows.Count; i++)
+                {
+                    var cell_value = datagridview_stock.Rows[i].Cells[1].Value;
+
+                    if (cell_value != null && cell_value.ToString() == item_name)
+                    {
+                        int stock = Convert.ToInt32(datagridview_stock.Rows[i].Cells[3].Value.ToString());
+                        datagridview_stock.Rows[i].Cells[3].Value = stock + item_count;
+                        break;
+                    }
+                }
+
+                // 선택된 아이템 삭제
+                listview_item.Items.Remove(selectedItem);
+
+                // 변경된 재고 데이터 xml에 저장
+                SaveDataTable(dataset.Tables["ItemList"], "item_data.xml");
+            }
         }
 
         // 물품명 텍스트 박스에서 엔터 입력 => 버튼 클릭
@@ -229,5 +289,46 @@
             }
 
         }
+        //변경된 table xml파일로 저장
+        public void SaveDataTable(DataTable table, string filePath)
+        {
+            table.WriteXml(filePath);
+        }
+
+        //저장된 table xml파일로 로드
+        public void LoadDataTable(DataTable table, string filePath)
+        {
+            if (System.IO.File.Exists(filePath))
+            {
+                table.ReadXml(filePath);
+            }
+        }
+
+        // 원본 데이터를 복원하는 메서드
+        public void RestoreOriginalData()
+        {
+            dataset.Tables["ItemList"].Clear(); //변경된 데이터 지우고
+            foreach (DataRow row in originalData.Rows)
+            {
+                dataset.Tables["ItemList"].ImportRow(row);      //이전에 카피해둔 원본 데이터 ItemList에 삽입
+            }
+            SaveDataTable(dataset.Tables["ItemList"], "item_data.xml"); 
+        }
+
+        //애플리케이션 종료 시 실행
+        private void OnApplicationExit(object sender, EventArgs e)
+        {
+            RemoveDataFile("item_data.xml");    //어플리케이션 종료 시 item_data 변화제어하는 xml 제거 
+        }
+
+        // XML 파일을 제거하는 메서드
+        private void RemoveDataFile(string filePath)
+        {
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+        }
+
     }
 }
