@@ -55,10 +55,9 @@
             label_amount_money = new Label();
             label_num_product = new Label();
             label_sum = new Label();
-            button_cash = new Button();
             button_wait = new Button();
             button_all_cancle = new Button();
-            button_card = new Button();
+            button_pay = new Button();
             button_select_product = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -142,7 +141,7 @@
             label_realtime_clock.TabIndex = 17;
             label_realtime_clock.Text = "현재 날짜 시간";
             // 
-            // lvwProducts
+            // listview_product
             // 
             listview_product.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5 });
             listview_product.Location = new Point(27, 6);
@@ -262,10 +261,9 @@
             panel2.Controls.Add(button1);
             panel2.Controls.Add(tableLayoutPanel1);
             panel2.Controls.Add(label_realtime_clock);
-            panel2.Controls.Add(button_cash);
             panel2.Controls.Add(button_wait);
             panel2.Controls.Add(button_all_cancle);
-            panel2.Controls.Add(button_card);
+            panel2.Controls.Add(button_pay);
             panel2.Controls.Add(button_select_product);
             panel2.Controls.Add(listview_product);
             panel2.Controls.Add(groupBox1);
@@ -273,7 +271,7 @@
             panel2.Location = new Point(0, 40);
             panel2.Name = "panel2";
             panel2.Size = new Size(803, 383);
-            panel2.TabIndex = 19; 
+            panel2.TabIndex = 19;
             // 
             // button1
             // 
@@ -341,18 +339,6 @@
             label_sum.Text = "합계";
             label_sum.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // button_cash
-            // 
-            button_cash.BackColor = Color.ForestGreen;
-            button_cash.Font = new Font("맑은 고딕", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            button_cash.ForeColor = Color.White;
-            button_cash.Location = new Point(626, 216);
-            button_cash.Name = "button_cash";
-            button_cash.Size = new Size(171, 46);
-            button_cash.TabIndex = 31;
-            button_cash.Text = "현금";
-            button_cash.UseVisualStyleBackColor = false;
-            // 
             // button_wait
             // 
             button_wait.BackColor = Color.FromArgb(64, 64, 64);
@@ -376,18 +362,20 @@
             button_all_cancle.TabIndex = 25;
             button_all_cancle.Text = "전체 취소";
             button_all_cancle.UseVisualStyleBackColor = false;
+            button_all_cancle.Click += button_all_cancle_Click;
             // 
-            // button_card
+            // button_pay
             // 
-            button_card.BackColor = Color.ForestGreen;
-            button_card.Font = new Font("맑은 고딕", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            button_card.ForeColor = Color.White;
-            button_card.Location = new Point(626, 160);
-            button_card.Name = "button_card";
-            button_card.Size = new Size(171, 54);
-            button_card.TabIndex = 22;
-            button_card.Text = "신용카드/체크카드";
-            button_card.UseVisualStyleBackColor = false;
+            button_pay.BackColor = Color.ForestGreen;
+            button_pay.Font = new Font("맑은 고딕", 21.75F, FontStyle.Bold, GraphicsUnit.Point);
+            button_pay.ForeColor = Color.White;
+            button_pay.Location = new Point(626, 160);
+            button_pay.Name = "button_pay";
+            button_pay.Size = new Size(171, 153);
+            button_pay.TabIndex = 22;
+            button_pay.Text = "결제";
+            button_pay.UseVisualStyleBackColor = false;
+            button_pay.Click += button_card_Click;
             // 
             // button_select_product
             // 
@@ -450,9 +438,8 @@
         private Label label_sum;
         private Button button_wait;
         private Button button_all_cancle;
-        private Button button_card;
+        private Button button_pay;
         private Button button_select_product;
-        private Button button_cash;
         private Label label_wait2;
         private Label label_wait3;
         private TableLayoutPanel tableLayoutPanel1;

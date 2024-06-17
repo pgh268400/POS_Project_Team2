@@ -158,15 +158,47 @@ namespace POS_Project_Team2
         //물품 선택 버튼 클릭 시 물품 선택하는 DataForm 열고 물품 값 가져오는 메서드
         private void btn_SelectProduct_Click(object sender, EventArgs e)
         {
-            using (DataForm data_form = new DataForm())
+            if (data_form == null || data_form.IsDisposed)
             {
-                if (data_form.ShowDialog() == DialogResult.OK)   //DataForm 열기
-                {
-                    products.AddRange(data_form.items); //List Products에 List items 추가
-                    list_view_control(products);    //Listview에 선택된 물품 추가
-                }
+                data_form = new DataForm();
+            }
+
+            if (data_form.ShowDialog() == DialogResult.OK)
+            {
+                products.AddRange(data_form.items);
+                list_view_control(products);
             }
         }
 
+        //결제 버튼 클릭 시DataForm에서 재고처리 미리 해서 메시지만 띄움 >> MainForm에서 업데이트 되도록 해야함
+        private void button_card_Click(object sender, EventArgs e)
+        {
+            if(listview_product.Items.Count > 0)
+            {
+                listview_product.Clear();
+
+                MessageBox.Show("결제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("상품을 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            
+        }
+
+        //취소 버튼 클릭 시 담았던 재고 원상 복구
+        private void button_all_cancle_Click(object sender, EventArgs e)
+        {
+
+            if (data_form != null)
+            {
+                data_form.RestoreOriginalData();    // DataForm의 원본 데이터 복원 메서드 호출
+            }
+            this.Close();
+        }
+
+        
     }
 }

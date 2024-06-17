@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Form\DataForm.cs~RF35a572b.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="ItemData.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
