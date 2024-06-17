@@ -4,6 +4,7 @@ namespace POS_Project_Team2
 {
     public partial class MainForm : Form
     {
+
         public MainForm()
         {
             // 실행시 창을 화면 중앙에 위치시키기
@@ -59,6 +60,21 @@ namespace POS_Project_Team2
 
         // 총 결제 내역 조회
         private void button_get_tpt_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button_wait1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button_wait3_Click(object sender, EventArgs e)
         {
 
         }

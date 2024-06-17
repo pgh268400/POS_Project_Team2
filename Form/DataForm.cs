@@ -174,13 +174,38 @@ namespace POS_Project_Team2
 
         private void button_pay_cancle_Click(object sender, EventArgs e)
         {
-
+            listview_item.Clear();
+            RestoreOriginalData();
         }
 
         private void listview_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            // double click 시 해당 아이템 삭제
-            listview_item.Items.Remove(listview_item.SelectedItems[0]);
+            if (listview_item.SelectedItems.Count > 0)
+            {
+                // 선택된 아이템 가져오기
+                ListViewItem selectedItem = listview_item.SelectedItems[0];
+                string item_name = selectedItem.SubItems[1].Text;
+                int item_count = int.Parse(selectedItem.SubItems[2].Text);
+
+                // 해당 아이템의 재고를 복원
+                for (int i = 0; i < datagridview_stock.Rows.Count; i++)
+                {
+                    var cell_value = datagridview_stock.Rows[i].Cells[1].Value;
+
+                    if (cell_value != null && cell_value.ToString() == item_name)
+                    {
+                        int stock = Convert.ToInt32(datagridview_stock.Rows[i].Cells[3].Value.ToString());
+                        datagridview_stock.Rows[i].Cells[3].Value = stock + item_count;
+                        break;
+                    }
+                }
+
+                // 선택된 아이템 삭제
+                listview_item.Items.Remove(selectedItem);
+
+                // 변경된 재고 데이터 xml에 저장
+                SaveDataTable(dataset.Tables["ItemList"], "item_data.xml");
+            }
         }
 
         // 물품명 텍스트 박스에서 엔터 입력 => 버튼 클릭

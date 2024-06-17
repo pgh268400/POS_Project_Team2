@@ -173,7 +173,7 @@ namespace POS_Project_Team2
         //결제 버튼 클릭 시DataForm에서 재고처리 미리 해서 메시지만 띄움 >> MainForm에서 업데이트 되도록 해야함
         private void button_card_Click(object sender, EventArgs e)
         {
-            if(listview_product.Items.Count > 0)
+            if (listview_product.Items.Count > 0)
             {
                 listview_product.Clear();
 
@@ -185,7 +185,7 @@ namespace POS_Project_Team2
             {
                 MessageBox.Show("상품을 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            
+
         }
 
         //취소 버튼 클릭 시 담았던 재고 원상 복구
@@ -199,6 +199,9 @@ namespace POS_Project_Team2
             this.Close();
         }
 
-        
+        private void button_wait_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

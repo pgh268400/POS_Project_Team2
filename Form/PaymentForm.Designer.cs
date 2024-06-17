@@ -350,6 +350,7 @@
             button_wait.TabIndex = 29;
             button_wait.Text = "대기";
             button_wait.UseVisualStyleBackColor = false;
+            button_wait.Click += button_wait_Click;
             // 
             // button_all_cancle
             // 
