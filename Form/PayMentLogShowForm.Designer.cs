@@ -29,25 +29,31 @@
         private void InitializeComponent()
         {
             listView1 = new ListView();
+            columnHeader0 = new ColumnHeader();
             columnHeader1 = new ColumnHeader();
             columnHeader2 = new ColumnHeader();
             columnHeader3 = new ColumnHeader();
             columnHeader4 = new ColumnHeader();
             columnHeader5 = new ColumnHeader();
             columnHeader6 = new ColumnHeader();
-            button_refresh = new Button();
-            label_recepit = new Label();
+            label_show = new Label();
             SuspendLayout();
             // 
             // listView1
             // 
-            listView1.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5, columnHeader6 });
-            listView1.Location = new Point(12, 12);
+            listView1.Columns.AddRange(new ColumnHeader[] { columnHeader0, columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5, columnHeader6 });
+            listView1.Location = new Point(9, 9);
+            listView1.Margin = new Padding(2);
             listView1.Name = "listView1";
-            listView1.Size = new Size(622, 426);
+            listView1.Size = new Size(575, 416);
             listView1.TabIndex = 0;
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.View = View.Details;
+            // 
+            // columnHeader0
+            // 
+            columnHeader0.Text = "결제 시간";
+            columnHeader0.Width = 110;
             // 
             // columnHeader1
             // 
@@ -77,34 +83,25 @@
             columnHeader6.Text = "전화번호";
             columnHeader6.Width = 80;
             // 
-            // button_refresh
+            // label_show
             // 
-            button_refresh.Location = new Point(540, 444);
-            button_refresh.Name = "button_refresh";
-            button_refresh.Size = new Size(94, 29);
-            button_refresh.TabIndex = 1;
-            button_refresh.Text = "새로고침";
-            button_refresh.UseVisualStyleBackColor = true;
-            button_refresh.Click += button_refresh_Click;
-            // 
-            // label_recepit
-            // 
-            label_recepit.AutoSize = true;
-            label_recepit.Font = new Font("맑은 고딕", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label_recepit.Location = new Point(12, 448);
-            label_recepit.Name = "label_recepit";
-            label_recepit.Size = new Size(51, 20);
-            label_recepit.TabIndex = 2;
-            label_recepit.Text = "Hello!";
+            label_show.AutoSize = true;
+            label_show.Font = new Font("맑은 고딕", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label_show.Location = new Point(11, 436);
+            label_show.Margin = new Padding(2, 0, 2, 0);
+            label_show.Name = "label_show";
+            label_show.Size = new Size(40, 15);
+            label_show.TabIndex = 2;
+            label_show.Text = "Hello!";
             // 
             // PayMentLogShowForm
             // 
-            AutoScaleDimensions = new SizeF(9F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(654, 486);
-            Controls.Add(label_recepit);
-            Controls.Add(button_refresh);
+            ClientSize = new Size(595, 462);
+            Controls.Add(label_show);
             Controls.Add(listView1);
+            Margin = new Padding(2);
             Name = "PayMentLogShowForm";
             Text = "POS System";
             Load += PayMentLogShowForm_Load;
@@ -121,7 +118,7 @@
         private ColumnHeader columnHeader4;
         private ColumnHeader columnHeader5;
         private ColumnHeader columnHeader6;
-        private Button button_refresh;
-        private Label label_recepit;
+        private Label label_show;
+        private ColumnHeader columnHeader0;
     }
 }

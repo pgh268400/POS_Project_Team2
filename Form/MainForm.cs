@@ -93,8 +93,17 @@ namespace POS_Project_Team2
         // 총 결제 내역 조회
         private void button_get_tpt_Click(object sender, EventArgs e)
         {
+            // 로거를 통해 결제 내역을 가져온다.
+            Logger logger = new Logger();
+            List<string[]> log_data = logger.get_payment_log();
+
             // 총 결제 내역 창 열기
-            FormHelper.show(new PayMentLogShowForm());
+            PayMentLogShowForm log_form = new PayMentLogShowForm();
+            FormHelper.show(log_form);
+
+            // 총 결제 내역 창 리스트뷰 및 라벨 설정
+            log_form.set_form_role(log_data, "현재 결제 내역을 표시하고 있습니다.");
+
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -184,7 +193,6 @@ namespace POS_Project_Team2
                 label_total_num_profit.Text = "금일 총 수익 " + total_num_profit + "원";
                 label_total_previous_payment.Text = total_previous_purchase + "원";
                 label_total_previous_purchase.Text = total_previous_purchase + "원";
-
             }
         }
         public void UpdateWaitButton(int index, Color color)
@@ -218,6 +226,32 @@ namespace POS_Project_Team2
                 // 프로그램 재시작
                 Application.Restart();
             }
+        }
+
+        private void button_refund_Click(object sender, EventArgs e)
+        {
+            // 로거를 통해 결제 내역을 가져온다.
+            Logger logger = new Logger();
+            List<string[]> log_data = logger.get_payment_log();
+
+            // 총 결제 내역 창 열기
+            PayMentLogShowForm log_form = new PayMentLogShowForm();
+            FormHelper.show(log_form);
+
+            log_form.set_form_role(log_data, "환불하고 싶으면 결제 내역을 오른쪽 클릭해주세요.");
+            log_form.enable_refund_mode();
+
+        }
+
+        private void button_get_refund_Click(object sender, EventArgs e)
+        {
+            // 환불 내역 조회
+            Logger logger = new Logger();
+            List<string[]> log_data = logger.get_refund_log();
+            PayMentLogShowForm log_form = new PayMentLogShowForm();
+            FormHelper.show(log_form);
+            log_form.set_form_role(log_data, "환불 내역을 표시하고 있습니다. 환불을 원하시면 메인 화면의 환불 버튼을 클릭해주세요.");
+
         }
     }
 }

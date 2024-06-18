@@ -1,5 +1,4 @@
 ﻿using POS_Project_Team2.Class;
-using System.Xml.Linq;
 
 namespace POS_Project_Team2
 {
@@ -102,8 +101,8 @@ namespace POS_Project_Team2
 
             listview_product.EndUpdate();    //업데이트 끝
 
-            label_num_product.Text = total_num_purchase.ToString()+"개";     //총 물품 개수
-            label_amount_money.Text = total_price_purchase.ToString()+"원";  //총 구매액
+            label_num_product.Text = total_num_purchase.ToString() + "개";     //총 물품 개수
+            label_amount_money.Text = total_price_purchase.ToString() + "원";  //총 구매액
             label_total_amount.Text = total_price_purchase.ToString();  //거스름돈 0원 고정하고 총 구매액하고 같게 설정
 
         }

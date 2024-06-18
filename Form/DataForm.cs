@@ -5,7 +5,7 @@ namespace POS_Project_Team2
     public partial class DataForm : Form
     {
         public ItemData dataset;
-        DataTable originalData;
+        DataTable original_data;
 
         // PayMentForm 과 공유할 결제 내역을 담는 리스트
         public List<(string item_name, int item_cost, int item_count)> items = new();
@@ -50,7 +50,7 @@ namespace POS_Project_Team2
             }
 
             // 원본 데이터 복사
-            originalData = dataset.Tables["ItemList"].Copy();
+            original_data = dataset.Tables["ItemList"].Copy();
 
             datagridview_stock.DataSource = dataset.Tables["ItemList"];
         }
@@ -321,7 +321,7 @@ namespace POS_Project_Team2
         public void RestoreOriginalData()
         {
             dataset.Tables["ItemList"].Clear(); //변경된 데이터 지우고
-            foreach (DataRow row in originalData.Rows)
+            foreach (DataRow row in original_data.Rows)
             {
                 dataset.Tables["ItemList"].ImportRow(row);      //이전에 카피해둔 원본 데이터 ItemList에 삽입
             }
