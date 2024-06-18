@@ -1,5 +1,4 @@
 ﻿using POS_Project_Team2.Class;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace POS_Project_Team2
 {
@@ -179,7 +178,7 @@ namespace POS_Project_Team2
                     }
                 }
             }
-            else if(closingForm != null && paymentform_purchase) 
+            else if (closingForm != null && paymentform_purchase)
             {
                 label_tatal_num_sales.Text = "금일 총 판매 " + total_num_sales + "건";
                 label_total_num_profit.Text = "금일 총 수익 " + total_num_profit + "원";
@@ -196,5 +195,29 @@ namespace POS_Project_Team2
             }
         }
 
+        private void button_clear_all_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("해당 기능 사용시 저장된 모든 데이터가 삭제되며, 초기 프로그램 상태로 돌아갑니다. 또한 프로그램이 자동 재실행 됩니다. 수행하시겠습니까?", "경고", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result == DialogResult.Yes)
+            {
+                // Logger 이용해 로그 삭제
+                Logger logger = new Logger();
+                logger.delete_all_log();
+
+                // 컴퓨터에 저장된 재고 데이터 item_data.xml 존재하는 경우 삭제
+                if (File.Exists("item_data.xml"))
+                    File.Delete("item_data.xml");
+
+                // 자동 로그인 파일 삭제
+                if (File.Exists("autologin"))
+                    File.Delete("autologin");
+
+                // 데이터 청소가 완료되었습니다 메세지 출력
+                MessageBox.Show("모든 데이터가 삭제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // 프로그램 재시작
+                Application.Restart();
+            }
+        }
     }
 }

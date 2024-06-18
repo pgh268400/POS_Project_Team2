@@ -10,10 +10,14 @@
 
         public LoginForm()
         {
+            InitializeComponent();
+
             // 실행시 창을 화면 중앙에 위치시키기
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            InitializeComponent();
+            // 폼 사이즈 변경 금지
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+
         }
 
         // 사각 패널 깎아서 뭉툭하게 만들기 (디자인)
@@ -45,6 +49,13 @@
              */
             if (textbox_id.Text.Trim() == "admin" && textbox_pw.Text.Trim() == "admin" || textbox_id.Text.Trim() == "admin@naver.com" && textbox_pw.Text.Trim() == "admin")
             {
+                // 자동 로그인 활성화된 경우
+                if (checkbox_auto_login.Checked)
+                {
+                    // autologin 파일 생성
+                    File.Create("autologin").Close();
+                }
+
                 /*
                   로그인 성공시 메인 화면으로 이동 :
                   로그인 창 숨기기
@@ -93,6 +104,14 @@
 
         private void DesignTest_Load(object sender, EventArgs e)
         {
+            // 같은 경로에 autologin 파일이 존재하면 자동 로그인 상태이므로 자동으로 다음 폼으로 이동한다.
+            if (File.Exists("autologin"))
+            {
+                MainForm main_form = new MainForm();
+                main_form.Closed += (s, args) => this.Close(); // important!
+                main_form.ShowDialog();
+            }
+
             // ID, PW 입력창에 KeyPress 이벤트 핸들러 등록
             textbox_id.KeyPress += new KeyPressEventHandler(get_enter);
             textbox_pw.KeyPress += new KeyPressEventHandler(get_enter);
@@ -112,6 +131,24 @@
             if (e.KeyChar == (char)Keys.Enter)
             {
                 button_login_Click(sender, e);
+            }
+        }
+
+        private void checkbox_auto_login_CheckedChanged(object sender, EventArgs e)
+        {
+            // 자동 로그인 체크했을때
+            if (checkbox_auto_login.Checked)
+            {
+                DialogResult result = MessageBox.Show("해당 기능 사용시 다음 프로그램 실행시부터 로그인 없이 간편하게 프로그램을 사용할 수 있는 기능입니다. 자동 로그인을 비활성화 하고 싶으면 같은 경로 내의 autologin 파일을 삭제하시면 됩니다. 수행하시겠습니까?", "경고", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                    // 자동 로그인 기능의 경우 로그인이 성공한 경우에만 수행해야한다.
+                }
+                else
+                {
+                    // 체크 해제
+                    checkbox_auto_login.Checked = false;
+                }
             }
         }
     }

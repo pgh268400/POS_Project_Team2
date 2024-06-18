@@ -58,7 +58,7 @@
             picture_box_menu = new PictureBox();
             realtime_timer = new System.Windows.Forms.Timer(components);
             picture_box_top = new PictureBox();
-            button4 = new Button();
+            button_clear_all = new Button();
             group_get.SuspendLayout();
             group_main.SuspendLayout();
             groupBox3.SuspendLayout();
@@ -381,17 +381,18 @@
             picture_box_top.TabIndex = 15;
             picture_box_top.TabStop = false;
             // 
-            // button4
+            // button_clear_all
             // 
-            button4.BackColor = Color.Red;
-            button4.Font = new Font("맑은 고딕", 11F, FontStyle.Bold, GraphicsUnit.Point);
-            button4.ForeColor = SystemColors.Window;
-            button4.Location = new Point(44, 297);
-            button4.Name = "button4";
-            button4.Size = new Size(231, 48);
-            button4.TabIndex = 9;
-            button4.Text = "모든 기록 삭제";
-            button4.UseVisualStyleBackColor = false;
+            button_clear_all.BackColor = Color.Red;
+            button_clear_all.Font = new Font("맑은 고딕", 11F, FontStyle.Bold, GraphicsUnit.Point);
+            button_clear_all.ForeColor = SystemColors.Window;
+            button_clear_all.Location = new Point(44, 297);
+            button_clear_all.Name = "button_clear_all";
+            button_clear_all.Size = new Size(231, 48);
+            button_clear_all.TabIndex = 9;
+            button_clear_all.Text = "모든 기록 삭제";
+            button_clear_all.UseVisualStyleBackColor = false;
+            button_clear_all.Click += button_clear_all_Click;
             // 
             // MainForm
             // 
@@ -399,7 +400,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1016, 398);
-            Controls.Add(button4);
+            Controls.Add(button_clear_all);
             Controls.Add(picture_box_menu);
             Controls.Add(picture_box_alarm);
             Controls.Add(picture_box_top);
@@ -456,7 +457,7 @@
         private Button button3;
         private Button button2;
         private Button button1;
-        private Button button4;
+        private Button button_clear_all;
 
         private Button button_wait1;
         private Button button_wait2;

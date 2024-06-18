@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace POS_Project_Team2.Class
 {
@@ -28,17 +24,8 @@ namespace POS_Project_Team2.Class
         // 영수증 출력 기록을 저장하는 경로
         private string receipt_log_path;
 
-        // 결제 내역을 저장하는 List<string[]> 형태의 변수
-        private List<string[]> payment_log;
-
-        // 환불 기록을 저장하는 List<string[]> 형태의 변수
-        private List<string[]> refund_log;
-
-        // 통합 기록을 저장하는 List<string[]> 형태의 변수
-        private List<string[]> total_log;
-
-        // 영수증 출력 기록을 저장하는 List<string[]> 형태의 변수
-        private List<string[]> receipt_log;
+        // 결제 내역, 환불기록, 통합 기록, 영수증 출력 기록
+        private List<string[]> payment_log, refund_log, total_log, receipt_log;
 
 
         /*
@@ -51,7 +38,7 @@ namespace POS_Project_Team2.Class
 
           마지막 인자로는 통합 결제 내역을 저장하는 경로를 입력 받는다.
         */
-        public Logger(string payment_log_path = "./payment.csv", string refund_log_path="./refund.csv", string receipt_log_path="./receipt.csv", string total_log_path = "./total.csv")
+        public Logger(string payment_log_path = "./payment.csv", string refund_log_path = "./refund.csv", string receipt_log_path = "./receipt.csv", string total_log_path = "./total.csv")
         {
             // 결제 내역, 환불 기록, 통합기록을 저장하는 경로를 입력 받는다.
             // 캡슐화를 잘 지키도록 하자.

@@ -140,6 +140,7 @@
             checkbox_auto_login.TabIndex = 2;
             checkbox_auto_login.Text = "자동 로그인";
             checkbox_auto_login.UseVisualStyleBackColor = true;
+            checkbox_auto_login.CheckedChanged += checkbox_auto_login_CheckedChanged;
             // 
             // label_pw
             // 
@@ -196,12 +197,10 @@
             PerformLayout();
         }
 
-
         #endregion
-
-        private CheckBox checkbox_auto_login;
         private Label label_pw;
         private Label label_id;
         private Button button_information;
+        private CheckBox checkbox_auto_login;
     }
 }

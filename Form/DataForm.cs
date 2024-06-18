@@ -63,6 +63,12 @@ namespace POS_Project_Team2
 
             // 애플리케이션 종료 시 파일 제거 이벤트 등록 비활성화 해둠. >> 그러면 프로그램 꺼도 저장됨
             //Application.ApplicationExit += new EventHandler(OnApplicationExit);
+
+            // 실행시 창을 화면 중앙에 위치시키기
+            this.StartPosition = FormStartPosition.CenterScreen;
+
+            // 폼 사이즈 변경 금지
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
         }
 
         private void DataForm_Load(object sender, EventArgs e)
