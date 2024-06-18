@@ -2,16 +2,32 @@
 
 namespace POS_Project_Team2
 {
+
     public partial class MainForm : Form
     {
-
+        private List<List<(string item_name, int item_cost, int item_count)>> savedProducts = new List<List<(string item_name, int item_cost, int item_count)>>();
+        private Button[] waitButtons;
         public MainForm()
         {
             // 실행시 창을 화면 중앙에 위치시키기
             this.StartPosition = FormStartPosition.CenterScreen;
 
             InitializeComponent();
+
+            InitializeWaitButtons();
         }
+
+        private void InitializeWaitButtons()
+        {
+            waitButtons = new Button[] { button_wait1, button_wait2, button_wait3 };
+
+            foreach (var button in waitButtons)
+            {
+                button.Click += WaitButton_Click;
+                button.BackColor = Color.Gray;
+            }
+        }
+
 
         private void set_picture_box_transparent()
         {
@@ -46,7 +62,11 @@ namespace POS_Project_Team2
         private void button6_Click(object sender, EventArgs e)
         {
             // 결제를 누르면 PaymentForm으로 이동
-            FormHelper.show(new PaymentForm());
+            var paymentForm = new PaymentForm();
+            FormHelper.show(paymentForm);
+            paymentForm.FormClosing += PaymentForm_FormClosing;
+            paymentForm.Owner = this;
+            paymentForm.Show();
         }
 
 
@@ -115,5 +135,51 @@ namespace POS_Project_Team2
             }
 
         }
+        private void WaitButton_Click(object sender, EventArgs e)
+        {
+            var clickedButton = sender as Button;
+            int index = Array.IndexOf(waitButtons, clickedButton);
+
+            if (index >= 0 && index < savedProducts.Count)
+            {
+                var products = savedProducts[index];
+                var paymentForm = new PaymentForm(products);
+                paymentForm.FormClosing += PaymentForm_FormClosing;
+                paymentForm.Owner = this;
+                FormHelper.show(paymentForm);
+                clickedButton.BackColor = Color.Gray;
+            }
+        }
+
+        private void PaymentForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            var closingForm = sender as PaymentForm;
+
+            if (closingForm != null)
+            {
+                int index = savedProducts.FindIndex(products => products.SequenceEqual(closingForm.GetProducts()));
+                if (index >= 0)
+                {
+                    savedProducts[index] = closingForm.GetProducts();
+                }
+                else
+                {
+                    savedProducts.Add(closingForm.GetProducts());
+                    int waitButtonIndex = savedProducts.Count - 1;
+                    if (waitButtonIndex < waitButtons.Length)
+                    {
+                        waitButtons[waitButtonIndex].BackColor = Color.Red;
+                    }
+                }
+            }
+        }
+        public void UpdateWaitButton(int index, Color color)
+        {
+            if (index >= 0 && index < waitButtons.Length)
+            {
+                waitButtons[index].BackColor = color;
+            }
+        }
+
     }
 }

@@ -9,10 +9,16 @@ namespace POS_Project_Team2
         private Label[] labels_wait;
 
         public DataForm data_form;
-        List<(string item_name, int item_cost, int item_count)> products = new List<(string item_name, int item_cost, int item_count)>();
-        public PaymentForm()
+        private List<(string item_name, int item_cost, int item_count)> products = new List<(string item_name, int item_cost, int item_count)>();
+        public PaymentForm(List<(string item_name, int item_cost, int item_count)> products = null)
         {
             InitializeComponent();
+
+            if (products != null)
+            {
+                this.products = new List<(string item_name, int item_cost, int item_count)>(products);
+            }
+
         }
 
         // 실시간 시계 등록 및 시작
@@ -101,6 +107,12 @@ namespace POS_Project_Team2
 
             // 리스트뷰 너비 비율 조정
             FormHelper.adjust_column_widths(listview_product, new int[] { 10, 40, 20, 15, 15 });
+
+            if (products.Count > 0)
+            {
+                list_view_control(products);
+            }
+
         }
 
         // 마우스가 라벨 위에 있을 때 호출되는 메소드
@@ -256,6 +268,17 @@ namespace POS_Project_Team2
         private void button1_Click(object sender, EventArgs e)
         {
             MessageBox.Show("결제시 포인트 등록이 가능합니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void button_wait_Click(object sender, EventArgs e)
+        {
+            MainForm mainForm = (MainForm)this.Owner;
+            mainForm.UpdateWaitButton(0, Color.Red);
+            this.Close();
+        }
+        public List<(string item_name, int item_cost, int item_count)> GetProducts()
+        {
+            return new List<(string item_name, int item_cost, int item_count)>(products);
         }
     }
 }
