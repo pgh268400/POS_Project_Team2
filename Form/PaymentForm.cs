@@ -253,8 +253,13 @@ namespace POS_Project_Team2
                     logger.append_payment_log(log_entry);
                 }
 
+                //결제 후 리스트 뷰 초기화
                 listview_product.Clear();
+                products.Clear();
                 MessageBox.Show("결제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MainForm mainForm = (MainForm)this.Owner;
+                mainForm.UpdateWaitButton(0, Color.Gray);
+                mainForm.paymentform_purchase = true;
                 this.Close();
 
             }
@@ -284,7 +289,6 @@ namespace POS_Project_Team2
         private void button_wait_Click(object sender, EventArgs e)
         {
             MainForm mainForm = (MainForm)this.Owner;
-            mainForm.UpdateWaitButton(0, Color.Red);
             this.Close();
         }
         public List<(string item_name, int item_cost, int item_count)> GetProducts()

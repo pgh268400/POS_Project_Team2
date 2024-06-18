@@ -7,6 +7,7 @@ namespace POS_Project_Team2
     {
         private List<List<(string item_name, int item_cost, int item_count)>> savedProducts = new List<List<(string item_name, int item_cost, int item_count)>>();
         private Button[] waitButtons;
+        public bool paymentform_purchase = false;
         public MainForm()
         {
             // 실행시 창을 화면 중앙에 위치시키기
@@ -147,7 +148,6 @@ namespace POS_Project_Team2
                 paymentForm.FormClosing += PaymentForm_FormClosing;
                 paymentForm.Owner = this;
                 FormHelper.show(paymentForm);
-                clickedButton.BackColor = Color.Gray;
             }
         }
 
@@ -166,7 +166,7 @@ namespace POS_Project_Team2
                 {
                     savedProducts.Add(closingForm.GetProducts());
                     int waitButtonIndex = savedProducts.Count - 1;
-                    if (waitButtonIndex < waitButtons.Length)
+                    if (waitButtonIndex < waitButtons.Length && !paymentform_purchase)
                     {
                         waitButtons[waitButtonIndex].BackColor = Color.Red;
                     }

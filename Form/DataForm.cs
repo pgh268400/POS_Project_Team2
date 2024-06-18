@@ -61,8 +61,8 @@ namespace POS_Project_Team2
             // 아이템 추가 및 바인딩 진행
             set_item_and_bind();
 
-            // 애플리케이션 종료 시 파일 제거 이벤트 등록
-            Application.ApplicationExit += new EventHandler(OnApplicationExit);
+            // 애플리케이션 종료 시 파일 제거 이벤트 등록 비활성화 해둠. >> 그러면 프로그램 꺼도 저장됨
+            //Application.ApplicationExit += new EventHandler(OnApplicationExit);
         }
 
         private void DataForm_Load(object sender, EventArgs e)
