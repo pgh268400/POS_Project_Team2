@@ -94,7 +94,7 @@
             // 
             button_get_receipt.BackColor = SystemColors.WindowFrame;
             button_get_receipt.ForeColor = SystemColors.ControlLightLight;
-            button_get_receipt.Location = new Point(252, 103);
+            button_get_receipt.Location = new Point(252, 66);
             button_get_receipt.Name = "button_get_receipt";
             button_get_receipt.Size = new Size(121, 57);
             button_get_receipt.TabIndex = 3;
@@ -107,7 +107,7 @@
             button_get_stock.ForeColor = SystemColors.ControlLightLight;
             button_get_stock.Location = new Point(20, 108);
             button_get_stock.Name = "button_get_stock";
-            button_get_stock.Size = new Size(112, 57);
+            button_get_stock.Size = new Size(112, 116);
             button_get_stock.TabIndex = 4;
             button_get_stock.Text = "재고 조회";
             button_get_stock.UseVisualStyleBackColor = false;
@@ -120,7 +120,7 @@
             button_get_tpt.ForeColor = SystemColors.ControlLightLight;
             button_get_tpt.Location = new Point(138, 108);
             button_get_tpt.Name = "button_get_tpt";
-            button_get_tpt.Size = new Size(113, 116);
+            button_get_tpt.Size = new Size(113, 59);
             button_get_tpt.TabIndex = 5;
             button_get_tpt.Text = "총 결제\r\n내역 조회";
             button_get_tpt.UseVisualStyleBackColor = false;
@@ -145,9 +145,9 @@
             button_get_refund.BackColor = SystemColors.WindowFrame;
             button_get_refund.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
             button_get_refund.ForeColor = SystemColors.ControlLightLight;
-            button_get_refund.Location = new Point(20, 167);
+            button_get_refund.Location = new Point(138, 171);
             button_get_refund.Name = "button_get_refund";
-            button_get_refund.Size = new Size(113, 57);
+            button_get_refund.Size = new Size(113, 53);
             button_get_refund.TabIndex = 6;
             button_get_refund.Text = "환불 내역 조회";
             button_get_refund.UseVisualStyleBackColor = false;
@@ -229,7 +229,7 @@
             button_receipt.BackColor = Color.LightGray;
             button_receipt.Location = new Point(252, 19);
             button_receipt.Name = "button_receipt";
-            button_receipt.Size = new Size(121, 37);
+            button_receipt.Size = new Size(121, 41);
             button_receipt.TabIndex = 15;
             button_receipt.Text = "영수증 출력";
             button_receipt.UseVisualStyleBackColor = false;
@@ -264,7 +264,7 @@
             // label_total_num_profit
             // 
             label_total_num_profit.AutoSize = true;
-            label_total_num_profit.Location = new Point(214, 86);
+            label_total_num_profit.Location = new Point(214, 59);
             label_total_num_profit.Name = "label_total_num_profit";
             label_total_num_profit.Size = new Size(116, 19);
             label_total_num_profit.TabIndex = 10;
@@ -275,14 +275,13 @@
             label_total_num_refund.AutoSize = true;
             label_total_num_refund.Location = new Point(214, 56);
             label_total_num_refund.Name = "label_total_num_refund";
-            label_total_num_refund.Size = new Size(116, 19);
+            label_total_num_refund.Size = new Size(0, 19);
             label_total_num_refund.TabIndex = 9;
-            label_total_num_refund.Text = "금일 총 환불 0건";
             // 
             // label_tatal_num_sales
             // 
             label_tatal_num_sales.AutoSize = true;
-            label_tatal_num_sales.Location = new Point(214, 24);
+            label_tatal_num_sales.Location = new Point(214, 37);
             label_tatal_num_sales.Name = "label_tatal_num_sales";
             label_tatal_num_sales.Size = new Size(116, 19);
             label_tatal_num_sales.TabIndex = 8;

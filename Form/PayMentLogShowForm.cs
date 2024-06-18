@@ -114,7 +114,8 @@ namespace POS_Project_Team2
                     // 환불한 제품을 찾아서 재고를 늘려준다
                     foreach (DataRow row in itemList.Rows)
                     {
-                        if (row["Name"].ToString() == refund_data[1])
+                        // MessageBox.Show(refund_data[1].Replace("(환불) ", ""));
+                        if (row["Name"].ToString() == refund_data[1].Replace("(환불) ", ""))
                         {
                             row["Stock"] = int.Parse(row["Stock"].ToString()) + int.Parse(refund_data[3]);
                             break;
@@ -126,6 +127,8 @@ namespace POS_Project_Team2
                     {
                         itemDataSet.WriteXml(writer);
                     }
+
+
 
                     MessageBox.Show("환불 처리가 완료되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }

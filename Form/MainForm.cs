@@ -235,6 +235,13 @@ namespace POS_Project_Team2
             }
         }
 
+        // 환불 라벨 업데이트 함수
+        public void update_refund_label()
+        {
+            total_num_refund++;
+            label_total_num_refund.Text = "금일 총 환불 " + total_num_refund + "건";
+        }
+
         private void button_refund_Click(object sender, EventArgs e)
         {
             // 로거를 통해 결제 내역을 가져온다.

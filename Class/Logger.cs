@@ -100,9 +100,13 @@ namespace POS_Project_Team2.Class
          로그 항목을 추가하고 CSV에 기록하는 공통 함수
          로그 리스트와 파일 경로, 추가할 정보를 인자로 받는다.
         */
-        private void append_log(List<string[]> log, string file_path, string[] info)
+        private void append_log(List<string[]> log, string file_path, string[] info, bool addTimestamp = true)
         {
-            var new_entry = new List<string> { DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") };
+            var new_entry = new List<string>();
+            if (addTimestamp)
+            {
+                new_entry.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            }
             new_entry.AddRange(info);
             var new_entry_array = new_entry.ToArray();
 
@@ -160,7 +164,7 @@ namespace POS_Project_Team2.Class
         // 환불 내역을 추가하는 함수
         public void append_refund_log(string[] refund_info)
         {
-            append_log(refund_log, refund_log_path, refund_info);
+            append_log(refund_log, refund_log_path, refund_info, false);
         }
 
         // 전체 로그 기록을 조회하는 함수
