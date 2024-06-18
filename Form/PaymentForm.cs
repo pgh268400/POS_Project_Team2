@@ -69,6 +69,10 @@ namespace POS_Project_Team2
 
             listview_product.View = View.Details;    //뷰모드 지정
 
+            int total_num_purchase = 0;
+            int total_price_purchase = 0;
+
+
             int index = 1;  //No 나타내는 index 값
 
             foreach (var product in products)    //products 리스트 돌면서 선택된 '물품 넘버', '이름', '갯수', '가격', '총가격' ListView에 추가
@@ -84,6 +88,9 @@ namespace POS_Project_Team2
 
                 lvi.SubItems.Add(total_cost.ToString());
                 listview_product.Items.Add(lvi); //Listview에 추가
+
+                total_num_purchase += product.item_count;
+                total_price_purchase += total_cost;
             }
 
             //Column 설정
@@ -94,6 +101,10 @@ namespace POS_Project_Team2
             listview_product.Columns.Add("금액", 70, HorizontalAlignment.Left);
 
             listview_product.EndUpdate();    //업데이트 끝
+
+            label_num_product.Text = total_num_purchase.ToString();
+            label_amount_money.Text = total_price_purchase.ToString();
+            label_total_amount.Text = total_price_purchase.ToString();
 
         }
 
