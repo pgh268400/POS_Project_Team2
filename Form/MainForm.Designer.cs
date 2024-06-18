@@ -31,11 +31,11 @@
             components = new System.ComponentModel.Container();
             label_realtime_clock = new Label();
             button_get_all = new Button();
-            button_get_goods = new Button();
             button_get_receipt = new Button();
             button_get_stock = new Button();
             button_get_tpt = new Button();
             group_get = new GroupBox();
+            button_get_refund = new Button();
             button_payment = new Button();
             group_main = new GroupBox();
             groupBox3 = new GroupBox();
@@ -59,7 +59,6 @@
             realtime_timer = new System.Windows.Forms.Timer(components);
             picture_box_top = new PictureBox();
             button_clear_all = new Button();
-            button_get_refund = new Button();
             group_get.SuspendLayout();
             group_main.SuspendLayout();
             groupBox3.SuspendLayout();
@@ -91,17 +90,6 @@
             button_get_all.UseVisualStyleBackColor = false;
             button_get_all.Click += button_get_all_Click;
             // 
-            // button_get_goods
-            // 
-            button_get_goods.BackColor = SystemColors.WindowFrame;
-            button_get_goods.ForeColor = SystemColors.ControlLightLight;
-            button_get_goods.Location = new Point(252, 60);
-            button_get_goods.Name = "button_get_goods";
-            button_get_goods.Size = new Size(121, 37);
-            button_get_goods.TabIndex = 2;
-            button_get_goods.Text = "상품 조회";
-            button_get_goods.UseVisualStyleBackColor = false;
-            // 
             // button_get_receipt
             // 
             button_get_receipt.BackColor = SystemColors.WindowFrame;
@@ -132,7 +120,7 @@
             button_get_tpt.ForeColor = SystemColors.ControlLightLight;
             button_get_tpt.Location = new Point(138, 108);
             button_get_tpt.Name = "button_get_tpt";
-            button_get_tpt.Size = new Size(113, 57);
+            button_get_tpt.Size = new Size(113, 116);
             button_get_tpt.TabIndex = 5;
             button_get_tpt.Text = "총 결제\r\n내역 조회";
             button_get_tpt.UseVisualStyleBackColor = false;
@@ -151,6 +139,19 @@
             group_get.TabIndex = 6;
             group_get.TabStop = false;
             group_get.Text = "조회";
+            // 
+            // button_get_refund
+            // 
+            button_get_refund.BackColor = SystemColors.WindowFrame;
+            button_get_refund.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            button_get_refund.ForeColor = SystemColors.ControlLightLight;
+            button_get_refund.Location = new Point(20, 167);
+            button_get_refund.Name = "button_get_refund";
+            button_get_refund.Size = new Size(113, 57);
+            button_get_refund.TabIndex = 6;
+            button_get_refund.Text = "환불 내역 조회";
+            button_get_refund.UseVisualStyleBackColor = false;
+            button_get_refund.Click += button_get_refund_Click;
             // 
             // button_payment
             // 
@@ -183,7 +184,6 @@
             // 
             groupBox3.Controls.Add(label9);
             groupBox3.Controls.Add(label_total_previous_payment);
-            groupBox3.Controls.Add(button_get_goods);
             groupBox3.Controls.Add(button_get_receipt);
             groupBox3.Controls.Add(label_total_previous_purchase);
             groupBox3.Controls.Add(button_receipt);
@@ -397,19 +397,6 @@
             button_clear_all.UseVisualStyleBackColor = false;
             button_clear_all.Click += button_clear_all_Click;
             // 
-            // button_get_refund
-            // 
-            button_get_refund.BackColor = SystemColors.WindowFrame;
-            button_get_refund.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            button_get_refund.ForeColor = SystemColors.ControlLightLight;
-            button_get_refund.Location = new Point(20, 167);
-            button_get_refund.Name = "button_get_refund";
-            button_get_refund.Size = new Size(113, 57);
-            button_get_refund.TabIndex = 6;
-            button_get_refund.Text = "환불 내역 조회";
-            button_get_refund.UseVisualStyleBackColor = false;
-            button_get_refund.Click += button_get_refund_Click;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
@@ -446,7 +433,6 @@
 
         private Label label_realtime_clock;
         private Button button_get_all;
-        private Button button_get_goods;
         private Button button_get_receipt;
         private Button button_get_stock;
         private Button button_get_tpt;

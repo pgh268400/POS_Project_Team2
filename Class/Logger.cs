@@ -163,6 +163,12 @@ namespace POS_Project_Team2.Class
             append_log(refund_log, refund_log_path, refund_info);
         }
 
+        // 전체 로그 기록을 조회하는 함수
+        public List<string[]> get_total_log()
+        {
+            return total_log;
+        }
+
         // 환불 내역을 조회하는 함수
         public List<string[]> get_refund_log()
         {

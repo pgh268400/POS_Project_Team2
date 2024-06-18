@@ -75,6 +75,10 @@ namespace POS_Project_Team2
         {
             // 물품명을 먼저 입력해야지 수량을 입력할 수 있도록 설정
             textbox_count.Enabled = false; // 수량을 비활성화 한다.
+
+            // 버그 방지를 위해 data grid view 수정을 막는다
+            datagridview_stock.Enabled = false;
+
         }
 
         // 검색 버튼 클릭시 해당 물품 있는지 검사 후 해당 행을 선택.
@@ -343,5 +347,13 @@ namespace POS_Project_Team2
             }
         }
 
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            // xml 파일에서 데이터 읽어와 data grid view 에 다시 뿌리기 = 새로고침
+            dataset.Tables["ItemList"].Clear();
+            LoadDataTable(dataset.Tables["ItemList"], "item_data.xml");
+            datagridview_stock.DataSource = dataset.Tables["ItemList"];
+
+        }
     }
 }

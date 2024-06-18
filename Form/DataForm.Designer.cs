@@ -48,6 +48,7 @@
             button_add_into_payment = new Button();
             label_mode = new Label();
             label_tip = new Label();
+            button1 = new Button();
             ((System.ComponentModel.ISupportInitialize)datagridview_stock).BeginInit();
             groupbox_current_stock.SuspendLayout();
             groupbox_search.SuspendLayout();
@@ -233,12 +234,23 @@
             label_tip.TabIndex = 6;
             label_tip.Text = "결제할 물건 선택 완료시 결제창 추가하기 버튼을 눌러주세요";
             // 
+            // button1
+            // 
+            button1.Location = new Point(579, 434);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 7;
+            button1.Text = "새로고침";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click_1;
+            // 
             // DataForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
             ClientSize = new Size(1027, 462);
+            Controls.Add(button1);
             Controls.Add(label_tip);
             Controls.Add(label_mode);
             Controls.Add(groupBox2);
@@ -280,5 +292,6 @@
         private ColumnHeader columnHeader0;
         private Label label_tip;
         private Button button_select_cancle;
+        private Button button1;
     }
 }

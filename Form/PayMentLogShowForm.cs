@@ -81,7 +81,11 @@ namespace POS_Project_Team2
                     string[] refund_data = new string[selected_item.SubItems.Count];
                     for (int i = 0; i < selected_item.SubItems.Count; i++)
                     {
-                        refund_data[i] = selected_item.SubItems[i].Text;
+                        // 이름 인덱스인 경우 (환불) 이라고 기록하도록 한다.
+                        if (i == 1)
+                            refund_data[i] = "(환불) " + selected_item.SubItems[i].Text;
+                        else
+                            refund_data[i] = selected_item.SubItems[i].Text;
                     }
 
                     // 환불 기록을 로그에 저장
@@ -95,9 +99,6 @@ namespace POS_Project_Team2
 
                     // 리스트뷰에서 삭제
                     listView1.Items.Remove(selected_item);
-
-
-
 
 
                     // 환불 했으니 재고를 원래대로 돌려야 한다

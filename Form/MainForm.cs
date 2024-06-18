@@ -62,7 +62,6 @@ namespace POS_Project_Team2
 
             // 영수증, 상품 조회, 영수증 조회 숨기기
             button_receipt.Hide();
-            button_get_goods.Hide();
             button_get_receipt.Hide();
         }
 
@@ -79,7 +78,16 @@ namespace POS_Project_Team2
 
         private void button_get_all_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("통합 조회의 경우 아래 재고조회, 총 결제 내역 조회를 사용해주세요", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // 로거를 통해 결제 내역을 가져온다.
+            Logger logger = new Logger();
+            List<string[]> log_data = logger.get_total_log();
+
+            // 총 결제 내역 창 열기
+            PayMentLogShowForm log_form = new PayMentLogShowForm();
+            FormHelper.show(log_form);
+
+            // 총 결제 내역 창 리스트뷰 및 라벨 설정
+            log_form.set_form_role(log_data, "현재 모든 로그 기록을 확인중입니다.");
         }
 
         // 재고 조회
@@ -103,7 +111,6 @@ namespace POS_Project_Team2
 
             // 총 결제 내역 창 리스트뷰 및 라벨 설정
             log_form.set_form_role(log_data, "현재 결제 내역을 표시하고 있습니다.");
-
         }
 
         private void button2_Click(object sender, EventArgs e)
