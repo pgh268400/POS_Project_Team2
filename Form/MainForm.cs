@@ -1,4 +1,5 @@
 ﻿using POS_Project_Team2.Class;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace POS_Project_Team2
 {
@@ -7,7 +8,13 @@ namespace POS_Project_Team2
     {
         private List<List<(string item_name, int item_cost, int item_count)>> savedProducts = new List<List<(string item_name, int item_cost, int item_count)>>();
         private Button[] waitButtons;
-        public bool paymentform_purchase = false;
+
+        public bool paymentform_purchase = false;   //PaymentForm이 구매로 닫힐 때 대기로 닫힐 때를 구분하기 위해 생성
+        public int total_num_sales = 0;             //금일 총 판매 건수
+        public int total_num_refund = 0;            //금일 총 환불 건수
+        public int total_num_profit = 0;            //금일 총 수익
+        public int total_previous_purchase = 0;     //이전 구매액
+
         public MainForm()
         {
             // 실행시 창을 화면 중앙에 위치시키기
@@ -155,7 +162,7 @@ namespace POS_Project_Team2
         {
             var closingForm = sender as PaymentForm;
 
-            if (closingForm != null)
+            if (closingForm != null && !paymentform_purchase)
             {
                 int index = savedProducts.FindIndex(products => products.SequenceEqual(closingForm.GetProducts()));
                 if (index >= 0)
@@ -171,6 +178,14 @@ namespace POS_Project_Team2
                         waitButtons[waitButtonIndex].BackColor = Color.Red;
                     }
                 }
+            }
+            else if(closingForm != null && paymentform_purchase) 
+            {
+                label_tatal_num_sales.Text = "금일 총 판매 " + total_num_sales + "건";
+                label_total_num_profit.Text = "금일 총 수익 " + total_num_profit + "원";
+                label_total_previous_payment.Text = total_previous_purchase + "원";
+                label_total_previous_purchase.Text = total_previous_purchase + "원";
+
             }
         }
         public void UpdateWaitButton(int index, Color color)

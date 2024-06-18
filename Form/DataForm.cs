@@ -174,6 +174,7 @@ namespace POS_Project_Team2
         // 결제창 추가하기
         private void button1_Click(object sender, EventArgs e)
         {
+            items.Clear();
             // 현재 리스트뷰 아이템을 items 에 저장한다.
             for (int i = 0; i < listview_item.Items.Count; i++)
             {

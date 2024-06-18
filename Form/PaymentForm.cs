@@ -10,6 +10,9 @@ namespace POS_Project_Team2
 
         public DataForm data_form;
         private List<(string item_name, int item_cost, int item_count)> products = new List<(string item_name, int item_cost, int item_count)>();
+
+        int total_num_purchase = 0;
+        int total_price_purchase = 0;
         public PaymentForm(List<(string item_name, int item_cost, int item_count)> products = null)
         {
             InitializeComponent();
@@ -69,9 +72,6 @@ namespace POS_Project_Team2
 
             listview_product.View = View.Details;    //뷰모드 지정
 
-            int total_num_purchase = 0;
-            int total_price_purchase = 0;
-
 
             int index = 1;  //No 나타내는 index 값
 
@@ -89,8 +89,8 @@ namespace POS_Project_Team2
                 lvi.SubItems.Add(total_cost.ToString());
                 listview_product.Items.Add(lvi); //Listview에 추가
 
-                total_num_purchase += product.item_count;
-                total_price_purchase += total_cost;
+                total_num_purchase += product.item_count;   //총 구매액 계산
+                total_price_purchase += total_cost;         //총 갯수 계산
             }
 
             //Column 설정
@@ -102,9 +102,9 @@ namespace POS_Project_Team2
 
             listview_product.EndUpdate();    //업데이트 끝
 
-            label_num_product.Text = total_num_purchase.ToString();
-            label_amount_money.Text = total_price_purchase.ToString();
-            label_total_amount.Text = total_price_purchase.ToString();
+            label_num_product.Text = total_num_purchase.ToString()+"개";     //총 물품 개수
+            label_amount_money.Text = total_price_purchase.ToString()+"원";  //총 구매액
+            label_total_amount.Text = total_price_purchase.ToString();  //거스름돈 0원 고정하고 총 구매액하고 같게 설정
 
         }
 
@@ -187,6 +187,7 @@ namespace POS_Project_Team2
 
             if (data_form.ShowDialog() == DialogResult.OK)
             {
+                products.Clear();
                 products.AddRange(data_form.items);
                 list_view_control(products);
             }
@@ -260,6 +261,9 @@ namespace POS_Project_Team2
                 MainForm mainForm = (MainForm)this.Owner;
                 mainForm.UpdateWaitButton(0, Color.Gray);
                 mainForm.paymentform_purchase = true;
+                mainForm.total_num_sales += 1;
+                mainForm.total_num_profit += total_price_purchase;
+                mainForm.total_previous_purchase = total_price_purchase;
                 this.Close();
 
             }
@@ -289,6 +293,7 @@ namespace POS_Project_Team2
         private void button_wait_Click(object sender, EventArgs e)
         {
             MainForm mainForm = (MainForm)this.Owner;
+            mainForm.paymentform_purchase = false;
             this.Close();
         }
         public List<(string item_name, int item_cost, int item_count)> GetProducts()

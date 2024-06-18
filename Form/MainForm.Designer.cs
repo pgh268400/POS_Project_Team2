@@ -40,15 +40,15 @@
             group_main = new GroupBox();
             groupBox3 = new GroupBox();
             label9 = new Label();
-            label8 = new Label();
-            label7 = new Label();
+            label_total_previous_payment = new Label();
+            label_total_previous_purchase = new Label();
             button_receipt = new Button();
             label6 = new Label();
             label5 = new Label();
             label4 = new Label();
-            label3 = new Label();
-            label2 = new Label();
-            label1 = new Label();
+            label_total_num_profit = new Label();
+            label_total_num_refund = new Label();
+            label_tatal_num_sales = new Label();
             group_etc = new GroupBox();
             button_wait3 = new Button();
             button_wait2 = new Button();
@@ -142,7 +142,6 @@
             group_get.Controls.Add(button_get_all);
             group_get.Controls.Add(button_get_tpt);
             group_get.Controls.Add(button_get_stock);
-            group_get.Controls.Add(button_get_receipt);
             group_get.Controls.Add(label_realtime_clock);
             group_get.Location = new Point(24, 67);
             group_get.Name = "group_get";
@@ -167,9 +166,9 @@
             // group_main
             // 
             group_main.Controls.Add(groupBox3);
-            group_main.Controls.Add(label3);
-            group_main.Controls.Add(label2);
-            group_main.Controls.Add(label1);
+            group_main.Controls.Add(label_total_num_profit);
+            group_main.Controls.Add(label_total_num_refund);
+            group_main.Controls.Add(label_tatal_num_sales);
             group_main.Controls.Add(button_payment);
             group_main.Location = new Point(317, 67);
             group_main.Name = "group_main";
@@ -181,10 +180,10 @@
             // groupBox3
             // 
             groupBox3.Controls.Add(label9);
-            groupBox3.Controls.Add(label8);
+            groupBox3.Controls.Add(label_total_previous_payment);
             groupBox3.Controls.Add(button_get_goods);
             groupBox3.Controls.Add(button_get_receipt);
-            groupBox3.Controls.Add(label7);
+            groupBox3.Controls.Add(label_total_previous_purchase);
             groupBox3.Controls.Add(button_receipt);
             groupBox3.Controls.Add(label6);
             groupBox3.Controls.Add(label5);
@@ -201,27 +200,27 @@
             label9.AutoSize = true;
             label9.Location = new Point(179, 104);
             label9.Name = "label9";
-            label9.Size = new Size(34, 19);
+            label9.Size = new Size(31, 19);
             label9.TabIndex = 18;
-            label9.Text = "N원";
+            label9.Text = "0원";
             // 
-            // label8
+            // label_total_previous_payment
             // 
-            label8.AutoSize = true;
-            label8.Location = new Point(179, 78);
-            label8.Name = "label8";
-            label8.Size = new Size(34, 19);
-            label8.TabIndex = 17;
-            label8.Text = "N원";
+            label_total_previous_payment.AutoSize = true;
+            label_total_previous_payment.Location = new Point(179, 78);
+            label_total_previous_payment.Name = "label_total_previous_payment";
+            label_total_previous_payment.Size = new Size(31, 19);
+            label_total_previous_payment.TabIndex = 17;
+            label_total_previous_payment.Text = "0원";
             // 
-            // label7
+            // label_total_previous_purchase
             // 
-            label7.AutoSize = true;
-            label7.Location = new Point(179, 54);
-            label7.Name = "label7";
-            label7.Size = new Size(34, 19);
-            label7.TabIndex = 16;
-            label7.Text = "N원";
+            label_total_previous_purchase.AutoSize = true;
+            label_total_previous_purchase.Location = new Point(179, 54);
+            label_total_previous_purchase.Name = "label_total_previous_purchase";
+            label_total_previous_purchase.Size = new Size(31, 19);
+            label_total_previous_purchase.TabIndex = 16;
+            label_total_previous_purchase.Text = "0원";
             // 
             // button_receipt
             // 
@@ -260,32 +259,32 @@
             label4.TabIndex = 12;
             label4.Text = "총 구매액";
             // 
-            // label3
+            // label_total_num_profit
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(214, 86);
-            label3.Name = "label3";
-            label3.Size = new Size(119, 19);
-            label3.TabIndex = 10;
-            label3.Text = "금일 총 수익 N원";
+            label_total_num_profit.AutoSize = true;
+            label_total_num_profit.Location = new Point(214, 86);
+            label_total_num_profit.Name = "label_total_num_profit";
+            label_total_num_profit.Size = new Size(116, 19);
+            label_total_num_profit.TabIndex = 10;
+            label_total_num_profit.Text = "금일 총 수익 0원";
             // 
-            // label2
+            // label_total_num_refund
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(214, 56);
-            label2.Name = "label2";
-            label2.Size = new Size(119, 19);
-            label2.TabIndex = 9;
-            label2.Text = "금일 총 환불 N건";
+            label_total_num_refund.AutoSize = true;
+            label_total_num_refund.Location = new Point(214, 56);
+            label_total_num_refund.Name = "label_total_num_refund";
+            label_total_num_refund.Size = new Size(116, 19);
+            label_total_num_refund.TabIndex = 9;
+            label_total_num_refund.Text = "금일 총 환불 0건";
             // 
-            // label1
+            // label_tatal_num_sales
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(214, 24);
-            label1.Name = "label1";
-            label1.Size = new Size(119, 19);
-            label1.TabIndex = 8;
-            label1.Text = "금일 총 판매 N건";
+            label_tatal_num_sales.AutoSize = true;
+            label_tatal_num_sales.Location = new Point(214, 24);
+            label_tatal_num_sales.Name = "label_tatal_num_sales";
+            label_tatal_num_sales.Size = new Size(116, 19);
+            label_tatal_num_sales.TabIndex = 8;
+            label_tatal_num_sales.Text = "금일 총 판매 0건";
             // 
             // group_etc
             // 
@@ -438,16 +437,16 @@
         private Button button_payment;
         private GroupBox group_main;
         private GroupBox groupBox3;
-        private Label label3;
-        private Label label2;
-        private Label label1;
+        private Label label_total_num_profit;
+        private Label label_total_num_refund;
+        private Label label_tatal_num_sales;
         private Button button_receipt;
         private Label label6;
         private Label label5;
         private Label label4;
         private Label label9;
-        private Label label8;
-        private Label label7;
+        private Label label_total_previous_payment;
+        private Label label_total_previous_purchase;
         private GroupBox group_etc;
         private Button button_refund;
         private PictureBox picture_box_alarm;
