@@ -209,7 +209,7 @@
             label_change.AutoSize = true;
             label_change.Font = new Font("맑은 고딕", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             label_change.ForeColor = Color.Red;
-            label_change.Location = new Point(169, 13);
+            label_change.Location = new Point(142, 15);
             label_change.Name = "label_change";
             label_change.Size = new Size(22, 25);
             label_change.TabIndex = 20;
@@ -250,7 +250,7 @@
             label_total_amount.AutoSize = true;
             label_total_amount.Font = new Font("맑은 고딕", 18F, FontStyle.Regular, GraphicsUnit.Point);
             label_total_amount.ForeColor = Color.Red;
-            label_total_amount.Location = new Point(173, 12);
+            label_total_amount.Location = new Point(146, 14);
             label_total_amount.Name = "label_total_amount";
             label_total_amount.Size = new Size(27, 32);
             label_total_amount.TabIndex = 18;

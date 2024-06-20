@@ -8,7 +8,7 @@ namespace POS_Project_Team2
         private Label[] labels_wait;
 
         public DataForm data_form;
-        private List<(string item_name, int item_cost, int item_count)> products = new List<(string item_name, int item_cost, int item_count)>();
+        private List<(string item_name, int item_cost, int item_count)> products = new();
 
         int total_num_purchase = 0;
         int total_price_purchase = 0;
@@ -62,7 +62,7 @@ namespace POS_Project_Team2
             label_wait3.ForeColor = Color.Gray;
         }
 
-        //ListView의 보여질 목록
+        // ListView의 보여질 목록
         private void list_view_control(List<(string item_name, int item_cost, int item_count)> products)
         {
             listview_product.Clear();    //기존에 있던 물품 지움. 이전 물건들 List Products에 저장되어있어서 지우지않으면 중복으로 생김
@@ -113,7 +113,7 @@ namespace POS_Project_Team2
             register_realtime_clock();
 
             // 대기열 라벨 이벤트 핸들러 등록 및 초기화
-            init_label_wait();
+            // init_label_wait();
 
             // 리스트뷰 너비 비율 조정
             FormHelper.adjust_column_widths(listview_product, new int[] { 10, 40, 20, 15, 15 });
@@ -208,8 +208,6 @@ namespace POS_Project_Team2
                     // 이 포인트의 경우 유저의 전화번호 뒷자리와 이름을 입력받아야 한다.
                     // 이를 위한 폼을 띄운다.
 
-
-
                     PointForm point_form = new PointForm();
                     if (point_form.ShowDialog() == DialogResult.OK)
                     {
@@ -231,22 +229,26 @@ namespace POS_Project_Team2
                 // 결제 내역을 로그에 기록한다.
                 Logger logger = new Logger();
 
-                // products 를 로그에 기록한다.
-                // products를 for문을 돌면서 순회하고,
-                // (아이템 이름, 아이템 가격, 아이템 개수, 총 금액, name, phonenumber)
-                // 형태로 string [] 으로 바꾼다.
-                // 이를 logger.append_payment_log() 메소드에 넘겨주면 된다.
+
+                /*
+                  products 를 로그에 기록한다.
+                  products를 for문을 돌면서 순회하고,
+                  (아이템 이름, 아이템 가격, 아이템 개수, 총 금액, name, phone_number)
+                  형태로 string [] 으로 바꾼다.
+                  이를 logger.append_payment_log() 메소드에 넘겨주면 된다.
+                */
+
                 foreach (var product in products)
                 {
                     int total_cost = product.item_cost * product.item_count;
                     string[] log_entry = new string[]
                     {
-                product.item_name,
-                product.item_cost.ToString(),
-                product.item_count.ToString(),
-                total_cost.ToString(),
-                name,
-                phone_number
+                        product.item_name,
+                        product.item_cost.ToString(),
+                        product.item_count.ToString(),
+                        total_cost.ToString(),
+                        name,
+                        phone_number
                     };
 
                     // logger.append_payment_log() 메소드에 넘겨주면 된다.
@@ -295,7 +297,7 @@ namespace POS_Project_Team2
             mainForm.paymentform_purchase = false;
             this.Close();
         }
-        public List<(string item_name, int item_cost, int item_count)> GetProducts()
+        public List<(string item_name, int item_cost, int item_count)> get_products()
         {
             return new List<(string item_name, int item_cost, int item_count)>(products);
         }

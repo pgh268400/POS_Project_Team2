@@ -39,7 +39,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("맑은 고딕", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.Location = new Point(21, 20);
+            label1.Location = new Point(21, 19);
             label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
             label1.Size = new Size(255, 15);
@@ -48,27 +48,27 @@
             // 
             // textbox_name
             // 
-            textbox_name.Location = new Point(21, 47);
-            textbox_name.Margin = new Padding(2, 2, 2, 2);
+            textbox_name.Location = new Point(34, 47);
+            textbox_name.Margin = new Padding(2);
             textbox_name.Name = "textbox_name";
             textbox_name.PlaceholderText = "이름";
-            textbox_name.Size = new Size(111, 23);
+            textbox_name.Size = new Size(222, 23);
             textbox_name.TabIndex = 1;
             // 
             // textbox_phone_4
             // 
-            textbox_phone_4.Location = new Point(153, 47);
-            textbox_phone_4.Margin = new Padding(2, 2, 2, 2);
+            textbox_phone_4.Location = new Point(34, 84);
+            textbox_phone_4.Margin = new Padding(2);
             textbox_phone_4.Name = "textbox_phone_4";
             textbox_phone_4.PlaceholderText = "전화번호 뒷 4자리";
-            textbox_phone_4.Size = new Size(117, 23);
+            textbox_phone_4.Size = new Size(222, 23);
             textbox_phone_4.TabIndex = 2;
             textbox_phone_4.KeyPress += textbox_phone_4_KeyPress;
             // 
             // button_point_ok
             // 
-            button_point_ok.Location = new Point(61, 88);
-            button_point_ok.Margin = new Padding(2, 2, 2, 2);
+            button_point_ok.Location = new Point(60, 126);
+            button_point_ok.Margin = new Padding(2);
             button_point_ok.Name = "button_point_ok";
             button_point_ok.Size = new Size(78, 22);
             button_point_ok.TabIndex = 3;
@@ -78,8 +78,8 @@
             // 
             // button_point_cancle
             // 
-            button_point_cancle.Location = new Point(144, 88);
-            button_point_cancle.Margin = new Padding(2, 2, 2, 2);
+            button_point_cancle.Location = new Point(143, 126);
+            button_point_cancle.Margin = new Padding(2);
             button_point_cancle.Name = "button_point_cancle";
             button_point_cancle.Size = new Size(78, 22);
             button_point_cancle.TabIndex = 4;
@@ -91,13 +91,13 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(292, 123);
+            ClientSize = new Size(296, 164);
             Controls.Add(button_point_cancle);
             Controls.Add(button_point_ok);
             Controls.Add(textbox_phone_4);
             Controls.Add(textbox_name);
             Controls.Add(label1);
-            Margin = new Padding(2, 2, 2, 2);
+            Margin = new Padding(2);
             Name = "PointForm";
             Text = "POS System";
             ResumeLayout(false);

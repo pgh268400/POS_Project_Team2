@@ -179,14 +179,14 @@ namespace POS_Project_Team2
 
             if (closingForm != null && !paymentform_purchase)
             {
-                int index = savedProducts.FindIndex(products => products.SequenceEqual(closingForm.GetProducts()));
+                int index = savedProducts.FindIndex(products => products.SequenceEqual(closingForm.get_products()));
                 if (index >= 0)
                 {
-                    savedProducts[index] = closingForm.GetProducts();
+                    savedProducts[index] = closingForm.get_products();
                 }
                 else
                 {
-                    savedProducts.Add(closingForm.GetProducts());
+                    savedProducts.Add(closingForm.get_products());
                     int waitButtonIndex = savedProducts.Count - 1;
                     if (waitButtonIndex < waitButtons.Length && !paymentform_purchase)
                     {
@@ -269,7 +269,7 @@ namespace POS_Project_Team2
             log_form.set_form_role(log_data, "환불 내역을 표시하고 있습니다. 환불을 원하시면 메인 화면의 환불 버튼을 클릭해주세요.");
 
         }
-        
+
         //환불 후 MainForm의 라벨 업데이트하는 함수
         public void UpdateLabel()
         {

@@ -205,6 +205,14 @@ namespace POS_Project_Team2
 
                 items.Add((item_name, item_cost, item_count));
             }
+
+            // 아이템의 내용을 콘솔에 출력한다
+            foreach (var item in items)
+            {
+                Console.WriteLine($"{item.item_name} {item.item_cost} {item.item_count}");
+            }
+
+
             // items 는 Payment Form에서 이어 받는다.
             // 여기선 단순히 Dialog를 종료한다.
             DialogResult = DialogResult.OK;
