@@ -120,7 +120,8 @@ namespace POS_Project_Team2
 
         private void button_wait1_Click(object sender, EventArgs e)
         {
-
+            // 현재 대기열 1에서만 작동합니다 메세지 박스 출력
+            MessageBox.Show("현재 대기열 1에서만 작동합니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void button_wait3_Click(object sender, EventArgs e)

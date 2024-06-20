@@ -12,6 +12,10 @@ namespace POS_Project_Team2
 
         int total_num_purchase = 0;
         int total_price_purchase = 0;
+
+        // 전체 취소 버튼 누름 여부
+        public bool all_cancel = false;
+
         public PaymentForm(List<(string item_name, int item_cost, int item_count)> products = null)
         {
             InitializeComponent();
@@ -281,7 +285,7 @@ namespace POS_Project_Team2
         //취소 버튼 클릭 시 담았던 재고 원상 복구
         private void button_all_cancle_Click(object sender, EventArgs e)
         {
-
+            all_cancel = true;
             if (data_form != null)
             {
                 data_form.RestoreOriginalData();    // DataForm의 원본 데이터 복원 메서드 호출
@@ -296,13 +300,31 @@ namespace POS_Project_Team2
 
         private void button_wait_Click(object sender, EventArgs e)
         {
-            MainForm mainForm = (MainForm)this.Owner;
-            mainForm.paymentform_purchase = false;
-            this.Close();
+            // MainForm mainForm = (MainForm)this.Owner;
+            // mainForm.paymentform_purchase = false;
+            // this.Close();
         }
         public List<(string item_name, int item_cost, int item_count)> get_products()
         {
             return new List<(string item_name, int item_cost, int item_count)>(products);
+        }
+
+        private void PaymentForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // 리스트뷰에 항목이 있는지 확인
+            if (listview_product.Items.Count > 0)
+            {
+                // 경고 메시지 박스 표시
+                DialogResult result = MessageBox.Show("리스트뷰에 데이터가 남아있습니다. 전체 취소 버튼을 클릭해 나가주세요.",
+                    "경고",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                if (!all_cancel)
+                {
+                    e.Cancel = true;
+                }
+            }
         }
     }
 }

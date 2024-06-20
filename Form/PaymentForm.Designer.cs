@@ -104,6 +104,7 @@
             // label_wait3
             // 
             label_wait3.AutoSize = true;
+            label_wait3.Enabled = false;
             label_wait3.Font = new Font("맑은 고딕", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
             label_wait3.Location = new Point(301, 9);
             label_wait3.Name = "label_wait3";
@@ -114,6 +115,7 @@
             // label_wait2
             // 
             label_wait2.AutoSize = true;
+            label_wait2.Enabled = false;
             label_wait2.Font = new Font("맑은 고딕", 11.25F, FontStyle.Bold, GraphicsUnit.Point);
             label_wait2.Location = new Point(168, 9);
             label_wait2.Name = "label_wait2";
@@ -402,6 +404,7 @@
             Controls.Add(panel1);
             Name = "PaymentForm";
             Text = "POS System";
+            FormClosing += PaymentForm_FormClosing;
             Load += PaymentForm_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
