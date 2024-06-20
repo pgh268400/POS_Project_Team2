@@ -75,6 +75,7 @@ namespace POS_Project_Team2
 
                 // 정말 삭제할건지 묻는다.
                 DialogResult result = MessageBox.Show("해당 결제를 환불하시겠습니까? 결제 내역에는 삭제되고 환불 내역에서만 확인 가능합니다.", "알림", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                
                 if (result == DialogResult.Yes)
                 {
                     // 리스트뷰 아이템을 string[] 에 담는다
@@ -83,9 +84,15 @@ namespace POS_Project_Team2
                     {
                         // 이름 인덱스인 경우 (환불) 이라고 기록하도록 한다.
                         if (i == 1)
+                        {
                             refund_data[i] = "(환불) " + selected_item.SubItems[i].Text;
+                        }
+
                         else
+                        {
                             refund_data[i] = selected_item.SubItems[i].Text;
+                            
+                        }
                     }
 
                     // 환불 기록을 로그에 저장
@@ -93,6 +100,12 @@ namespace POS_Project_Team2
                     logger.append_refund_log(refund_data);
 
                     int selected_item_index = listView1.Items.IndexOf(selected_item);
+                    int total_price_refund = 0;
+
+                    // 단가와 갯수를 사용하여 총 환불 금액을 계산
+                    int unit_price = int.Parse(selected_item.SubItems[2].Text); // 단가
+                    int quantity = int.Parse(selected_item.SubItems[3].Text); // 갯수
+                    total_price_refund = unit_price * quantity;
 
                     // 결제 기록 로그에도 삭제 반영
                     logger.remove_payment_log(selected_item_index);
@@ -128,6 +141,13 @@ namespace POS_Project_Team2
                         itemDataSet.WriteXml(writer);
                     }
 
+                    //총 수익 받기위해 MainForm 불러옴
+                    MainForm mainForm = (MainForm)this.Owner;
+                    mainForm.total_num_sales -= 1;
+                    mainForm.total_num_profit -= total_price_refund;
+                    mainForm.total_previous_purchase = 0;
+
+                    mainForm.UpdateLabel();
 
 
                     MessageBox.Show("환불 처리가 완료되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);

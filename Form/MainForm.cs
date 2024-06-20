@@ -250,6 +250,8 @@ namespace POS_Project_Team2
 
             // 총 결제 내역 창 열기
             PayMentLogShowForm log_form = new PayMentLogShowForm();
+            log_form.Owner = this;  //나중에 수익 값 조절하기 위해 Main폼 부모로
+
             FormHelper.show(log_form);
 
             log_form.set_form_role(log_data, "환불하고 싶으면 결제 내역을 오른쪽 클릭해주세요.");
@@ -267,5 +269,16 @@ namespace POS_Project_Team2
             log_form.set_form_role(log_data, "환불 내역을 표시하고 있습니다. 환불을 원하시면 메인 화면의 환불 버튼을 클릭해주세요.");
 
         }
+        
+        //환불 후 MainForm의 라벨 업데이트하는 함수
+        public void UpdateLabel()
+        {
+            label_tatal_num_sales.Text = "금일 총 판매 " + total_num_sales + "건";
+            label_total_num_profit.Text = "금일 총 수익 " + total_num_profit + "원";
+            label_total_num_refund.Text = "금일 총 환불 " + total_num_refund + "건";
+            label_total_previous_payment.Text = total_previous_purchase + "원";
+            label_total_previous_purchase.Text = total_previous_purchase + "원";
+        }
+
     }
 }
