@@ -6,13 +6,13 @@ namespace POS_Project_Team2
     public partial class MainForm : Form
     {
         private List<List<(string item_name, int item_cost, int item_count)>> savedProducts = new List<List<(string item_name, int item_cost, int item_count)>>();
-        private Button[] waitButtons;
+        private Button[] wait_buttons;
 
-        public bool paymentform_purchase = false;   //PaymentForm이 구매로 닫힐 때 대기로 닫힐 때를 구분하기 위해 생성
-        public int total_num_sales = 0;             //금일 총 판매 건수
-        public int total_num_refund = 0;            //금일 총 환불 건수
-        public int total_num_profit = 0;            //금일 총 수익
-        public int total_previous_purchase = 0;     //이전 구매액
+        public bool paymentform_purchase = false;   // PaymentForm이 구매로 닫힐 때 대기로 닫힐 때를 구분하기 위해 생성
+        public int total_num_sales = 0;             // 금일 총 판매 건수
+        public int total_num_refund = 0;            // 금일 총 환불 건수
+        public int total_num_profit = 0;            // 금일 총 수익
+        public int total_previous_purchase = 0;     // 이전 구매액
 
         public MainForm()
         {
@@ -26,9 +26,9 @@ namespace POS_Project_Team2
 
         private void InitializeWaitButtons()
         {
-            waitButtons = new Button[] { button_wait1, button_wait2, button_wait3 };
+            wait_buttons = new Button[] { button_wait1, button_wait2, button_wait3 };
 
-            foreach (var button in waitButtons)
+            foreach (var button in wait_buttons)
             {
                 button.Click += WaitButton_Click;
                 button.BackColor = Color.Gray;
@@ -162,7 +162,7 @@ namespace POS_Project_Team2
         private void WaitButton_Click(object sender, EventArgs e)
         {
             var clickedButton = sender as Button;
-            int index = Array.IndexOf(waitButtons, clickedButton);
+            int index = Array.IndexOf(wait_buttons, clickedButton);
 
             if (index >= 0 && index < savedProducts.Count)
             {
@@ -189,9 +189,9 @@ namespace POS_Project_Team2
                 {
                     savedProducts.Add(closingForm.get_products());
                     int waitButtonIndex = savedProducts.Count - 1;
-                    if (waitButtonIndex < waitButtons.Length && !paymentform_purchase)
+                    if (waitButtonIndex < wait_buttons.Length && !paymentform_purchase)
                     {
-                        waitButtons[waitButtonIndex].BackColor = Color.Red;
+                        wait_buttons[waitButtonIndex].BackColor = Color.Red;
                     }
                 }
             }
@@ -205,9 +205,9 @@ namespace POS_Project_Team2
         }
         public void UpdateWaitButton(int index, Color color)
         {
-            if (index >= 0 && index < waitButtons.Length)
+            if (index >= 0 && index < wait_buttons.Length)
             {
-                waitButtons[index].BackColor = color;
+                wait_buttons[index].BackColor = color;
             }
         }
 
