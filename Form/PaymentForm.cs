@@ -67,6 +67,9 @@ namespace POS_Project_Team2
         {
             listview_product.Clear();    //기존에 있던 물품 지움. 이전 물건들 List Products에 저장되어있어서 지우지않으면 중복으로 생김
 
+            total_num_purchase = 0;   //기존 물품 정보 초기화
+            total_price_purchase = 0;
+
             listview_product.BeginUpdate();  //업데이트 끝날 때까지 UI 중지
 
             listview_product.View = View.Details;    //뷰모드 지정

@@ -166,7 +166,6 @@ namespace POS_Project_Team2
 
             // 선택하기가 완료된 경우 재고 개수를 data grid view에 반영시킨다.
             datagridview_stock.Rows[selected].Cells[3].Value = stock - item_count;
-
             // 변경된 제고 데이터 xml에 저장
             SaveDataTable(dataset.Tables["ItemList"], "item_data.xml");
 
