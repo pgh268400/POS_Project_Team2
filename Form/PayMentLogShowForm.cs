@@ -143,9 +143,7 @@ namespace POS_Project_Team2
 
                     //총 수익 받기위해 MainForm 불러옴
                     MainForm mainForm = (MainForm)this.Owner;
-                    mainForm.total_num_sales -= 1;
                     mainForm.total_num_profit -= total_price_refund;
-                    mainForm.total_previous_purchase = 0;
 
                     mainForm.UpdateLabel();
 
