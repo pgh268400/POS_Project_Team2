@@ -43,10 +43,21 @@ namespace POS_Project_Team2
             //데이터 없으면 기본 데이터 추가
             if (dataset.Tables["ItemList"].Rows.Count == 0)
             {
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 1, "싸인펜", 1000, 10 });
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 1, "싸인펜", 1000, 30 });
                 dataset.Tables["ItemList"].Rows.Add(new object[] { 2, "붓", 2000, 20 });
                 dataset.Tables["ItemList"].Rows.Add(new object[] { 3, "지우개", 800, 30 });
                 dataset.Tables["ItemList"].Rows.Add(new object[] { 4, "제도샤프", 1500, 40 });
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 5, "A4 노트", 2000, 30 });
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 6, "스티커 메모", 1500, 20 });
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 7, "수정 테이프", 700, 20 });
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 8, "가위", 1500, 15 });
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 9, "글루건", 1000, 10 });
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 10, "필통", 2000, 12 });
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 11, "바인더 클립(20개)", 2000, 20 });
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 12, "미니 스테이플러", 2500, 10 });
+                dataset.Tables["ItemList"].Rows.Add(new object[] { 13, "자", 1000, 20 });
+
+
             }
 
             // 원본 데이터 복사
