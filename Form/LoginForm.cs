@@ -1,12 +1,82 @@
 ﻿namespace POS_Project_Team2
 {
+    using System.Data.SQLite;
     using System.Drawing.Drawing2D;
+
     public partial class LoginForm : Form
     {
         /*
           사용자 입장에서 가장 처음 만나는
           로그인 창 (Entry Point)
         */
+
+        /*
+          sqlite를 이용하면 서버 없이 파일 단 1개만으로 db를 연습해볼 수 있다.
+          참고 : https://ainayoon.tistory.com/7
+          만약 db 파일이 없을경우 만드는 db 파일 이름
+         */
+        private static string db_file_path = "users.db";
+        private static string auto_login_file_path = "autologin";
+
+
+        public static void init_db()
+        {
+            // 데이터베이스 파일 존재 여부 확인
+            if (!File.Exists(db_file_path))
+            {
+                // 데이터베이스 파일이 없으면 생성하고 테이블 초기화
+                create_database_with_table();
+            }
+        }
+
+        private static void create_database_with_table()
+        {
+            string connection_string = $"Data Source={db_file_path};Version=3;";
+            using (var connection = new SQLiteConnection(connection_string))
+            {
+                connection.Open();
+
+                // 파일로 작업하지만 다루는건 당연히 SQL문법으로 다룬다.
+                string create_table_query = @"
+            CREATE TABLE IF NOT EXISTS Users (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Username TEXT NOT NULL UNIQUE,
+                Password TEXT NOT NULL
+            )";
+                using (var command = new SQLiteCommand(create_table_query, connection))
+                {
+                    // ExecuteNonQuery = SQL 명령문을 실행하지만 결과를 반환하지 않는 경우에 사용
+                    // NonQuery = 결과 집합을 반환하지 않는다는 의미
+                    command.ExecuteNonQuery();
+                    Console.WriteLine("Users 테이블이 생성되었습니다.");
+                }
+            }
+
+            // 새로 만들었으면 기본 유저 3개를 추가한다. (관리자)
+            insert_default_users("pgh268400@naver.com", "$2a$11$AGSymNxbp5.vNByqEVqx0OnEuml73PhmDcs4P.qdWF66uf7CdnZV2");
+            insert_default_users("admin@naver.com", "$2a$12$fayeaZIXIEqMVv4IkMDDaOb0KhE4a65/zel5oHJ9k..E2Q/EytTFu");
+            insert_default_users("admin", "$2a$12$fayeaZIXIEqMVv4IkMDDaOb0KhE4a65/zel5oHJ9k..E2Q/EytTFu");
+        }
+
+        // 참고 : password 의 경우 반드시 비밀번호를 bcrypt 로 해싱한 값을 넣어야 한다.
+        private static void insert_default_users(string username, string hashed_password)
+        {
+            string connection_string = $"Data Source={db_file_path};Version=3;";
+            using (var connection = new SQLiteConnection(connection_string))
+            {
+                connection.Open();
+
+                // bcrypt로 암호화된 비밀번호를 저장한다.
+                string insert_query = "INSERT INTO Users (Username, Password) VALUES (@Username, @Password)";
+                using (var command = new SQLiteCommand(insert_query, connection))
+                {
+                    // admin / admin
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.Parameters.AddWithValue("@Password", hashed_password);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
 
         public LoginForm()
         {
@@ -18,6 +88,73 @@
             // 폼 사이즈 변경 금지
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
 
+            // 자동 로그인 검증
+            if (is_verify_auto_login())
+            {
+                // 자동 로그인 성공
+                this.Hide();
+                MainForm main_form = new MainForm();
+                main_form.Closed += (s, args) => this.Close(); // important!
+                main_form.ShowDialog();
+            }
+            else
+            {
+                // 자동 로그인 실패시 메세지 박스 출력 및 자동 로그인 파일 삭제
+                MessageBox.Show("자동 로그인에 실패했습니다. 다시 로그인해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            }
+        }
+
+        private bool is_verify_auto_login()
+        {
+            // 먼저 autologin 파일이 존재하는지 확인한다.
+            if (File.Exists(auto_login_file_path))
+            {
+                // 있다면 파일이 비지 않았는지, 두줄의 내용을 가지는지 확인한다
+                string[] lines = File.ReadAllLines(auto_login_file_path);
+
+                if (lines.Length != 2) return false;
+                string username = lines[0];
+                string hashed_password = lines[1];
+
+                // db에 요청해 id에 해당하는 pw를 가져온다.
+                string select_query = "SELECT Password FROM Users WHERE Username = @Username";
+                string connection_string = $"Data Source={db_file_path};Version=3;";
+
+                /*
+                  C#에서 using 문을 간결하게 사용할 수 있도록 
+                  C# 8.0부터 using 에 중괄호로 코드를 묶지 않아도 되는 문법 업데이트를 했다.
+                  이 새로운 문법은 using 선언을 사용하여 자원을 자동으로 해제할 수 있다고 한다.
+                  이 문법을 사용하면 블록 범위를 명시하지 않아도 되므로 코드가 간결해진다.
+                  기존 using 과 비교했을때 기능상은 동일하다고 한다. 두 방식 모두 자원 해제
+                  시점이 동일하다고 한다. by ChatGPT4o. 인공지능 챗봇의 답변이므로 정확한
+                  내용은 msdn 및 인터넷 등지에서 검증이 필요하다.
+                 */
+                using var connection = new SQLiteConnection(connection_string);
+                connection.Open();
+
+                using var command = new SQLiteCommand(select_query, connection);
+                command.Parameters.AddWithValue("@Username", username);
+
+                using var reader = command.ExecuteReader();
+                if (!reader.Read()) return false;
+
+                // db에 저장된 해시된 비밀번호와 autologin 파일에 저장된 해시된 비밀번호가 일치하는지 확인
+                string stored_hash = reader["Password"].ToString();
+                if (stored_hash == hashed_password)
+                {
+                    // 일치하면 로그인 성공
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
 
         // 사각 패널 깎아서 뭉툭하게 만들기 (디자인)
@@ -42,18 +179,49 @@
         private void button_login_Click(object sender, EventArgs e)
         {
             /*
-               외부 라이브러리를 사용할 수 없으므로,
-               DB 연결 및 로그인 처리는 문자열 평문 비교로 대체한다.
-               id : admin, pw : admin
-               양 옆에 공백이 있어도 문제 없이 로그인 되도록 Trim 처리후 비교한다.
+               sqlite 와 bcrypt 를 이용해 pw를 검증한다.
+               이미 users.db 안에 id 및 bcrypt로 암호화된 비밀번호가 저장되어 있다.
+               가능한 id/pw
+               1. admin / admin
+               2. admin@naver.com / admin
+               3. pgh268400@naver.com / 내가 항상 쓰던 비밀번호 (sqlite에 bcrypt로 암호화, 해싱되어 있다.)
              */
-            if (textbox_id.Text.Trim() == "admin" && textbox_pw.Text.Trim() == "admin" || textbox_id.Text.Trim() == "admin@naver.com" && textbox_pw.Text.Trim() == "admin")
+
+            // 입력된 ID와 비밀번호를 변수에 저장
+            string input_id = textbox_id.Text.Trim();
+            string input_pw = textbox_pw.Text.Trim();
+
+            if (is_valid_user(input_id, input_pw))
             {
                 // 자동 로그인 활성화된 경우
                 if (checkbox_auto_login.Checked)
                 {
-                    // autologin 파일 생성
-                    File.Create("autologin").Close();
+                    // db에 요청해 id에 해당하는 pw를 가져온다.
+                    string select_query = "SELECT Password FROM Users WHERE Username = @Username";
+                    string stored_hash = "";
+                    string connection_string = $"Data Source={db_file_path};Version=3;";
+                    using (var connection = new SQLiteConnection(connection_string))
+                    {
+                        connection.Open();
+                        using (var command = new SQLiteCommand(select_query, connection))
+                        {
+                            command.Parameters.AddWithValue("@Username", input_id);
+                            using (var reader = command.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    stored_hash = reader["Password"].ToString();
+                                }
+                            }
+                        }
+                    }
+
+                    if (stored_hash != "")
+                    {
+                        // autologin 파일을 생성하고 id와 pw를 각각 저장해놓는다
+                        File.WriteAllText(auto_login_file_path, $"{input_id}\n{stored_hash}");
+                    }
+
                 }
 
                 /*
@@ -83,6 +251,37 @@
             }
         }
 
+        private bool is_valid_user(string username, string password)
+        {
+            string connection_string = $"Data Source={db_file_path};Version=3;";
+            using (var connection = new SQLiteConnection(connection_string))
+            {
+                connection.Open();
+
+                // @Username = 자리표시자
+                // SQL 쿼리에서 매개변수를 사용하여 값을 전달하기 위한 자리 표시자라고 한다.
+                // 이는 SQL 인젝션 공격을 방지하고, 쿼리를 더 안전하게 작성할 수 있도록 도와준다고 한다.
+                string select_query = "SELECT Password FROM Users WHERE Username = @Username";
+                using (var command = new SQLiteCommand(select_query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            string stored_hash = reader["Password"].ToString();
+                            // Install-Package BCrypt.Net-Next
+                            return BCrypt.Net.BCrypt.Verify(password, stored_hash);
+                        }
+                        else
+                            return false;
+
+                    }
+                }
+            }
+        }
+
         private void button_online_Click(object sender, EventArgs e)
         {
             MessageBox.Show("온라인 모드는 현재 사용하실 수 없습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -102,27 +301,7 @@
 
         }
 
-        private void DesignTest_Load(object sender, EventArgs e)
-        {
-            // 같은 경로에 autologin 파일이 존재하면 자동 로그인 상태이므로 자동으로 다음 폼으로 이동한다.
-            if (File.Exists("autologin"))
-            {
-                MainForm main_form = new MainForm();
-                main_form.Closed += (s, args) => this.Close(); // important!
-                main_form.ShowDialog();
-            }
 
-            // ID, PW 입력창에 KeyPress 이벤트 핸들러 등록
-            textbox_id.KeyPress += new KeyPressEventHandler(get_enter);
-            textbox_pw.KeyPress += new KeyPressEventHandler(get_enter);
-
-            // 편의를 위해 ID, PW를 미리 입력해놓는다.
-            textbox_id.Text = "admin@naver.com";
-            textbox_pw.Text = "admin";
-
-            // 비밀번호에 포커스를 건다.
-            textbox_pw.Focus();
-        }
 
         // ID, PW 텍스트 박스에서 엔터키 입력시 수행하는 이벤트 핸들러
         private void get_enter(object sender, KeyPressEventArgs e)
@@ -150,6 +329,23 @@
                     checkbox_auto_login.Checked = false;
                 }
             }
+        }
+
+        private void LoginForm_Load(object sender, EventArgs e)
+        {
+            // 유저 정보 저장할 db 없으면 자동 생성
+            init_db();
+
+            // ID, PW 입력창에 KeyPress 이벤트 핸들러 등록
+            textbox_id.KeyPress += new KeyPressEventHandler(get_enter);
+            textbox_pw.KeyPress += new KeyPressEventHandler(get_enter);
+
+            // 편의를 위해 ID, PW를 미리 입력해놓는다.
+            textbox_id.Text = "admin@naver.com";
+            textbox_pw.Text = "admin";
+
+            // 비밀번호에 포커스를 건다.
+            textbox_pw.Focus();
         }
     }
 }

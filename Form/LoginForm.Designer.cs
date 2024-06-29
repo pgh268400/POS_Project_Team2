@@ -190,7 +190,7 @@
             MaximizeBox = false;
             Name = "LoginForm";
             Text = "POS System";
-            Load += DesignTest_Load;
+            Load += LoginForm_Load;
             panel_background.ResumeLayout(false);
             panel_background.PerformLayout();
             ResumeLayout(false);
