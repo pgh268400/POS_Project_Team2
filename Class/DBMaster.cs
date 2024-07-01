@@ -18,22 +18,239 @@ namespace POS_Project_Team2.Class
         private static readonly object _lock = new object();
 
         // 멤버 변수
-        // 사용자들의 id와 pw를 저장하는 db 파일 경로
-        private string user_db_path = "users.db";
+        // 모든 table을 일괄적으로 저장할 db 파일
+        private string total_db_path = "total.db";
 
         // 해당 connection 변수를 이용해 db에 접근한다.
-        private SQLiteConnection user_connection;
+        private SQLiteConnection connection;
+
+        // 유저 테이블 이름
+        private string user_table_name = "Users";
+
+        // 총 결제 내역 테이블 이름
+        private string payment_table_name = "Payments";
+
+        // 환불 내역 테이블 이름
+        private string refund_table_name = "Refunds";
+
 
         // private 생성자
         private DBMaster()
         {
-            // 생성시 db 파일을 모두 로드한다.
-            string user_connection_string = $"Data Source={user_db_path};Version=3;";
+            /*
+              db 파일에 연결을 시도한다.
+              참고로 SQLite는 connection 시 대응되는 db 파일이 없다면 알아서 자동 생성하니
+              db 파일이 없어도 걱정하지 않아도 된다.
+            */
+            string connection_string = $"Data Source={total_db_path};Version=3;";
 
-            // db 연결
-            // 속도 저하를 막기 위해 연결을 유지할 것이기에, 자동으로 해제 시키는 using은 사용하지 않는다.
-            user_connection = new SQLiteConnection(user_connection_string);
-            user_connection.Open();
+            /*
+              db 연결
+              속도 저하를 막기 위해 연결을 유지할 것이기에, 자동으로 해제 시키는 using은 사용하지 않고 소멸자에서 Close 한다.
+              매번 Open 하는 경우 db 파일을 열기 위해 File I/O 가 지속적으로 발생해서 성능이 떨어진다.
+              일반적으로 db에서 성능 저하가 가장 큰 부분(비용이 큰 부분) 이 첫 접속이라고 한다.
+            */
+            connection = new SQLiteConnection(connection_string);
+            connection.Open();
+
+            // db 파일 안에 table 들이 없다면 생성한다.
+            if (!is_table_exist(user_table_name))
+                create_user_table();
+
+            if (!is_table_exist(payment_table_name))
+                create_payment_table();
+
+            if (!is_table_exist(refund_table_name))
+                create_refund_table();
+        }
+
+        // db 파일 삭제 함수
+        // 참고로 해당 함수 호출 이후 반드시 재 실행해야 db가 정상 작동한다.
+        public void clear_db_file()
+        {
+            // Connection 을 끊어준다
+            connection.Close();
+
+            if (File.Exists(total_db_path))
+            {
+                File.Delete(total_db_path);
+                Console.WriteLine("DB 파일이 삭제되었습니다.");
+            }
+            else
+            {
+                Console.WriteLine("DB 파일이 존재하지 않습니다.");
+            }
+        }
+
+        private bool is_table_exist(string table_name)
+        {
+            string query = $"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}';";
+            using (var command = new SQLiteCommand(query, connection))
+            {
+                using var reader = command.ExecuteReader();
+                return reader.HasRows; // table이 존재하면 true, 아니면 false
+            }
+        }
+
+        // 유저 테이블 생성
+        private void create_user_table()
+        {
+            /*
+              User Table 모습
+              +----+----------+---------------------+
+              | Id | Username |      Password       |
+              +----+----------+---------------------+
+              | 1  | user1    | bcrypt_hased_pass1  |
+              | 2  | user2    | bcrypt_hased_pass2  |
+              | 3  | user3    | bcrypt_hased_pass3  |
+              +----+----------+---------------------+ 
+              Id: INTEGER, PRIMARY KEY, AUTOINCREMENT
+              Username: TEXT, NOT NULL, UNIQUE
+              Password: TEXT, NOT NULL
+            */
+
+            string connection_string = $"Data Source={total_db_path};Version=3;";
+            using var connection = new SQLiteConnection(connection_string);
+            connection.Open();
+
+            // 파일로 작업하지만 다루는건 당연히 SQL문법으로 다룬다.
+            string create_table_query = $@"
+            CREATE TABLE IF NOT EXISTS {user_table_name} (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Username TEXT NOT NULL UNIQUE,
+                Password TEXT NOT NULL
+            )";
+            using (var command = new SQLiteCommand(create_table_query, connection))
+            {
+                /*
+                     SQL에서는 테이블 이름과 같은 객체 식별자는 매개 변수로 전달할 수 없다.
+                     C#의 문자열 보간을 이용해야 한다. / 다만 이러면 SQL 인젝션에 취약해진다.
+                     물론 여기선 사용자가 입력하는 부분이 없으니 상관없다.
+                     // command.Parameters.AddWithValue("@Tablename", user_table_name);
+                    */
+
+                // ExecuteNonQuery = SQL 명령문을 실행하지만 결과를 반환하지 않는 경우에 사용
+                // NonQuery = 결과 집합을 반환하지 않는다는 의미
+                command.ExecuteNonQuery();
+                Console.WriteLine($"{user_table_name} 테이블이 생성되었습니다.");
+            }
+
+            // 새로 만들었으면 기본 유저 3개를 추가한다. (관리자)
+            // 비밀번호의 경우 bcrypt로 해싱한 값을 넣어준다.
+            insert_user_data("pgh268400@naver.com", "$2a$11$AGSymNxbp5.vNByqEVqx0OnEuml73PhmDcs4P.qdWF66uf7CdnZV2");
+            insert_user_data("admin@naver.com", "$2a$12$fayeaZIXIEqMVv4IkMDDaOb0KhE4a65/zel5oHJ9k..E2Q/EytTFu");
+            insert_user_data("admin", "$2a$12$fayeaZIXIEqMVv4IkMDDaOb0KhE4a65/zel5oHJ9k..E2Q/EytTFu");
+        }
+
+        // 결제 테이블 생성
+        private void create_payment_table()
+        {
+            /*
+              Payments Table 모습
+              +-------------------+----------+-----------+-------+------------+----------+-------------+
+              |       Time        | ItemName | UnitPrice | Count | TotalPrice | Payer    | PhoneNumber |
+              +-------------------+----------+-----------+-------+------------+----------+-------------+
+              | 2023-01-01 10:00  | Item1    | 1000      | 2     | 2000       | user1    | 1234        |
+              | 2023-01-02 11:00  | Item2    | 2000      | 1     | 2000       | user2    | 5678        |
+              | 2023-01-03 12:00  | Item3    | 1500      | 3     | 4500       | user3    | 9012        |
+              +-------------------+----------+-----------+-------+------------+----------+-------------+
+              Time: TIMESTAMP, NOT NULL
+              ItemName: TEXT, NOT NULL
+              UnitPrice: INTEGER, NOT NULL
+              Count: INTEGER, NOT NULL
+              TotalPrice: INTEGER, NOT NULL
+              Payer: TEXT, NULL
+              PhoneNumber: INTEGER, NULL
+            */
+
+            string connection_string = $"Data Source={total_db_path};Version=3;";
+            using (var connection = new SQLiteConnection(connection_string))
+            {
+                connection.Open();
+
+                // 파일로 작업하지만 다루는건 당연히 SQL문법으로 다룬다.
+                string create_table_query = $@"
+                CREATE TABLE IF NOT EXISTS {payment_table_name} (
+                    Time TIMESTAMP NOT NULL,
+                    ItemName TEXT NOT NULL,
+                    UnitPrice INTEGER NOT NULL,
+                    Count INTEGER NOT NULL,
+                    TotalPrice INTEGER NOT NULL,
+                    Payer TEXT,
+                    PhoneNumber INTEGER
+                )";
+                using (var command = new SQLiteCommand(create_table_query, connection))
+                {
+                    command.ExecuteNonQuery();
+                    Console.WriteLine($"{payment_table_name} 테이블이 생성되었습니다.");
+                }
+            }
+        }
+
+        // 환불 테이블 생성
+        private void create_refund_table()
+        {
+            /*
+              Refunds Table 모습
+              +-------------------+----------+-----------+-------+------------+----------+-------------+
+              |       Time        | ItemName | UnitPrice | Count | TotalPrice | Payer    | PhoneNumber |
+              +-------------------+----------+-----------+-------+------------+----------+-------------+
+              | 2023-01-01 10:00  | Item1    | 1000      | 2     | 2000       | user1    | 1234        |
+              | 2023-01-02 11:00  | Item2    | 2000      | 1     | 2000       | user2    | 5678        |
+              | 2023-01-03 12:00  | Item3    | 1500      | 3     | 4500       | user3    | 9012        |
+              +-------------------+----------+-----------+-------+------------+----------+-------------+
+              Time: TIMESTAMP, NOT NULL
+              ItemName: TEXT, NOT NULL
+              UnitPrice: INTEGER, NOT NULL
+              Count: INTEGER, NOT NULL
+              TotalPrice: INTEGER, NOT NULL
+              Payer: TEXT, NULL
+              PhoneNumber: INTEGER, NULL
+            */
+
+            string connection_string = $"Data Source={total_db_path};Version=3;";
+            using (var connection = new SQLiteConnection(connection_string))
+            {
+                connection.Open();
+
+                // 파일로 작업하지만 다루는건 당연히 SQL문법으로 다룬다.
+                string create_table_query = $@"
+                CREATE TABLE IF NOT EXISTS {refund_table_name} (
+                    Time TIMESTAMP NOT NULL,
+                    ItemName TEXT NOT NULL,
+                    UnitPrice INTEGER NOT NULL,
+                    Count INTEGER NOT NULL,
+                    TotalPrice INTEGER NOT NULL,
+                    Payer TEXT,
+                    PhoneNumber INTEGER
+                )";
+                using (var command = new SQLiteCommand(create_table_query, connection))
+                {
+                    command.ExecuteNonQuery();
+                    Console.WriteLine($"{refund_table_name} 테이블이 생성되었습니다.");
+                }
+            }
+        }
+
+
+
+        // 참고 : password 의 경우 반드시 비밀번호를 bcrypt 로 해싱한 값을 넣어야 한다.
+        private void insert_user_data(string username, string hashed_password)
+        {
+            string connection_string = $"Data Source={total_db_path};Version=3;";
+            using (var connection = new SQLiteConnection(connection_string))
+            {
+                connection.Open();
+
+                // bcrypt로 암호화된 비밀번호를 저장한다.
+                string insert_query = "INSERT INTO Users (Username, Password) VALUES (@Username, @Password)";
+                using (var command = new SQLiteCommand(insert_query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.Parameters.AddWithValue("@Password", hashed_password);
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
 
@@ -82,9 +299,9 @@ namespace POS_Project_Team2.Class
         public bool is_exist_user(string user_id, string hashed_password)
         {
             // db에 요청해 id에 해당하는 pw를 가져온다.
-            string select_query = "SELECT Password FROM Users WHERE Username = @Username";
+            string select_query = $"SELECT Password FROM {user_table_name} WHERE Username = @Username";
 
-            using var command = new SQLiteCommand(select_query, user_connection);
+            using var command = new SQLiteCommand(select_query, connection);
             command.Parameters.AddWithValue("@Username", user_id);
 
             using var reader = command.ExecuteReader();
@@ -96,11 +313,54 @@ namespace POS_Project_Team2.Class
             return db_password == hashed_password;
         }
 
+        // db에 요청해 id에 해당하는 pw를 가져온다.
+        public string get_user_pw_by_id(string user_id)
+        {
+            string select_query = "SELECT Password FROM Users WHERE Username = @Username";
+            string stored_hash = "";
+            string connection_string = $"Data Source={total_db_path};Version=3;";
+            using var connection = new SQLiteConnection(connection_string);
+            connection.Open();
+
+            using var command = new SQLiteCommand(select_query, connection);
+            command.Parameters.AddWithValue("@Username", user_id);
+
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                stored_hash = reader["Password"].ToString();
+                return stored_hash;
+            }
+            return stored_hash;
+        }
+
+        // 로그인시에 사용하는 함수로 id와, pw를 입력받아 (여기서 pw는 평문)
+        // id에 해당하는 pw를 db에서 찾고, 입력받은 pw를 bcrypt 검증해
+        // 유저가 제대로 로그인 했는지 검사하는 함수
+        public bool is_login_success(string user_id, string password)
+        {
+            // db에 요청해 id에 해당하는 pw를 가져온다.
+            string select_query = $"SELECT Password FROM {user_table_name} WHERE Username = @Username";
+
+            using var command = new SQLiteCommand(select_query, connection);
+            command.Parameters.AddWithValue("@Username", user_id);
+
+            using var reader = command.ExecuteReader();
+            if (!reader.Read()) return false; // 결과가 없다면 실패
+
+            // db에 저장된 pw와 입력받은 pw가 같은지 비교한다.
+            // 참고로 유저의 id string은 unique 하기 때문에 결과가 정확히 1개 나와야 한다.
+            string db_password = reader.GetString(0);
+
+            // 입력받은 pw를 bcrypt로 검증한다.
+            return BCrypt.Net.BCrypt.Verify(password, db_password);
+        }
+
         // 소멸자
         ~DBMaster()
         {
             // 소멸시 db 연결을 끊는다.
-            user_connection.Close();
+            connection.Close();
         }
     }
 }

@@ -225,8 +225,12 @@ namespace POS_Project_Team2
                     File.Delete("item_data.xml");
 
                 // 자동 로그인 파일 삭제
-                if (File.Exists("autologin"))
-                    File.Delete("autologin");
+                if (File.Exists(LoginForm.auto_login_file_path))
+                    File.Delete(LoginForm.auto_login_file_path);
+
+                // db 파일 삭제
+                DBMaster db_master = DBMaster.Instance;
+                db_master.clear_db_file();
 
                 // 데이터 청소가 완료되었습니다 메세지 출력
                 MessageBox.Show("모든 데이터가 삭제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
