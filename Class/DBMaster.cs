@@ -232,6 +232,106 @@ namespace POS_Project_Team2.Class
             }
         }
 
+        // 유저 테이블의 모든 데이터를 named tuple이 담긴 리스트로 반환한다.
+        public List<UserRecord> get_all_users_table()
+        {
+            var users = new List<UserRecord>();
+
+            string select_query = $"SELECT Id, Username, Password FROM {user_table_name}";
+            using (var command = new SQLiteCommand(select_query, connection))
+            {
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var user = new UserRecord
+                    {
+                        Id = reader.GetInt32(0),
+                        Username = reader.GetString(1),
+                        Password = reader.GetString(2)
+                    };
+                    users.Add(user);
+                }
+            }
+
+            return users;
+        }
+
+        // 유저 테이블의 데이터를 담을 클래스
+        public class UserRecord
+        {
+            public int Id;
+            public string Username;
+            public string Password;
+        }
+
+        // 결제 테이블과 환불 테이블의 데이터를 담을 클래스
+        public class PayMentRefundRecord
+        {
+            public DateTime Time;
+            public string ItemName;
+            public int UnitPrice;
+            public int Count;
+            public int TotalPrice;
+            public string Payer;
+            public int PhoneNumber;
+        }
+
+        // 결제 테이블의 모든 데이터 가져오기
+        public List<PayMentRefundRecord> get_all_payments_table()
+        {
+            var payments = new List<PayMentRefundRecord>();
+
+            string select_query = $"SELECT * FROM {payment_table_name}";
+            using (var command = new SQLiteCommand(select_query, connection))
+            {
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var payment = new PayMentRefundRecord
+                    {
+                        Time = reader.GetDateTime(0),
+                        ItemName = reader.GetString(1),
+                        UnitPrice = reader.GetInt32(2),
+                        Count = reader.GetInt32(3),
+                        TotalPrice = reader.GetInt32(4),
+                        Payer = reader.IsDBNull(5) ? null : reader.GetString(5),
+                        PhoneNumber = reader.IsDBNull(6) ? 0 : reader.GetInt32(6)
+                    };
+                    payments.Add(payment);
+                }
+            }
+
+            return payments;
+        }
+
+        // 환불 테이블의 모든 데이터 가져오기
+        public List<PayMentRefundRecord> get_all_refunds_table()
+        {
+            var refunds = new List<PayMentRefundRecord>();
+
+            string select_query = $"SELECT * FROM {refund_table_name}";
+            using (var command = new SQLiteCommand(select_query, connection))
+            {
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var refund = new PayMentRefundRecord
+                    {
+                        Time = reader.GetDateTime(0),
+                        ItemName = reader.GetString(1),
+                        UnitPrice = reader.GetInt32(2),
+                        Count = reader.GetInt32(3),
+                        TotalPrice = reader.GetInt32(4),
+                        Payer = reader.IsDBNull(5) ? null : reader.GetString(5),
+                        PhoneNumber = reader.IsDBNull(6) ? 0 : reader.GetInt32(6)
+                    };
+                    refunds.Add(refund);
+                }
+            }
+
+            return refunds;
+        }
+
 
 
         // 참고 : password 의 경우 반드시 비밀번호를 bcrypt 로 해싱한 값을 넣어야 한다.
