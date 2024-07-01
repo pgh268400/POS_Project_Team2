@@ -10,11 +10,11 @@
 
         // 열린 폼들을 추적하기 위한 Dictionary
         // 이 변수를 통해 열린 폼들을 관리하며, static을 붙였기에 프로그램 종료때까지 메모리에 상주하게 된다.
-        private static Dictionary<string, Form> open_forms = new Dictionary<string, Form>();
+        private static Dictionary<string, Form> open_forms = new();
 
         // 폼을 여는 함수.
         // 열려 있지 않다면 열고 열려있으면 해당 폼을 활성화한다.
-        public static void show(Form form)
+        public static Form show(Form form)
         {
             string form_name = form.Name;
 
@@ -45,6 +45,9 @@
 
             // 폼이 닫힐 때 open_forms에서 제거
             form.FormClosed += (sender, e) => open_forms.Remove(form_name);
+
+            // 참조(주소) 를 Form 타입으로 반환
+            return form;
         }
 
 
