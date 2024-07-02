@@ -26,10 +26,8 @@ namespace POS_Project_Team2
             // 실행시 창을 화면 중앙에 위치시키기
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            // 폼 사이즈 변경 금지
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-
-
+            // 폼 사이즈 변경 불가능 설정
+            FormHelper.disable_resize(this);
         }
 
         // 사각 패널 깎아서 뭉툭하게 만들기 (디자인)

@@ -45,7 +45,7 @@
             listView1.Location = new Point(9, 9);
             listView1.Margin = new Padding(2);
             listView1.Name = "listView1";
-            listView1.Size = new Size(575, 416);
+            listView1.Size = new Size(658, 416);
             listView1.TabIndex = 0;
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.View = View.Details;
@@ -53,7 +53,7 @@
             // columnHeader0
             // 
             columnHeader0.Text = "결제 시간";
-            columnHeader0.Width = 110;
+            columnHeader0.Width = 170;
             // 
             // columnHeader1
             // 
@@ -94,15 +94,15 @@
             label_show.TabIndex = 2;
             label_show.Text = "Hello!";
             // 
-            // PayMentLogShowForm
+            // MultiPurposeShowForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(595, 462);
+            ClientSize = new Size(678, 462);
             Controls.Add(label_show);
             Controls.Add(listView1);
             Margin = new Padding(2);
-            Name = "PayMentLogShowForm";
+            Name = "MultiPurposeShowForm";
             Text = "POS System";
             Load += PayMentLogShowForm_Load;
             ResumeLayout(false);

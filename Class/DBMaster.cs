@@ -19,22 +19,29 @@ namespace POS_Project_Team2.Class
 
         // 멤버 변수
         // 모든 table을 일괄적으로 저장할 db 파일
-        private string total_db_path = "total.db";
+        private const string total_db_path = "total.db";
 
         // 해당 connection 변수를 이용해 db에 접근한다.
         private SQLiteConnection connection;
 
-        // 유저 테이블 이름
-        private string user_table_name = "Users";
+        // 유저, 총 결제 내역, 환불 내역, 통합 기록 테이블의 이름을 저장할 변수
+        /*
+          readonly 와 const 의 차이?
+          const는 컴파일 시점에 값이 저장되는 상수
+          readonly는 런타임 시점에 값이 저장되는 상수
 
-        // 총 결제 내역 테이블 이름
-        private string payment_table_name = "Payments";
+          const : 선언과 동시에 초기화해야 하며, 이후에 변경할 수 없습니다.
+          readonly : 선언 시 또는 클래스 생성자에서 초기화할 수 있으며, 초기화된 후에는 변경할 수 없습니다.
 
-        // 환불 내역 테이블 이름
-        private string refund_table_name = "Refunds";
+          readonly는 로그인 id를 객체에 담을 경우 같이, 객체 생성마다 값이 바뀌지만 이후 수정을 하면 안되는 경우에 사용하면 됩니다.
+          const는 절대 변하지 않는 경우, 예를 들어 URI 값이라던가 규정된 연동 키값 등에 활용하면 됩니다.
 
-        // 통합 기록 테이블 이름
-        private string total_record_table_name = "TotalRecords";
+          참고 : https://woojoolog.tistory.com/6
+        */
+        private const string user_table_name = "Users",
+                       payment_table_name = "Payments",
+                       refund_table_name = "Refunds",
+                       total_record_table_name = "TotalRecords";
 
 
         // private 생성자 = 싱글톤으로 Instance 프로퍼티에 접근해서만 생성할 수 있게 제한한다.
@@ -70,6 +77,13 @@ namespace POS_Project_Team2.Class
                 create_total_record_table();
         }
 
+        // 소멸자
+        ~DBMaster()
+        {
+            // 소멸시 db 연결을 끊는다.
+            connection.Close();
+        }
+
         // db 파일 삭제 함수
         public void clear_db_file()
         {
@@ -90,10 +104,12 @@ namespace POS_Project_Team2.Class
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                // 메세지 박스 출력
+                MessageBox.Show(e.Message, "이름", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            // _instance 초기화
+            // _instance 초기화, 이 구문에 의해 현재 싱글턴 객체는 버려지고
+            // 다음에 DBMaster.Instance 로 접근할 때 새로운 객체가 생성된다.
             _instance = null;
 
         }
@@ -109,6 +125,28 @@ namespace POS_Project_Team2.Class
         }
 
         // 생성 관련 ==============================================================
+        // 테이블 생성 공통 함수
+        private void create_table(string table_name, string create_table_query, bool if_not_exists = true, bool debug_text = false)
+        {
+            string if_not_exists_clause = if_not_exists ? "IF NOT EXISTS " : "";
+            string fullCreateQuery = $"CREATE TABLE {if_not_exists_clause}{table_name} ({create_table_query})";
+
+            using (var command = new SQLiteCommand(fullCreateQuery, connection))
+            {
+                /*
+                     SQL에서는 테이블 이름과 같은 객체 식별자는 매개 변수로 전달할 수 없다.
+                     C#의 문자열 보간을 이용해야 한다. / 다만 이러면 SQL 인젝션에 취약해진다.
+                     물론 여기선 사용자가 입력하는 부분이 없으니 상관없다.
+                     // command.Parameters.AddWithValue("@Tablename", user_table_name);
+                */
+
+                // ExecuteNonQuery = SQL 명령문을 실행하지만 결과를 반환하지 않는 경우에 사용
+                // NonQuery = 결과 집합을 반환하지 않는다는 의미
+                command.ExecuteNonQuery();
+                Console.WriteLine($"{table_name} 테이블이 생성되었습니다.");
+            }
+        }
+
         // 유저 테이블 생성
         private void create_user_table()
         {
@@ -126,31 +164,13 @@ namespace POS_Project_Team2.Class
               Password: TEXT, NOT NULL
             */
 
-            string connection_string = $"Data Source={total_db_path};Version=3;";
-            using var connection = new SQLiteConnection(connection_string);
-            connection.Open();
-
             // 파일로 작업하지만 다루는건 당연히 SQL문법으로 다룬다.
-            string create_table_query = $@"
-            CREATE TABLE IF NOT EXISTS {user_table_name} (
+            string create_table_query = @"
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
                 Username TEXT NOT NULL UNIQUE,
                 Password TEXT NOT NULL
-            )";
-            using (var command = new SQLiteCommand(create_table_query, connection))
-            {
-                /*
-                     SQL에서는 테이블 이름과 같은 객체 식별자는 매개 변수로 전달할 수 없다.
-                     C#의 문자열 보간을 이용해야 한다. / 다만 이러면 SQL 인젝션에 취약해진다.
-                     물론 여기선 사용자가 입력하는 부분이 없으니 상관없다.
-                     // command.Parameters.AddWithValue("@Tablename", user_table_name);
-                    */
-
-                // ExecuteNonQuery = SQL 명령문을 실행하지만 결과를 반환하지 않는 경우에 사용
-                // NonQuery = 결과 집합을 반환하지 않는다는 의미
-                command.ExecuteNonQuery();
-                Console.WriteLine($"{user_table_name} 테이블이 생성되었습니다.");
-            }
+            ";
+            create_table(user_table_name, create_table_query, true, true);
 
             // 새로 만들었으면 기본 유저 3개를 추가한다. (관리자)
             // 비밀번호의 경우 bcrypt로 해싱한 값을 넣어준다.
@@ -180,28 +200,17 @@ namespace POS_Project_Team2.Class
               PhoneNumber: INTEGER, NULL
             */
 
-            string connection_string = $"Data Source={total_db_path};Version=3;";
-            using (var connection = new SQLiteConnection(connection_string))
-            {
-                connection.Open();
-
-                // 파일로 작업하지만 다루는건 당연히 SQL문법으로 다룬다.
-                string create_table_query = $@"
-                CREATE TABLE IF NOT EXISTS {payment_table_name} (
-                    Time TIMESTAMP NOT NULL,
-                    ItemName TEXT NOT NULL,
-                    UnitPrice INTEGER NOT NULL,
-                    Count INTEGER NOT NULL,
-                    TotalPrice INTEGER NOT NULL,
-                    Payer TEXT,
-                    PhoneNumber INTEGER
-                )";
-                using (var command = new SQLiteCommand(create_table_query, connection))
-                {
-                    command.ExecuteNonQuery();
-                    Console.WriteLine($"{payment_table_name} 테이블이 생성되었습니다.");
-                }
-            }
+            string create_table_query = @"
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Time TIMESTAMP NOT NULL,
+                ItemName TEXT NOT NULL,
+                UnitPrice INTEGER NOT NULL,
+                Count INTEGER NOT NULL,
+                TotalPrice INTEGER NOT NULL,
+                Payer TEXT,
+                PhoneNumber INTEGER
+            ";
+            create_table(payment_table_name, create_table_query, true, true);
         }
 
         // 환불 테이블 생성
@@ -225,194 +234,115 @@ namespace POS_Project_Team2.Class
               PhoneNumber: INTEGER, NULL
             */
 
-            string connection_string = $"Data Source={total_db_path};Version=3;";
-            using (var connection = new SQLiteConnection(connection_string))
-            {
-                connection.Open();
-
-                // 파일로 작업하지만 다루는건 당연히 SQL문법으로 다룬다.
-                string create_table_query = $@"
-                CREATE TABLE IF NOT EXISTS {refund_table_name} (
-                    Time TIMESTAMP NOT NULL,
-                    ItemName TEXT NOT NULL,
-                    UnitPrice INTEGER NOT NULL,
-                    Count INTEGER NOT NULL,
-                    TotalPrice INTEGER NOT NULL,
-                    Payer TEXT,
-                    PhoneNumber INTEGER
-                )";
-                using (var command = new SQLiteCommand(create_table_query, connection))
-                {
-                    command.ExecuteNonQuery();
-                    Console.WriteLine($"{refund_table_name} 테이블이 생성되었습니다.");
-                }
-            }
+            string create_table_query = @"
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Time TIMESTAMP NOT NULL,
+                ItemName TEXT NOT NULL,
+                UnitPrice INTEGER NOT NULL,
+                Count INTEGER NOT NULL,
+                TotalPrice INTEGER NOT NULL,
+                Payer TEXT,
+                PhoneNumber INTEGER
+            ";
+            create_table(refund_table_name, create_table_query, true, true);
         }
 
         // 총 결제 기록 테이블 생성
         private void create_total_record_table()
         {
-            // 총 결제 기록의 경우 결제 테이블과 환불 테이블을 합쳐서 (join) 보여준다.
-            // 보여주는 역할만 하기에 굳이 별도의 Table로 만들지 않는다.
-            string create_table_query = $@"
-                CREATE TABLE IF NOT EXISTS {total_record_table_name} (
-                    Time TIMESTAMP NOT NULL,
-                    ItemName TEXT NOT NULL,
-                    UnitPrice INTEGER NOT NULL,
-                    Count INTEGER NOT NULL,
-                    TotalPrice INTEGER NOT NULL,
-                    Payer TEXT,
-                    PhoneNumber INTEGER,
-                    isRefund INTEGER NOT NULL
-                )";
-
-            using (var command = new SQLiteCommand(create_table_query, connection))
-            {
-                command.ExecuteNonQuery();
-                Console.WriteLine($"{total_record_table_name} 테이블이 생성되었습니다.");
-            }
+            string create_table_query = @"
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,   
+                Time TIMESTAMP NOT NULL,
+                ItemName TEXT NOT NULL,
+                UnitPrice INTEGER NOT NULL,
+                Count INTEGER NOT NULL,
+                TotalPrice INTEGER NOT NULL,
+                Payer TEXT,
+                PhoneNumber INTEGER,
+                isRefund INTEGER NOT NULL
+            ";
+            create_table(total_record_table_name, create_table_query, true, true);
         }
-        // ========================================================================
-        // 유저 테이블의 데이터를 담을 클래스
-        public class UserRecord
+        // 조회 관련 ==============================================================
+        // 모든 행을 전체 조회하는 공통 함수 (제네릭 사용)
+        private List<T> get_all_table<T>(string table_name, Func<SQLiteDataReader, T> read_record)
         {
-            public int Id;
-            public string Username;
-            public string Password;
-        }
+            var records = new List<T>();
+            string select_query = $"SELECT * FROM {table_name}";
 
-        // 결제 테이블과 환불 테이블의 데이터를 담을 클래스
-        // 참고 : 결제 테이블과 환불 데이터는 테이블 구성(스키마) 이 같다.
-        public class PayMentRefundRecord
-        {
-            public DateTime Time { get; set; }
-            public string ItemName { get; set; }
-            public int UnitPrice { get; set; }
-            public int Count { get; set; }
-            public int TotalPrice { get; set; }
-            public string? Payer { get; set; } // nullable
-            public int? PhoneNumber { get; set; } // nullable
-        }
-
-        // 통합 조회 데이터를 담을 클래스
-        public class TotalRecord : PayMentRefundRecord
-        {
-            // SQlite에는 boolean 타입이 없어 int로 구분한다.
-            // 0 = 결제, 1 = 환불
-            public int isRefund { get; set; }
-        }
-
-        // ========================================================================
-        // 유저 테이블의 모든 데이터 가져오기
-        public List<UserRecord> get_all_users_table()
-        {
-            var users = new List<UserRecord>();
-
-            string select_query = $"SELECT Id, Username, Password FROM {user_table_name}";
             using (var command = new SQLiteCommand(select_query, connection))
             {
                 using var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    var user = new UserRecord
-                    {
-                        Id = reader.GetInt32(0),
-                        Username = reader.GetString(1),
-                        Password = reader.GetString(2)
-                    };
-                    users.Add(user);
+                    records.Add(read_record(reader));
                 }
             }
 
-            return users;
+            return records;
+        }
+
+        // 유저 테이블의 모든 데이터 가져오기
+        public List<UserRecord> get_all_users_table()
+        {
+            return get_all_table(user_table_name, reader => new UserRecord
+            {
+                Id = reader.GetInt32(0),
+                Username = reader.GetString(1),
+                Password = reader.GetString(2)
+            });
         }
 
         // 결제 테이블의 모든 데이터 가져오기
         public List<PayMentRefundRecord> get_all_payments_table()
         {
-            var payments = new List<PayMentRefundRecord>();
-
-            string select_query = $"SELECT * FROM {payment_table_name}";
-            using (var command = new SQLiteCommand(select_query, connection))
+            return get_all_table(payment_table_name, reader => new PayMentRefundRecord
             {
-                using var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    var payment = new PayMentRefundRecord
-                    {
-                        Time = reader.GetDateTime(0),
-                        ItemName = reader.GetString(1),
-                        UnitPrice = reader.GetInt32(2),
-                        Count = reader.GetInt32(3),
-                        TotalPrice = reader.GetInt32(4),
-                        Payer = reader.IsDBNull(5) ? null : reader.GetString(5),
-                        PhoneNumber = reader.IsDBNull(6) ? 0 : reader.GetInt32(6)
-                    };
-                    payments.Add(payment);
-                }
-            }
-
-            return payments;
+                Id = reader.GetInt32(0),
+                Time = reader.GetDateTime(1),
+                ItemName = reader.GetString(2),
+                UnitPrice = reader.GetInt32(3),
+                Count = reader.GetInt32(4),
+                TotalPrice = reader.GetInt32(5),
+                Payer = reader.IsDBNull(6) ? null : reader.GetString(6),
+                PhoneNumber = reader.IsDBNull(7) ? null : reader.GetInt32(7)
+            });
         }
 
         // 환불 테이블의 모든 데이터 가져오기
         public List<PayMentRefundRecord> get_all_refunds_table()
         {
-            var refunds = new List<PayMentRefundRecord>();
-
-            string select_query = $"SELECT * FROM {refund_table_name}";
-            using (var command = new SQLiteCommand(select_query, connection))
+            return get_all_table(refund_table_name, reader => new PayMentRefundRecord
             {
-                using var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    var refund = new PayMentRefundRecord
-                    {
-                        Time = reader.GetDateTime(0),
-                        ItemName = reader.GetString(1),
-                        UnitPrice = reader.GetInt32(2),
-                        Count = reader.GetInt32(3),
-                        TotalPrice = reader.GetInt32(4),
-                        Payer = reader.IsDBNull(5) ? null : reader.GetString(5),
-                        PhoneNumber = reader.IsDBNull(6) ? 0 : reader.GetInt32(6)
-                    };
-                    refunds.Add(refund);
-                }
-            }
-
-            return refunds;
+                Id = reader.GetInt32(0),
+                Time = reader.GetDateTime(1),
+                ItemName = reader.GetString(2),
+                UnitPrice = reader.GetInt32(3),
+                Count = reader.GetInt32(4),
+                TotalPrice = reader.GetInt32(5),
+                Payer = reader.IsDBNull(6) ? null : reader.GetString(6),
+                PhoneNumber = reader.IsDBNull(7) ? null : reader.GetInt32(7)
+            });
         }
 
         // 총 결제기록의 모든 데이터 가져오기
         // 총 결제 기록을 조회하는 메서드
         public List<TotalRecord> get_all_total_records()
         {
-            var transactions = new List<TotalRecord>();
-
-            string select_query = $"SELECT * FROM {total_record_table_name}";
-            using (var command = new SQLiteCommand(select_query, connection))
+            return get_all_table(total_record_table_name, reader => new TotalRecord
             {
-                using var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    var transaction = new TotalRecord
-                    {
-                        Time = reader.GetDateTime(0),
-                        ItemName = reader.GetString(1),
-                        UnitPrice = reader.GetInt32(2),
-                        Count = reader.GetInt32(3),
-                        TotalPrice = reader.GetInt32(4),
-                        Payer = reader.IsDBNull(5) ? null : reader.GetString(5),
-                        PhoneNumber = reader.IsDBNull(6) ? null : reader.GetInt32(6),
-                        isRefund = reader.GetInt32(7)
-                    };
-                    transactions.Add(transaction);
-                }
-            }
-
-            return transactions;
+                Id = reader.GetInt32(0),
+                Time = reader.GetDateTime(1),
+                ItemName = reader.GetString(2),
+                UnitPrice = reader.GetInt32(3),
+                Count = reader.GetInt32(4),
+                TotalPrice = reader.GetInt32(5),
+                Payer = reader.IsDBNull(6) ? null : reader.GetString(6),
+                PhoneNumber = reader.IsDBNull(7) ? null : reader.GetInt32(7),
+                isRefund = reader.GetInt32(8)
+            });
         }
-        // ========================================================================
+        // 삽입 관련 ==============================================================
         // 참고 : password 의 경우 반드시 비밀번호를 bcrypt 로 해싱한 값을 넣어야 한다.
         private void insert_user_data(string username, string hashed_password)
         {
@@ -496,7 +426,8 @@ namespace POS_Project_Team2.Class
         }
 
         // 통합 기록 테이블에 데이터 삽입
-        public void insert_total_record_data(TotalRecord record)
+        // 해당 기록은 readonly 이므로 insert 함수는 public이 아닌 private로 선언한다.
+        private void insert_total_record_data(TotalRecord record)
         {
             string insert_query = $"INSERT INTO {total_record_table_name} (Time, ItemName, UnitPrice, Count, TotalPrice, Payer, PhoneNumber, isRefund) VALUES (@Time, @ItemName, @UnitPrice, @Count, @TotalPrice, @Payer, @PhoneNumber, @isRefund)";
             using (var command = new SQLiteCommand(insert_query, connection))
@@ -513,7 +444,7 @@ namespace POS_Project_Team2.Class
             }
         }
 
-        // ========================================================================
+        // 삭제 관련 ==============================================================
         // 결제 테이블의 n번째 행을 삭제하는 메서드
         public void delete_payment_row(int n)
         {
@@ -543,7 +474,8 @@ namespace POS_Project_Team2.Class
         }
 
         /*
-         정적 프로퍼티를 통해 인스턴스에 접근
+         싱글톤을 구현하는 핵심 부분
+         new 가 아닌 정적 프로퍼티를 통해 인스턴스에 접근
          이 부분은 싱글톤 패턴의 핵심입니다. 정적 프로퍼티 Instance는 클래스의 유일한 인스턴스를 생성하고 관리하는 역할을 합니다. 이 패턴의 동작 방식을 이해하기 위해, 단계별로 설명해드리겠습니다.
 
             정적 변수 _instance:
@@ -622,9 +554,11 @@ namespace POS_Project_Team2.Class
             return stored_hash;
         }
 
-        // 로그인시에 사용하는 함수로 id와, pw를 입력받아 (여기서 pw는 평문)
-        // id에 해당하는 pw를 db에서 찾고, 입력받은 pw를 bcrypt 검증해
-        // 유저가 제대로 로그인 했는지 검사하는 함수
+        /*
+          로그인시에 사용하는 함수로 id와, pw를 입력받아 (여기서 pw는 평문)
+          id에 해당하는 pw를 db에서 찾고, 입력받은 pw를 bcrypt 검증해
+          유저가 제대로 로그인 했는지 검사하는 함수
+        */
         public bool is_login_success(string user_id, string password)
         {
             // db에 요청해 id에 해당하는 pw를 가져온다.
@@ -642,13 +576,6 @@ namespace POS_Project_Team2.Class
 
             // 입력받은 pw를 bcrypt로 검증한다.
             return BCrypt.Net.BCrypt.Verify(password, db_password);
-        }
-
-        // 소멸자
-        ~DBMaster()
-        {
-            // 소멸시 db 연결을 끊는다.
-            connection.Close();
         }
     }
 }

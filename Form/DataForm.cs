@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using POS_Project_Team2.Class;
+using System.Data;
 
 namespace POS_Project_Team2
 {
@@ -24,7 +25,8 @@ namespace POS_Project_Team2
             button_select_cancle.Enabled = false;
             button_pay_cancle.Enabled = false;
             listview_item.Enabled = false;
-            datagridview_stock.Enabled = false;
+            //datagridview_stock.Enabled = false;
+            datagridview_stock.ReadOnly = true;
             button_add_into_payment.Enabled = false;
 
             // 라벨에 읽기 모드라고 출력
@@ -78,8 +80,7 @@ namespace POS_Project_Team2
             // 실행시 창을 화면 중앙에 위치시키기
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            // 폼 사이즈 변경 금지
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            FormHelper.disable_resize(this);
         }
 
         private void DataForm_Load(object sender, EventArgs e)
@@ -88,8 +89,7 @@ namespace POS_Project_Team2
             textbox_count.Enabled = false; // 수량을 비활성화 한다.
 
             // 버그 방지를 위해 data grid view 수정을 막는다
-            datagridview_stock.Enabled = false;
-
+            datagridview_stock.ReadOnly = true;
         }
 
         // 검색 버튼 클릭시 해당 물품 있는지 검사 후 해당 행을 선택.

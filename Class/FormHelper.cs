@@ -70,5 +70,12 @@
             for (int i = 0; i < column_widths.Length; i++)
                 list_view.Columns[i].Width = (int)(total_width * column_widths[i] / 100.0);
         }
+
+        // 창 크기 조절을 하지 못하게 막는 메서드
+        public static void disable_resize(Form form)
+        {
+            form.FormBorderStyle = FormBorderStyle.FixedSingle; // 창 크기 조절 막기
+            form.MaximizeBox = false; // 최대화 버튼 비활성화
+        }
     }
 }

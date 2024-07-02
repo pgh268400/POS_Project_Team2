@@ -5,7 +5,7 @@ namespace POS_Project_Team2
 
     public partial class MainForm : Form
     {
-        private List<List<(string item_name, int item_cost, int item_count)>> savedProducts = new List<List<(string item_name, int item_cost, int item_count)>>();
+        private List<List<(string item_name, int item_cost, int item_count)>> saved_products = new();
         private Button[] wait_buttons;
 
         public bool paymentform_purchase = false;   // PaymentForm이 구매로 닫힐 때 대기로 닫힐 때를 구분하기 위해 생성
@@ -13,6 +13,8 @@ namespace POS_Project_Team2
         public int total_num_refund = 0;            // 금일 총 환불 건수
         public int total_num_profit = 0;            // 금일 총 수익
         public int total_previous_purchase = 0;     // 이전 구매액
+
+
 
         public MainForm()
         {
@@ -22,6 +24,8 @@ namespace POS_Project_Team2
             InitializeComponent();
 
             InitializeWaitButtons();
+
+            FormHelper.disable_resize(this);
         }
 
         private void InitializeWaitButtons()
@@ -110,7 +114,7 @@ namespace POS_Project_Team2
             FormHelper.show(log_form);
 
             // 총 결제 내역 창 리스트뷰 및 라벨 설정
-            log_form.set_form_role(payment_data, "현재 모든 로그 기록을 확인중입니다.");
+            log_form.set_form_role(payment_data, "현재 총 결제 기록을 확인중입니다.");
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -164,9 +168,9 @@ namespace POS_Project_Team2
             var clickedButton = sender as Button;
             int index = Array.IndexOf(wait_buttons, clickedButton);
 
-            if (index >= 0 && index < savedProducts.Count)
+            if (index >= 0 && index < saved_products.Count)
             {
-                var products = savedProducts[index];
+                var products = saved_products[index];
                 var paymentForm = new PaymentForm(products);
                 paymentForm.FormClosing += PaymentForm_FormClosing;
                 paymentForm.Owner = this;
@@ -180,15 +184,15 @@ namespace POS_Project_Team2
 
             if (closingForm != null && !paymentform_purchase)
             {
-                int index = savedProducts.FindIndex(products => products.SequenceEqual(closingForm.get_products()));
+                int index = saved_products.FindIndex(products => products.SequenceEqual(closingForm.get_products()));
                 if (index >= 0)
                 {
-                    savedProducts[index] = closingForm.get_products();
+                    saved_products[index] = closingForm.get_products();
                 }
                 else
                 {
-                    savedProducts.Add(closingForm.get_products());
-                    int waitButtonIndex = savedProducts.Count - 1;
+                    saved_products.Add(closingForm.get_products());
+                    int waitButtonIndex = saved_products.Count - 1;
                     if (waitButtonIndex < wait_buttons.Length && !paymentform_purchase)
                     {
                         wait_buttons[waitButtonIndex].BackColor = Color.Red;

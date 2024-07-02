@@ -25,6 +25,7 @@ namespace POS_Project_Team2
                 this.products = new List<(string item_name, int item_cost, int item_count)>(products);
             }
 
+            FormHelper.disable_resize(this);
         }
 
         // 실시간 시계 등록 및 시작
@@ -262,7 +263,7 @@ namespace POS_Project_Team2
                 int total_cost = product.item_cost * product.item_count;
 
                 // 결제 데이터 삽입 예시
-                var payment = new DBMaster.PayMentRefundRecord
+                var payment = new PayMentRefundRecord
                 {
                     Time = DateTime.Now,
                     ItemName = product.item_name,

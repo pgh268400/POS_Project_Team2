@@ -1,6 +1,5 @@
 ﻿using POS_Project_Team2.Class;
 using System.Data;
-using static POS_Project_Team2.Class.DBMaster;
 
 namespace POS_Project_Team2
 {
@@ -10,6 +9,10 @@ namespace POS_Project_Team2
            해당 폼은 결제 내역 및 영수증, 환불 내역 등 다양한 용도로 재사용된다.
         */
 
+        // null 대신 사용할 문자
+        string null_string = "없음";
+
+
         private ContextMenuStrip context_menu;
         private ListViewItem selected_item; // 선택된 아이템을 저장할 변수
 
@@ -17,6 +20,8 @@ namespace POS_Project_Team2
         public MultiPurposeShowForm()
         {
             InitializeComponent();
+
+            FormHelper.disable_resize(this);
         }
 
         // 어떤 목적으로 사용되는지에 따라 상대방이 호출할 업데이트 함수
@@ -28,15 +33,15 @@ namespace POS_Project_Team2
             // 결제 내역을 리스트뷰에 뿌린다.
             foreach (var record in log_data)
             {
-                // 각 속성을 문자열 배열로 변환
+                // 각 속성을 문자열 배열로 변환 (id 값은 리스트뷰에 보여줄 필요 없어 버린다)
                 string[] item_data = {
                     record.Time.ToString(),
                     record.ItemName ?? "",
                     record.UnitPrice.ToString(),
                     record.Count.ToString(),
                     record.TotalPrice.ToString(),
-                    record.Payer ?? "없음",
-                    record.PhoneNumber?.ToString() ?? "없음"
+                    record.Payer ?? null_string,
+                    record.PhoneNumber?.ToString() ?? null_string
                 };
 
                 // 리스트뷰 아이템 생성시 문자열 배열만 받는다.
@@ -55,7 +60,7 @@ namespace POS_Project_Team2
             {
                 string item_name = record.isRefund == 1 ? record.ItemName + " (환불)" : record.ItemName;
 
-                // 각 속성을 문자열 배열로 변환
+                // 각 속성을 문자열 배열로 변환 (id 값, isRefund 값은 리스트뷰에 보여줄 필요 없어 버린다)
                 string[] item_data = {
                     record.Time.ToString(),
                     item_name,
@@ -103,10 +108,11 @@ namespace POS_Project_Team2
             listView1.MouseUp += ListView1_MouseUp;
         }
 
-        // 환불메뉴 클릭시
+        // 환불 메뉴 클릭시
         private void OnRefundMenuItemClick(object? sender, EventArgs e)
         {
             if (selected_item == null) return;
+
 
             // string item_details = string.Join(", ", selected_item.SubItems.Cast<ListViewItem.ListViewSubItem>().Select(subItem => subItem.Text));
             // MessageBox.Show($"출력 버튼이 클릭되었습니다. 선택된 행의 정보: {item_details}");
@@ -123,8 +129,17 @@ namespace POS_Project_Team2
             string unit_price = selected_item.SubItems[2].Text;
             string count = selected_item.SubItems[3].Text;
             string total_price = selected_item.SubItems[4].Text;
-            string payer = selected_item.SubItems[5].Text;
-            string phone_number = selected_item.SubItems[6].Text;
+            string? payer = selected_item.SubItems[5].Text;
+            string? phone_number = selected_item.SubItems[6].Text;
+
+            // 위 변수 콘솔에 출력
+            Console.WriteLine($"환불 시간: {time_stamp}");
+            Console.WriteLine($"아이템 이름: {item_name}");
+            Console.WriteLine($"단가: {unit_price}");
+            Console.WriteLine($"수량: {count}");
+            Console.WriteLine($"총 가격: {total_price}");
+            Console.WriteLine($"결제자: {payer}");
+            Console.WriteLine($"전화번호: {phone_number}");
 
             // 선택된 아이템의 정보를 PayMentRefundRecord 객체로 담는다
             var refund_record = new PayMentRefundRecord
@@ -135,7 +150,7 @@ namespace POS_Project_Team2
                 Count = int.Parse(count),
                 TotalPrice = int.Parse(total_price),
                 Payer = payer,
-                PhoneNumber = int.Parse(phone_number)
+                PhoneNumber = phone_number == null_string ? null : int.Parse(phone_number)
             };
 
             // 환불 기록을 DB에 저장
@@ -175,14 +190,6 @@ namespace POS_Project_Team2
             // 변경된 데이터를 다시 저장
             using (StreamWriter writer = new StreamWriter("item_data.xml"))
                 itemDataSet.WriteXml(writer);
-
-
-            //총 수익 받기위해 MainForm 불러옴
-            //MainForm mainForm = (MainForm)this.Owner;
-            //mainForm.total_num_profit -= total_price_refund;
-
-            //mainForm.UpdateLabel();
-
 
             MessageBox.Show("환불 처리가 완료되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

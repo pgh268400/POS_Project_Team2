@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using POS_Project_Team2.Class;
 
 namespace POS_Project_Team2
 {
@@ -20,6 +12,8 @@ namespace POS_Project_Team2
         public PointForm()
         {
             InitializeComponent();
+
+            FormHelper.disable_resize(this);
         }
 
         private void button_point_cancle_Click(object sender, EventArgs e)
