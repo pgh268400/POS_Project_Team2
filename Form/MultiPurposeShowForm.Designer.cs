@@ -1,6 +1,6 @@
 ﻿namespace POS_Project_Team2
 {
-    partial class PayMentLogShowForm
+    partial class MultiPurposeShowForm
     {
         /// <summary>
         /// Required designer variable.

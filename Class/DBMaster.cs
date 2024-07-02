@@ -33,8 +33,11 @@ namespace POS_Project_Team2.Class
         // 환불 내역 테이블 이름
         private string refund_table_name = "Refunds";
 
+        // 통합 기록 테이블 이름
+        private string total_record_table_name = "TotalRecords";
 
-        // private 생성자
+
+        // private 생성자 = 싱글톤으로 Instance 프로퍼티에 접근해서만 생성할 수 있게 제한한다.
         private DBMaster()
         {
             /*
@@ -62,24 +65,37 @@ namespace POS_Project_Team2.Class
 
             if (!is_table_exist(refund_table_name))
                 create_refund_table();
+
+            if (!is_table_exist(total_record_table_name))
+                create_total_record_table();
         }
 
         // db 파일 삭제 함수
-        // 참고로 해당 함수 호출 이후 반드시 재 실행해야 db가 정상 작동한다.
         public void clear_db_file()
         {
-            // Connection 을 끊어준다
-            connection.Close();
+            try
+            {
+                // Connection 을 끊어준다
+                connection.Close();
 
-            if (File.Exists(total_db_path))
-            {
-                File.Delete(total_db_path);
-                Console.WriteLine("DB 파일이 삭제되었습니다.");
+                if (File.Exists(total_db_path))
+                {
+                    File.Delete(total_db_path);
+                    Console.WriteLine("DB 파일이 삭제되었습니다.");
+                }
+                else
+                {
+                    Console.WriteLine("DB 파일이 존재하지 않습니다.");
+                }
             }
-            else
+            catch (Exception e)
             {
-                Console.WriteLine("DB 파일이 존재하지 않습니다.");
+                Console.WriteLine(e.Message);
             }
+
+            // _instance 초기화
+            _instance = null;
+
         }
 
         private bool is_table_exist(string table_name)
@@ -92,6 +108,7 @@ namespace POS_Project_Team2.Class
             }
         }
 
+        // 생성 관련 ==============================================================
         // 유저 테이블 생성
         private void create_user_table()
         {
@@ -232,7 +249,61 @@ namespace POS_Project_Team2.Class
             }
         }
 
-        // 유저 테이블의 모든 데이터를 named tuple이 담긴 리스트로 반환한다.
+        // 총 결제 기록 테이블 생성
+        private void create_total_record_table()
+        {
+            // 총 결제 기록의 경우 결제 테이블과 환불 테이블을 합쳐서 (join) 보여준다.
+            // 보여주는 역할만 하기에 굳이 별도의 Table로 만들지 않는다.
+            string create_table_query = $@"
+                CREATE TABLE IF NOT EXISTS {total_record_table_name} (
+                    Time TIMESTAMP NOT NULL,
+                    ItemName TEXT NOT NULL,
+                    UnitPrice INTEGER NOT NULL,
+                    Count INTEGER NOT NULL,
+                    TotalPrice INTEGER NOT NULL,
+                    Payer TEXT,
+                    PhoneNumber INTEGER,
+                    isRefund INTEGER NOT NULL
+                )";
+
+            using (var command = new SQLiteCommand(create_table_query, connection))
+            {
+                command.ExecuteNonQuery();
+                Console.WriteLine($"{total_record_table_name} 테이블이 생성되었습니다.");
+            }
+        }
+        // ========================================================================
+        // 유저 테이블의 데이터를 담을 클래스
+        public class UserRecord
+        {
+            public int Id;
+            public string Username;
+            public string Password;
+        }
+
+        // 결제 테이블과 환불 테이블의 데이터를 담을 클래스
+        // 참고 : 결제 테이블과 환불 데이터는 테이블 구성(스키마) 이 같다.
+        public class PayMentRefundRecord
+        {
+            public DateTime Time { get; set; }
+            public string ItemName { get; set; }
+            public int UnitPrice { get; set; }
+            public int Count { get; set; }
+            public int TotalPrice { get; set; }
+            public string? Payer { get; set; } // nullable
+            public int? PhoneNumber { get; set; } // nullable
+        }
+
+        // 통합 조회 데이터를 담을 클래스
+        public class TotalRecord : PayMentRefundRecord
+        {
+            // SQlite에는 boolean 타입이 없어 int로 구분한다.
+            // 0 = 결제, 1 = 환불
+            public int isRefund { get; set; }
+        }
+
+        // ========================================================================
+        // 유저 테이블의 모든 데이터 가져오기
         public List<UserRecord> get_all_users_table()
         {
             var users = new List<UserRecord>();
@@ -254,26 +325,6 @@ namespace POS_Project_Team2.Class
             }
 
             return users;
-        }
-
-        // 유저 테이블의 데이터를 담을 클래스
-        public class UserRecord
-        {
-            public int Id;
-            public string Username;
-            public string Password;
-        }
-
-        // 결제 테이블과 환불 테이블의 데이터를 담을 클래스
-        public class PayMentRefundRecord
-        {
-            public DateTime Time;
-            public string ItemName;
-            public int UnitPrice;
-            public int Count;
-            public int TotalPrice;
-            public string Payer;
-            public int PhoneNumber;
         }
 
         // 결제 테이블의 모든 데이터 가져오기
@@ -332,27 +383,164 @@ namespace POS_Project_Team2.Class
             return refunds;
         }
 
+        // 총 결제기록의 모든 데이터 가져오기
+        // 총 결제 기록을 조회하는 메서드
+        public List<TotalRecord> get_all_total_records()
+        {
+            var transactions = new List<TotalRecord>();
 
+            string select_query = $"SELECT * FROM {total_record_table_name}";
+            using (var command = new SQLiteCommand(select_query, connection))
+            {
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var transaction = new TotalRecord
+                    {
+                        Time = reader.GetDateTime(0),
+                        ItemName = reader.GetString(1),
+                        UnitPrice = reader.GetInt32(2),
+                        Count = reader.GetInt32(3),
+                        TotalPrice = reader.GetInt32(4),
+                        Payer = reader.IsDBNull(5) ? null : reader.GetString(5),
+                        PhoneNumber = reader.IsDBNull(6) ? null : reader.GetInt32(6),
+                        isRefund = reader.GetInt32(7)
+                    };
+                    transactions.Add(transaction);
+                }
+            }
 
+            return transactions;
+        }
+        // ========================================================================
         // 참고 : password 의 경우 반드시 비밀번호를 bcrypt 로 해싱한 값을 넣어야 한다.
         private void insert_user_data(string username, string hashed_password)
         {
-            string connection_string = $"Data Source={total_db_path};Version=3;";
-            using (var connection = new SQLiteConnection(connection_string))
+            // bcrypt로 암호화된 비밀번호를 저장한다.
+            string insert_query = "INSERT INTO Users (Username, Password) VALUES (@Username, @Password)";
+            using (var command = new SQLiteCommand(insert_query, connection))
             {
-                connection.Open();
-
-                // bcrypt로 암호화된 비밀번호를 저장한다.
-                string insert_query = "INSERT INTO Users (Username, Password) VALUES (@Username, @Password)";
-                using (var command = new SQLiteCommand(insert_query, connection))
-                {
-                    command.Parameters.AddWithValue("@Username", username);
-                    command.Parameters.AddWithValue("@Password", hashed_password);
-                    command.ExecuteNonQuery();
-                }
+                command.Parameters.AddWithValue("@Username", username);
+                command.Parameters.AddWithValue("@Password", hashed_password);
+                command.ExecuteNonQuery();
             }
         }
 
+        // 결제 테이블에 데이터 삽입
+        public void insert_payment_data(PayMentRefundRecord record)
+        {
+            string insert_query = $@"
+                                    INSERT INTO {payment_table_name} 
+                                    (Time, ItemName, UnitPrice, Count, TotalPrice, Payer, PhoneNumber) 
+                                    VALUES (@Time, @ItemName, @UnitPrice, @Count, @TotalPrice, @Payer, @PhoneNumber)";
+            using (var command = new SQLiteCommand(insert_query, connection))
+            {
+                command.Parameters.AddWithValue("@Time", record.Time);
+                command.Parameters.AddWithValue("@ItemName", record.ItemName);
+                command.Parameters.AddWithValue("@UnitPrice", record.UnitPrice);
+                command.Parameters.AddWithValue("@Count", record.Count);
+                command.Parameters.AddWithValue("@TotalPrice", record.TotalPrice);
+                command.Parameters.AddWithValue("@Payer", (object?)record.Payer ?? DBNull.Value);
+                command.Parameters.AddWithValue("@PhoneNumber", (object?)record.PhoneNumber ?? DBNull.Value);
+                command.ExecuteNonQuery();
+            }
+
+            // TotalRecord 객체로 변환 & 통합 기록 테이블에 삽입
+            var total_record = new TotalRecord
+            {
+                Time = record.Time,
+                ItemName = record.ItemName,
+                UnitPrice = record.UnitPrice,
+                Count = record.Count,
+                TotalPrice = record.TotalPrice,
+                Payer = record.Payer,
+                PhoneNumber = record.PhoneNumber,
+                isRefund = 0
+            };
+
+            // 결제 테이블 삽입시 통합 기록에도 삽입
+            insert_total_record_data(total_record);
+        }
+
+        // 환불 테이블에 데이터 삽입
+        public void insert_refund_data(PayMentRefundRecord record)
+        {
+            string insert_query = $"INSERT INTO {refund_table_name} (Time, ItemName, UnitPrice, Count, TotalPrice, Payer, PhoneNumber) VALUES (@Time, @ItemName, @UnitPrice, @Count, @TotalPrice, @Payer, @PhoneNumber)";
+            using (var command = new SQLiteCommand(insert_query, connection))
+            {
+                command.Parameters.AddWithValue("@Time", record.Time);
+                command.Parameters.AddWithValue("@ItemName", record.ItemName);
+                command.Parameters.AddWithValue("@UnitPrice", record.UnitPrice);
+                command.Parameters.AddWithValue("@Count", record.Count);
+                command.Parameters.AddWithValue("@TotalPrice", record.TotalPrice);
+                command.Parameters.AddWithValue("@Payer", (object?)record.Payer ?? DBNull.Value);
+                command.Parameters.AddWithValue("@PhoneNumber", (object?)record.PhoneNumber ?? DBNull.Value);
+                command.ExecuteNonQuery();
+            }
+
+            // TotalRecord 객체로 변환 & 통합 기록 테이블에 삽입
+            var total_record = new TotalRecord
+            {
+                Time = record.Time,
+                ItemName = record.ItemName,
+                UnitPrice = record.UnitPrice,
+                Count = record.Count,
+                TotalPrice = record.TotalPrice,
+                Payer = record.Payer,
+                PhoneNumber = record.PhoneNumber,
+                isRefund = 1
+            };
+
+            // 결제 테이블 삽입시 통합 기록에도 삽입
+            insert_total_record_data(total_record);
+        }
+
+        // 통합 기록 테이블에 데이터 삽입
+        public void insert_total_record_data(TotalRecord record)
+        {
+            string insert_query = $"INSERT INTO {total_record_table_name} (Time, ItemName, UnitPrice, Count, TotalPrice, Payer, PhoneNumber, isRefund) VALUES (@Time, @ItemName, @UnitPrice, @Count, @TotalPrice, @Payer, @PhoneNumber, @isRefund)";
+            using (var command = new SQLiteCommand(insert_query, connection))
+            {
+                command.Parameters.AddWithValue("@Time", record.Time);
+                command.Parameters.AddWithValue("@ItemName", record.ItemName);
+                command.Parameters.AddWithValue("@UnitPrice", record.UnitPrice);
+                command.Parameters.AddWithValue("@Count", record.Count);
+                command.Parameters.AddWithValue("@TotalPrice", record.TotalPrice);
+                command.Parameters.AddWithValue("@Payer", (object?)record.Payer ?? DBNull.Value);
+                command.Parameters.AddWithValue("@PhoneNumber", (object?)record.PhoneNumber ?? DBNull.Value);
+                command.Parameters.AddWithValue("@isRefund", record.isRefund);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        // ========================================================================
+        // 결제 테이블의 n번째 행을 삭제하는 메서드
+        public void delete_payment_row(int n)
+        {
+            string delete_query = $@"
+            DELETE FROM {payment_table_name}
+            WHERE ROWID = (SELECT ROWID FROM {payment_table_name} LIMIT 1 OFFSET @RowIndex)";
+
+            using (var command = new SQLiteCommand(delete_query, connection))
+            {
+                command.Parameters.AddWithValue("@RowIndex", n);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        // 환불 테이블의 n번째 행을 삭제하는 메서드
+        public void delete_refund_row(int n)
+        {
+            string delete_query = $@"
+            DELETE FROM {refund_table_name}
+            WHERE ROWID = (SELECT ROWID FROM {refund_table_name} LIMIT 1 OFFSET @RowIndex)";
+
+            using (var command = new SQLiteCommand(delete_query, connection))
+            {
+                command.Parameters.AddWithValue("@RowIndex", n);
+                command.ExecuteNonQuery();
+            }
+        }
 
         /*
          정적 프로퍼티를 통해 인스턴스에 접근

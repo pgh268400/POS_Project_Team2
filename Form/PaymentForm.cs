@@ -202,83 +202,90 @@ namespace POS_Project_Team2
         // 결제 버튼 클릭 시DataForm에서 재고처리 미리 해서 메시지만 띄움 >> MainForm에서 업데이트 되도록 해야함
         private void button_card_Click(object sender, EventArgs e)
         {
-            if (listview_product.Items.Count > 0)
+            if (listview_product.Items.Count <= 0)
             {
-                // 포인트 정립 상태. 기본은 null이다.
-                string name = "null";
-                string phone_number = "null";
+                MessageBox.Show("상품을 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-                // 포인트를 적립할 건지 메세지 박스를 띄운다.
-                DialogResult result = MessageBox.Show("포인트를 적립하시겠습니까?", "포인트 적립", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
+            // 포인트 정립 상태. 기본은 null이다.
+            // 문자열에 null을 허용하기 위해 nullable 타입인 string? 을 사용한다.
+            string? name = null;
+            string? phone_number = null;
+
+            // 포인트를 적립할 건지 메세지 박스를 띄운다.
+            DialogResult result = MessageBox.Show("포인트를 적립하시겠습니까?", "포인트 적립", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                // 이 포인트의 경우 유저의 전화번호 뒷자리와 이름을 입력받아야 한다.
+                // 이를 위한 폼을 띄운다.
+
+                PointForm point_form = new PointForm();
+                if (point_form.ShowDialog() == DialogResult.OK)
                 {
-                    // 이 포인트의 경우 유저의 전화번호 뒷자리와 이름을 입력받아야 한다.
-                    // 이를 위한 폼을 띄운다.
-
-                    PointForm point_form = new PointForm();
-                    if (point_form.ShowDialog() == DialogResult.OK)
-                    {
-                        // 포인트 폼에서 이름과 전화번호 뒷자리를 가져온다.
-                        name = point_form.name;
-                        phone_number = point_form.phone_number;
+                    // 포인트 폼에서 이름과 전화번호 뒷자리를 가져온다.
+                    name = point_form.name;
+                    phone_number = point_form.phone_number;
 
 
-                        // 포인트 적립이 완료되었음을 알린다.
-                        MessageBox.Show($"{name} 님 {phone_number} 번호로 포인트가 적립되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else
-                    {
-                        // 포인트 적립을 취소하는 경우 아무것도 하지 않는다.
-                    }
-
+                    // 포인트 적립이 완료되었음을 알린다.
+                    MessageBox.Show($"{name} 님 {phone_number} 번호로 포인트가 적립되었습니다.", "알림", MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                 }
-
-                // 결제 내역을 로그에 기록한다.
-                Logger logger = new Logger();
-
-
-                /*
-                  products 를 로그에 기록한다.
-                  products를 for문을 돌면서 순회하고,
-                  (아이템 이름, 아이템 가격, 아이템 개수, 총 금액, name, phone_number)
-                  형태로 string [] 으로 바꾼다.
-                  이를 logger.append_payment_log() 메소드에 넘겨주면 된다.
-                */
-
-                foreach (var product in products)
+                else
                 {
-                    int total_cost = product.item_cost * product.item_count;
-                    string[] log_entry = new string[]
-                    {
-                        product.item_name,
-                        product.item_cost.ToString(),
-                        product.item_count.ToString(),
-                        total_cost.ToString(),
-                        name,
-                        phone_number
-                    };
-
-                    // logger.append_payment_log() 메소드에 넘겨주면 된다.
-                    logger.append_payment_log(log_entry);
+                    // 포인트 적립을 취소하는 경우 아무것도 하지 않는다.
                 }
+            }
 
-                //결제 후 리스트 뷰 초기화
-                listview_product.Clear();
-                products.Clear();
-                MessageBox.Show("결제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                MainForm mainForm = (MainForm)this.Owner;
-                mainForm.UpdateWaitButton(0, Color.Gray);
-                mainForm.paymentform_purchase = true;
-                mainForm.total_num_sales += 1;
-                mainForm.total_num_profit += total_price_purchase;
-                mainForm.total_previous_purchase = total_price_purchase;
-                this.Close();
+            // 결제 내역을 DB에 기록한다.
+            DBMaster db_master = DBMaster.Instance;
+            /*
+              products를 for문을 돌면서 순회하고,
+              (아이템 이름, 아이템 가격, 아이템 개수, 총 금액, 포인트 결제자명, 전화번호 4자리)
+              을 db에 기록하자.
+            */
 
+            int? converted_phone_number;
+            if (phone_number == null)
+            {
+                converted_phone_number = null;
             }
             else
             {
-                MessageBox.Show("상품을 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                converted_phone_number = int.Parse(phone_number);
             }
+
+            foreach (var product in products)
+            {
+                int total_cost = product.item_cost * product.item_count;
+
+                // 결제 데이터 삽입 예시
+                var payment = new DBMaster.PayMentRefundRecord
+                {
+                    Time = DateTime.Now,
+                    ItemName = product.item_name,
+                    UnitPrice = product.item_cost,
+                    Count = product.item_count,
+                    TotalPrice = total_cost,
+                    Payer = name,
+                    PhoneNumber = converted_phone_number
+                };
+                db_master.insert_payment_data(payment);
+            }
+
+            //결제 후 리스트 뷰 초기화
+            listview_product.Clear();
+            products.Clear();
+            MessageBox.Show("결제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MainForm mainForm = (MainForm)this.Owner;
+            mainForm.UpdateWaitButton(0, Color.Gray);
+            mainForm.paymentform_purchase = true;
+            mainForm.total_num_sales += 1;
+            mainForm.total_num_profit += total_price_purchase;
+            mainForm.total_previous_purchase = total_price_purchase;
+            this.Close();
 
         }
 
