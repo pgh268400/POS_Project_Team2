@@ -58,8 +58,6 @@ namespace POS_Project_Team2
                 dataset.Tables["ItemList"].Rows.Add(new object[] { 11, "바인더 클립(20개)", 2000, 20 });
                 dataset.Tables["ItemList"].Rows.Add(new object[] { 12, "미니 스테이플러", 2500, 10 });
                 dataset.Tables["ItemList"].Rows.Add(new object[] { 13, "자", 1000, 20 });
-
-
             }
 
             // 원본 데이터 복사
@@ -98,37 +96,38 @@ namespace POS_Project_Team2
             string search_text = textbox_search.Text;
             bool item_found = false;
 
-            for (int i = 0; i < datagridview_stock.Rows.Count; i++)
+            // search_text 가 숫자로만 이루어졌는지 확인
+            if (search_text.All(char.IsDigit))
             {
-                var cell_value = datagridview_stock.Rows[i].Cells[1].Value;
-
-                // null 체크 후 검색한 물품 있는 행 선택
-                if (cell_value != null && cell_value.ToString() == search_text)
+                // No 번호를 기준으로 검색
+                for (int i = 0; i < datagridview_stock.Rows.Count; i++)
                 {
-                    MessageBox.Show($"{cell_value} 항목이 선택되었습니다. 이제 수량을 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    var cell_value = datagridview_stock.Rows[i].Cells[0].Value; // No 컬럼은 인덱스 0
 
-                    selected = i;   // 검색한 물품 있는 행 선택하고 선택하기 버튼 클릭 시에 사용
-                    item_found = true;
+                    // null 체크 후 검색한 No 번호가 있는 행 선택
+                    if (cell_value != null && cell_value.ToString() == search_text)
+                    {
+                        var item_name = datagridview_stock.Rows[i].Cells[1].Value.ToString(); // 물품명은 인덱스 1
+                        select_item(i, item_name);
+                        item_found = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                // 물품명을 기준으로 검색
+                for (int i = 0; i < datagridview_stock.Rows.Count; i++)
+                {
+                    var cell_value = datagridview_stock.Rows[i].Cells[1].Value; // 물품명 컬럼은 인덱스 1
 
-                    // 물품명을 찾으면 수량을 입력할 수 있도록 설정
-                    textbox_count.Enabled = true;
-
-                    // 물품 선택이 성공적으로 진행된 경우 물품 개수를 입력하거나 
-                    // 선택 취소하기 버튼을 누르기 전까진 물품 이름을 함부로 변경할 수 없다.
-                    textbox_search.Enabled = false;
-
-                    // data gridview 역시 수정을 못하게 막는다.
-                    datagridview_stock.Enabled = false;
-
-                    // 선택한 물품의 행을 강조한다.
-                    datagridview_stock.Rows[i].Selected = true;
-                    datagridview_stock.Rows[i].DefaultCellStyle.BackColor = Color.Crimson;
-
-                    // 선택이 완료됐으므로 포커스를 수량으로 넘긴다
-                    textbox_count.Focus();
-
-
-                    break;
+                    // null 체크 후 검색한 물품명이 있는 행 선택
+                    if (cell_value != null && cell_value.ToString() == search_text)
+                    {
+                        select_item(i, cell_value.ToString());
+                        item_found = true;
+                        break;
+                    }
                 }
             }
 
@@ -136,6 +135,30 @@ namespace POS_Project_Team2
             {
                 MessageBox.Show("찾는 물품이 없습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void select_item(int row_index, string item_name)
+        {
+            MessageBox.Show($"{item_name} 항목이 선택되었습니다. 이제 수량을 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            selected = row_index;   // 검색한 물품 있는 행 선택하고 선택하기 버튼 클릭 시에 사용
+
+            // 물품명을 찾으면 수량을 입력할 수 있도록 설정
+            textbox_count.Enabled = true;
+
+            // 물품 선택이 성공적으로 진행된 경우 물품 개수를 입력하거나 
+            // 선택 취소하기 버튼을 누르기 전까진 물품 이름을 함부로 변경할 수 없다.
+            textbox_search.Enabled = false;
+
+            // data gridview 역시 수정을 못하게 막는다.
+            datagridview_stock.Enabled = false;
+
+            // 선택한 물품의 행을 강조한다.
+            datagridview_stock.Rows[row_index].Selected = true;
+            datagridview_stock.Rows[row_index].DefaultCellStyle.BackColor = Color.Crimson;
+
+            // 선택이 완료됐으므로 포커스를 수량으로 넘긴다
+            textbox_count.Focus();
         }
 
         // CountText에 판매할 상품 개수 적고 선택하기 버튼 클릭시 선택한 물품의 이름, 가격, 갯수 반환 
@@ -371,7 +394,6 @@ namespace POS_Project_Team2
             dataset.Tables["ItemList"].Clear();
             LoadDataTable(dataset.Tables["ItemList"], "item_data.xml");
             datagridview_stock.DataSource = dataset.Tables["ItemList"];
-
         }
     }
 }

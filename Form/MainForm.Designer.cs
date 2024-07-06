@@ -96,7 +96,7 @@
             button_get_receipt.ForeColor = SystemColors.ControlLightLight;
             button_get_receipt.Location = new Point(252, 66);
             button_get_receipt.Name = "button_get_receipt";
-            button_get_receipt.Size = new Size(121, 57);
+            button_get_receipt.Size = new Size(121, 47);
             button_get_receipt.TabIndex = 3;
             button_get_receipt.Text = "영수증 조회";
             button_get_receipt.UseVisualStyleBackColor = false;

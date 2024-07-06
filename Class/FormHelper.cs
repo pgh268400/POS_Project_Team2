@@ -3,6 +3,7 @@
     // 폼과 관련된 모든것의 작업을 도와주는 도우미 클래스
 
     using System.Collections.Generic;
+    using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
     public static class FormHelper
@@ -76,6 +77,27 @@
         {
             form.FormBorderStyle = FormBorderStyle.FixedSingle; // 창 크기 조절 막기
             form.MaximizeBox = false; // 최대화 버튼 비활성화
+        }
+
+        // 사각 패널 깎아서 뭉툭하게 만들기 (디자인)
+        public static void make_panel_round(object sender, PaintEventArgs e)
+        {
+            Panel panel = sender as Panel;
+            if (panel != null)
+            {
+                GraphicsPath path = new GraphicsPath();
+                int radius = 20;
+                int diameter = radius * 2;
+                Rectangle bounds = new Rectangle(0, 0, panel.Width, panel.Height);
+
+                path.AddArc(bounds.X, bounds.Y, diameter, diameter, 180, 90);
+                path.AddArc(bounds.X + bounds.Width - diameter, bounds.Y, diameter, diameter, 270, 90);
+                path.AddArc(bounds.X + bounds.Width - diameter, bounds.Y + bounds.Height - diameter, diameter, diameter, 0, 90);
+                path.AddArc(bounds.X, bounds.Y + bounds.Height - diameter, diameter, diameter, 90, 90);
+                path.CloseAllFigures();
+
+                panel.Region = new Region(path);
+            }
         }
     }
 }

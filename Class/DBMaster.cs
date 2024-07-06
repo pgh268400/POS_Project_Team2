@@ -1,4 +1,5 @@
 ﻿using System.Data.SQLite;
+using System.Reflection;
 
 namespace POS_Project_Team2.Class
 {
@@ -24,7 +25,7 @@ namespace POS_Project_Team2.Class
         // 해당 connection 변수를 이용해 db에 접근한다.
         private SQLiteConnection connection;
 
-        // 유저, 총 결제 내역, 환불 내역, 통합 기록 테이블의 이름을 저장할 변수
+        // 유저, 총 결제 내역, 환불 내역, 통합 기록 테이블, 등등 테이블의 이름을 저장할 변수
         /*
           readonly 와 const 의 차이?
           const는 컴파일 시점에 값이 저장되는 상수
@@ -38,10 +39,11 @@ namespace POS_Project_Team2.Class
 
           참고 : https://woojoolog.tistory.com/6
         */
-        private const string user_table_name = "Users",
-                       payment_table_name = "Payments",
-                       refund_table_name = "Refunds",
-                       total_record_table_name = "TotalRecords";
+        private const string user_table_name = "User",
+                       payment_table_name = "Payment",
+                       refund_table_name = "Refund",
+                       total_record_table_name = "TotalRecord",
+                       stock_table_name = "Stock";
 
 
         // private 생성자 = 싱글톤으로 Instance 프로퍼티에 접근해서만 생성할 수 있게 제한한다.
@@ -75,6 +77,80 @@ namespace POS_Project_Team2.Class
 
             if (!is_table_exist(total_record_table_name))
                 create_total_record_table();
+
+            if (!is_table_exist(stock_table_name))
+                create_stock_table();
+        }
+
+        /*
+          Class 타입을 참고해서 자동으로 테이블 생성 쿼리를 작성하는 함수
+          이 함수를 호출함으로써 테이블의 스키마를 지키며 테이블을 생성할 수 있다.
+          해당 함수는 반드시 Class 내부 변수를 프로퍼티로 선언해야 작동한다.
+        */
+        public string generate_create_table_query<T>(string table_name, bool if_not_exists = true)
+        {
+            PropertyInfo[] properties = typeof(T).GetProperties();
+            string columns = "";
+
+            foreach (PropertyInfo property in properties)
+            {
+                string column_name = property.Name;
+                string column_type = get_sqlite_type(property.PropertyType);
+
+                bool is_nullable = property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+                string nullability = is_nullable ? "NULL" : "NOT NULL";
+
+                columns += $"{column_name} {column_type} {nullability}, ";
+            }
+
+            columns = columns.TrimEnd(',', ' '); // 마지막 쉼표와 공백 제거
+
+            string if_not_exists_clause = if_not_exists ? "IF NOT EXISTS " : "";
+
+            string create_table_query = $"CREATE TABLE {if_not_exists_clause} {table_name} ({columns});";
+            return create_table_query;
+        }
+
+        public string get_sqlite_type(Type type)
+        {
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                type = Nullable.GetUnderlyingType(type);
+            }
+
+            if (type == typeof(int) || type == typeof(long) || type == typeof(short) || type == typeof(byte))
+            {
+                return "INTEGER";
+            }
+            else if (type == typeof(bool))
+            {
+                return "INTEGER"; // SQLite에는 BOOLEAN 타입이 없으므로 INTEGER로 매핑
+            }
+            else if (type == typeof(float) || type == typeof(double) || type == typeof(decimal))
+            {
+                return "REAL";
+            }
+            else if (type == typeof(string))
+            {
+                return "TEXT";
+            }
+            else if (type == typeof(DateTime))
+            {
+                return "DATETIME";
+            }
+            else if (type == typeof(byte[]))
+            {
+                return "BLOB";
+            }
+            else if (type == typeof(Guid))
+            {
+                return "TEXT"; // GUID는 일반적으로 TEXT로 저장
+            }
+            else if (type.IsEnum)
+            {
+                return "INTEGER"; // 열거형 타입은 INTEGER로 저장
+            }
+            throw new NotSupportedException($"Type {type.Name} is not supported");
         }
 
         // 소멸자
@@ -126,12 +202,10 @@ namespace POS_Project_Team2.Class
 
         // 생성 관련 ==============================================================
         // 테이블 생성 공통 함수
-        private void create_table(string table_name, string create_table_query, bool if_not_exists = true, bool debug_text = false)
+        private void create_table(string full_query, string table_name, bool enable_debug_text = false)
         {
-            string if_not_exists_clause = if_not_exists ? "IF NOT EXISTS " : "";
-            string fullCreateQuery = $"CREATE TABLE {if_not_exists_clause}{table_name} ({create_table_query})";
 
-            using (var command = new SQLiteCommand(fullCreateQuery, connection))
+            using (var command = new SQLiteCommand(full_query, connection))
             {
                 /*
                      SQL에서는 테이블 이름과 같은 객체 식별자는 매개 변수로 전달할 수 없다.
@@ -143,34 +217,18 @@ namespace POS_Project_Team2.Class
                 // ExecuteNonQuery = SQL 명령문을 실행하지만 결과를 반환하지 않는 경우에 사용
                 // NonQuery = 결과 집합을 반환하지 않는다는 의미
                 command.ExecuteNonQuery();
-                Console.WriteLine($"{table_name} 테이블이 생성되었습니다.");
+
+                if (enable_debug_text)
+                    Console.WriteLine($"{table_name} 테이블이 생성되었습니다.");
             }
         }
 
         // 유저 테이블 생성
         private void create_user_table()
         {
-            /*
-              User Table 모습
-              +----+----------+---------------------+
-              | Id | Username |      Password       |
-              +----+----------+---------------------+
-              | 1  | user1    | bcrypt_hased_pass1  |
-              | 2  | user2    | bcrypt_hased_pass2  |
-              | 3  | user3    | bcrypt_hased_pass3  |
-              +----+----------+---------------------+ 
-              Id: INTEGER, PRIMARY KEY, AUTOINCREMENT
-              Username: TEXT, NOT NULL, UNIQUE
-              Password: TEXT, NOT NULL
-            */
-
             // 파일로 작업하지만 다루는건 당연히 SQL문법으로 다룬다.
-            string create_table_query = @"
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Username TEXT NOT NULL UNIQUE,
-                Password TEXT NOT NULL
-            ";
-            create_table(user_table_name, create_table_query, true, true);
+            string create_table_query = generate_create_table_query<UserRecord>(user_table_name);
+            create_table(create_table_query, user_table_name, true);
 
             // 새로 만들었으면 기본 유저 3개를 추가한다. (관리자)
             // 비밀번호의 경우 bcrypt로 해싱한 값을 넣어준다.
@@ -182,87 +240,31 @@ namespace POS_Project_Team2.Class
         // 결제 테이블 생성
         private void create_payment_table()
         {
-            /*
-              Payments Table 모습
-              +-------------------+----------+-----------+-------+------------+----------+-------------+
-              |       Time        | ItemName | UnitPrice | Count | TotalPrice | Payer    | PhoneNumber |
-              +-------------------+----------+-----------+-------+------------+----------+-------------+
-              | 2023-01-01 10:00  | Item1    | 1000      | 2     | 2000       | user1    | 1234        |
-              | 2023-01-02 11:00  | Item2    | 2000      | 1     | 2000       | user2    | 5678        |
-              | 2023-01-03 12:00  | Item3    | 1500      | 3     | 4500       | user3    | 9012        |
-              +-------------------+----------+-----------+-------+------------+----------+-------------+
-              Time: TIMESTAMP, NOT NULL
-              ItemName: TEXT, NOT NULL
-              UnitPrice: INTEGER, NOT NULL
-              Count: INTEGER, NOT NULL
-              TotalPrice: INTEGER, NOT NULL
-              Payer: TEXT, NULL
-              PhoneNumber: INTEGER, NULL
-            */
-
-            string create_table_query = @"
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Time TIMESTAMP NOT NULL,
-                ItemName TEXT NOT NULL,
-                UnitPrice INTEGER NOT NULL,
-                Count INTEGER NOT NULL,
-                TotalPrice INTEGER NOT NULL,
-                Payer TEXT,
-                PhoneNumber INTEGER
-            ";
-            create_table(payment_table_name, create_table_query, true, true);
+            string query = generate_create_table_query<PayMentRefundRecord>(payment_table_name);
+            create_table(query, payment_table_name, true);
         }
 
         // 환불 테이블 생성
         private void create_refund_table()
         {
-            /*
-              Refunds Table 모습
-              +-------------------+----------+-----------+-------+------------+----------+-------------+
-              |       Time        | ItemName | UnitPrice | Count | TotalPrice | Payer    | PhoneNumber |
-              +-------------------+----------+-----------+-------+------------+----------+-------------+
-              | 2023-01-01 10:00  | Item1    | 1000      | 2     | 2000       | user1    | 1234        |
-              | 2023-01-02 11:00  | Item2    | 2000      | 1     | 2000       | user2    | 5678        |
-              | 2023-01-03 12:00  | Item3    | 1500      | 3     | 4500       | user3    | 9012        |
-              +-------------------+----------+-----------+-------+------------+----------+-------------+
-              Time: TIMESTAMP, NOT NULL
-              ItemName: TEXT, NOT NULL
-              UnitPrice: INTEGER, NOT NULL
-              Count: INTEGER, NOT NULL
-              TotalPrice: INTEGER, NOT NULL
-              Payer: TEXT, NULL
-              PhoneNumber: INTEGER, NULL
-            */
-
-            string create_table_query = @"
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Time TIMESTAMP NOT NULL,
-                ItemName TEXT NOT NULL,
-                UnitPrice INTEGER NOT NULL,
-                Count INTEGER NOT NULL,
-                TotalPrice INTEGER NOT NULL,
-                Payer TEXT,
-                PhoneNumber INTEGER
-            ";
-            create_table(refund_table_name, create_table_query, true, true);
+            string query = generate_create_table_query<PayMentRefundRecord>(refund_table_name);
+            create_table(query, refund_table_name, true);
         }
 
         // 총 결제 기록 테이블 생성
         private void create_total_record_table()
         {
-            string create_table_query = @"
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,   
-                Time TIMESTAMP NOT NULL,
-                ItemName TEXT NOT NULL,
-                UnitPrice INTEGER NOT NULL,
-                Count INTEGER NOT NULL,
-                TotalPrice INTEGER NOT NULL,
-                Payer TEXT,
-                PhoneNumber INTEGER,
-                isRefund INTEGER NOT NULL
-            ";
-            create_table(total_record_table_name, create_table_query, true, true);
+            string query = generate_create_table_query<TotalRecord>(total_record_table_name);
+            create_table(query, total_record_table_name, true);
         }
+
+        // 재고 테이블 생성
+        private void create_stock_table()
+        {
+            string query = generate_create_table_query<StockRecord>(stock_table_name);
+            create_table(query, stock_table_name, true);
+        }
+
         // 조회 관련 ==============================================================
         // 모든 행을 전체 조회하는 공통 함수 (제네릭 사용)
         private List<T> get_all_table<T>(string table_name, Func<SQLiteDataReader, T> read_record)
@@ -347,7 +349,7 @@ namespace POS_Project_Team2.Class
         private void insert_user_data(string username, string hashed_password)
         {
             // bcrypt로 암호화된 비밀번호를 저장한다.
-            string insert_query = "INSERT INTO Users (Username, Password) VALUES (@Username, @Password)";
+            string insert_query = $"INSERT INTO {user_table_name} (Username, Password) VALUES (@Username, @Password)";
             using (var command = new SQLiteCommand(insert_query, connection))
             {
                 command.Parameters.AddWithValue("@Username", username);
@@ -444,6 +446,19 @@ namespace POS_Project_Team2.Class
             }
         }
 
+        // 재고 테이블에 데이터 삽입
+        public void insert_stock_data(StockRecord record)
+        {
+            string insert_query = $"INSERT INTO {stock_table_name} (ItemName, Cost, Count) VALUES (@ItemName, @Cost, @Count)";
+            using (var command = new SQLiteCommand(insert_query, connection))
+            {
+                command.Parameters.AddWithValue("@ItemName", record.ItemName);
+                command.Parameters.AddWithValue("@Cost", record.Cost);
+                command.Parameters.AddWithValue("@Count", record.Count);
+                command.ExecuteNonQuery();
+            }
+        }
+
         // 삭제 관련 ==============================================================
         // 결제 테이블의 n번째 행을 삭제하는 메서드
         public void delete_payment_row(int n)
@@ -536,7 +551,7 @@ namespace POS_Project_Team2.Class
         // db에 요청해 id에 해당하는 pw를 가져온다.
         public string get_user_pw_by_id(string user_id)
         {
-            string select_query = "SELECT Password FROM Users WHERE Username = @Username";
+            string select_query = $"SELECT Password FROM {user_table_name} WHERE Username = @Username";
             string stored_hash = "";
             string connection_string = $"Data Source={total_db_path};Version=3;";
             using var connection = new SQLiteConnection(connection_string);

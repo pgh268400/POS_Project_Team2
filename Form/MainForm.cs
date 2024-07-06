@@ -14,8 +14,6 @@ namespace POS_Project_Team2
         public int total_num_profit = 0;            // 금일 총 수익
         public int total_previous_purchase = 0;     // 이전 구매액
 
-
-
         public MainForm()
         {
             // 실행시 창을 화면 중앙에 위치시키기
@@ -72,11 +70,11 @@ namespace POS_Project_Team2
         private void button6_Click(object sender, EventArgs e)
         {
             // 결제를 누르면 PaymentForm으로 이동
-            var paymentForm = new PaymentForm();
-            FormHelper.show(paymentForm);
-            paymentForm.FormClosing += PaymentForm_FormClosing;
-            paymentForm.Owner = this;
-            paymentForm.Show();
+            var payment_form = new PaymentForm();
+            FormHelper.show(payment_form);
+            payment_form.FormClosing += PaymentForm_FormClosing;
+            payment_form.Owner = this;
+            payment_form.Show();
         }
 
 

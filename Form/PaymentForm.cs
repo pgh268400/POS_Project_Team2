@@ -100,7 +100,7 @@ namespace POS_Project_Team2
                 total_price_purchase += total_cost;         //총 갯수 계산
             }
 
-            //Column 설정
+            // Column 설정
             listview_product.Columns.Add("No", 30, HorizontalAlignment.Left);
             listview_product.Columns.Add("물품명", 200, HorizontalAlignment.Left);
             listview_product.Columns.Add("수량", 70, HorizontalAlignment.Left);

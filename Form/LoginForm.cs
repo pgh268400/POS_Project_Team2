@@ -2,8 +2,6 @@
 
 namespace POS_Project_Team2
 {
-    using System.Drawing.Drawing2D;
-
     public partial class LoginForm : Form
     {
         /*
@@ -33,18 +31,7 @@ namespace POS_Project_Team2
         // 사각 패널 깎아서 뭉툭하게 만들기 (디자인)
         private void panel_background_Paint(object sender, PaintEventArgs e)
         {
-            GraphicsPath path = new GraphicsPath();
-            int radius = 20;
-            int diameter = radius * 2;
-            Rectangle bounds = new Rectangle(0, 0, panel_background.Width, panel_background.Height);
-
-            path.AddArc(bounds.X, bounds.Y, diameter, diameter, 180, 90);
-            path.AddArc(bounds.X + bounds.Width - diameter, bounds.Y, diameter, diameter, 270, 90);
-            path.AddArc(bounds.X + bounds.Width - diameter, bounds.Y + bounds.Height - diameter, diameter, diameter, 0, 90);
-            path.AddArc(bounds.X, bounds.Y + bounds.Height - diameter, diameter, diameter, 90, 90);
-            path.CloseAllFigures();
-
-            panel_background.Region = new Region(path);
+            FormHelper.make_panel_round(sender, e);
         }
 
         private void process_auto_login(string user_id)
@@ -92,7 +79,6 @@ namespace POS_Project_Team2
                 if (checkbox_auto_login.Checked)
                     // id와 pw를 로그인 파일에 2줄로 저장한다
                     process_auto_login(input_id);
-
 
                 /*
                   로그인 성공시 메인 화면으로 이동 :

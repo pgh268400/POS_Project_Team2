@@ -122,7 +122,7 @@
             // 
             textbox_search.Location = new Point(34, 34);
             textbox_search.Name = "textbox_search";
-            textbox_search.PlaceholderText = "물품명";
+            textbox_search.PlaceholderText = "물품명 or 번호";
             textbox_search.Size = new Size(147, 23);
             textbox_search.TabIndex = 0;
             textbox_search.KeyDown += textbox_search_KeyDown;
