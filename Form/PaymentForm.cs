@@ -248,15 +248,6 @@ namespace POS_Project_Team2
               을 db에 기록하자.
             */
 
-            int? converted_phone_number;
-            if (phone_number == null)
-            {
-                converted_phone_number = null;
-            }
-            else
-            {
-                converted_phone_number = int.Parse(phone_number);
-            }
 
             foreach (var product in products)
             {
@@ -271,7 +262,7 @@ namespace POS_Project_Team2
                     Count = product.item_count,
                     TotalPrice = total_cost,
                     Payer = name,
-                    PhoneNumber = converted_phone_number
+                    PhoneNumber = phone_number
                 };
                 db_master.insert_payment_data(payment);
             }

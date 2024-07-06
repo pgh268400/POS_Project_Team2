@@ -86,6 +86,8 @@ namespace POS_Project_Team2.Class
           Class 타입을 참고해서 자동으로 테이블 생성 쿼리를 작성하는 함수
           이 함수를 호출함으로써 테이블의 스키마를 지키며 테이블을 생성할 수 있다.
           해당 함수는 반드시 Class 내부 변수를 프로퍼티로 선언해야 작동한다.
+
+          + 무조건 첫 번째 열은 Id로 지정하며, AUTO INCREMENT로 설정한다.
         */
         public string generate_create_table_query<T>(string table_name, bool if_not_exists = true)
         {
@@ -98,7 +100,15 @@ namespace POS_Project_Team2.Class
                 string column_type = get_sqlite_type(property.PropertyType);
 
                 bool is_nullable = property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
-                string nullability = is_nullable ? "NULL" : "NOT NULL";
+                string nullability = is_nullable ? "" : "NOT NULL";
+
+                // Id 열에 대해 AUTOINCREMENT 추가
+                if (string.Equals(column_name, "Id", StringComparison.OrdinalIgnoreCase))
+                {
+                    column_type = "INTEGER PRIMARY KEY AUTOINCREMENT";
+                    nullability = "";
+                }
+
 
                 columns += $"{column_name} {column_type} {nullability}, ";
             }
@@ -263,6 +273,22 @@ namespace POS_Project_Team2.Class
         {
             string query = generate_create_table_query<StockRecord>(stock_table_name);
             create_table(query, stock_table_name, true);
+
+            // 기본 재고 데이터 설정
+            // 데이터 추가
+            insert_stock_data(new StockRecord { Id = 1, ItemName = "싸인펜", Cost = 1000, Count = 30 });
+            insert_stock_data(new StockRecord { Id = 2, ItemName = "붓", Cost = 2000, Count = 20 });
+            insert_stock_data(new StockRecord { Id = 3, ItemName = "지우개", Cost = 800, Count = 30 });
+            insert_stock_data(new StockRecord { Id = 4, ItemName = "제도샤프", Cost = 1500, Count = 40 });
+            insert_stock_data(new StockRecord { Id = 5, ItemName = "A4 노트", Cost = 2000, Count = 30 });
+            insert_stock_data(new StockRecord { Id = 6, ItemName = "스티커 메모", Cost = 1500, Count = 20 });
+            insert_stock_data(new StockRecord { Id = 7, ItemName = "수정 테이프", Cost = 700, Count = 20 });
+            insert_stock_data(new StockRecord { Id = 8, ItemName = "가위", Cost = 1500, Count = 15 });
+            insert_stock_data(new StockRecord { Id = 9, ItemName = "글루건", Cost = 1000, Count = 10 });
+            insert_stock_data(new StockRecord { Id = 10, ItemName = "필통", Cost = 2000, Count = 12 });
+            insert_stock_data(new StockRecord { Id = 11, ItemName = "바인더 클립(20개)", Cost = 2000, Count = 20 });
+            insert_stock_data(new StockRecord { Id = 12, ItemName = "미니 스테이플러", Cost = 2500, Count = 10 });
+            insert_stock_data(new StockRecord { Id = 13, ItemName = "자", Cost = 1000, Count = 20 });
         }
 
         // 조회 관련 ==============================================================
@@ -307,7 +333,7 @@ namespace POS_Project_Team2.Class
                 Count = reader.GetInt32(4),
                 TotalPrice = reader.GetInt32(5),
                 Payer = reader.IsDBNull(6) ? null : reader.GetString(6),
-                PhoneNumber = reader.IsDBNull(7) ? null : reader.GetInt32(7)
+                PhoneNumber = reader.IsDBNull(7) ? null : reader.GetString(7)
             });
         }
 
@@ -323,7 +349,7 @@ namespace POS_Project_Team2.Class
                 Count = reader.GetInt32(4),
                 TotalPrice = reader.GetInt32(5),
                 Payer = reader.IsDBNull(6) ? null : reader.GetString(6),
-                PhoneNumber = reader.IsDBNull(7) ? null : reader.GetInt32(7)
+                PhoneNumber = reader.IsDBNull(7) ? null : reader.GetString(7)
             });
         }
 
@@ -340,8 +366,20 @@ namespace POS_Project_Team2.Class
                 Count = reader.GetInt32(4),
                 TotalPrice = reader.GetInt32(5),
                 Payer = reader.IsDBNull(6) ? null : reader.GetString(6),
-                PhoneNumber = reader.IsDBNull(7) ? null : reader.GetInt32(7),
+                PhoneNumber = reader.IsDBNull(7) ? null : reader.GetString(7),
                 isRefund = reader.GetInt32(8)
+            });
+        }
+
+        // 재고 테이블의 모든 데이터 가져오기
+        public List<StockRecord> get_all_stock_table()
+        {
+            return get_all_table(stock_table_name, reader => new StockRecord
+            {
+                Id = reader.GetInt32(0),
+                ItemName = reader.GetString(1),
+                Cost = reader.GetInt32(2),
+                Count = reader.GetInt32(3)
             });
         }
         // 삽입 관련 ==============================================================

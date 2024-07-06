@@ -150,7 +150,7 @@ namespace POS_Project_Team2
                 Count = int.Parse(count),
                 TotalPrice = int.Parse(total_price),
                 Payer = payer,
-                PhoneNumber = phone_number == null_string ? null : int.Parse(phone_number)
+                PhoneNumber = phone_number == null_string ? null : phone_number
             };
 
             // 환불 기록을 DB에 저장

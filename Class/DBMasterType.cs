@@ -23,7 +23,7 @@ public class PayMentRefundRecord
     public int Count { get; set; }
     public int TotalPrice { get; set; }
     public string? Payer { get; set; } // nullable
-    public int? PhoneNumber { get; set; } // nullable
+    public string? PhoneNumber { get; set; } // nullable
 }
 
 // 통합 조회 데이터를 담을 클래스
