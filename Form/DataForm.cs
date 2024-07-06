@@ -8,6 +8,11 @@ namespace POS_Project_Team2
         public ItemData dataset;
         DataTable original_data;
 
+        // 폼을 열었다 닫아도 계속 유지되도록,
+        // 전 객체 (여기선 여러창) 가 공유하는 static 변수를 하나 선언
+        // 이 변수는 아이템 품목을 임시적으로 저장하는 역할을 한다.
+        private static List<StockRecord> stock_items = new();
+
         // PayMentForm 과 공유할 결제 내역을 담는 리스트
         public List<(string item_name, int item_cost, int item_count)> items = new();
 
@@ -36,35 +41,24 @@ namespace POS_Project_Team2
         // 아이템 추가 및 바인딩 진행
         private void set_item_and_bind()
         {
-            // 강의에서 배운 dataset 을 활용해서 데이터를 저장후, 이를 datagridview에 바인딩하는 방법을 사용
-            dataset = new ItemData();
-
-            //업데이트 된 재고 데이터 불러오기 위해서 Load
-            LoadDataTable(dataset.Tables["ItemList"], "item_data.xml");
-
-            //데이터 없으면 기본 데이터 추가
-            if (dataset.Tables["ItemList"].Rows.Count == 0)
+            // stock_items 가 비어있지 않으면 그걸 그대로 바인딩
+            if (stock_items.Count != 0)
             {
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 1, "싸인펜", 1000, 30 });
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 2, "붓", 2000, 20 });
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 3, "지우개", 800, 30 });
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 4, "제도샤프", 1500, 40 });
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 5, "A4 노트", 2000, 30 });
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 6, "스티커 메모", 1500, 20 });
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 7, "수정 테이프", 700, 20 });
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 8, "가위", 1500, 15 });
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 9, "글루건", 1000, 10 });
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 10, "필통", 2000, 12 });
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 11, "바인더 클립(20개)", 2000, 20 });
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 12, "미니 스테이플러", 2500, 10 });
-                dataset.Tables["ItemList"].Rows.Add(new object[] { 13, "자", 1000, 20 });
+                datagridview_stock.DataSource = stock_items;
             }
+            else
+            {
+                // stock_items 가 비어있으면 DB에서 로드후 stock_items 에 저장
+                var db_master = DBMaster.Instance;
+                List<StockRecord> all_stock_list = db_master.get_all_stock_table();
+                stock_items = all_stock_list;
 
-            // 원본 데이터 복사
-            original_data = dataset.Tables["ItemList"].Copy();
-
-            datagridview_stock.DataSource = dataset.Tables["ItemList"];
+                // 데이터 그리드 뷰에 바인딩
+                datagridview_stock.DataSource = stock_items;
+            }
         }
+
+
         public DataForm()
         {
             InitializeComponent();
@@ -189,8 +183,10 @@ namespace POS_Project_Team2
 
             // 선택하기가 완료된 경우 재고 개수를 data grid view에 반영시킨다.
             datagridview_stock.Rows[selected].Cells[3].Value = stock - item_count;
+
+            // 결제 전까진 제고 데이터를 수정하지 않는다.
             // 변경된 제고 데이터 xml에 저장
-            SaveDataTable(dataset.Tables["ItemList"], "item_data.xml");
+            //SaveDataTable(dataset.Tables["ItemList"], "item_data.xml");
 
             // 물품명과 수량 입력 텍스트 박스를 초기화 한다.
             textbox_search.Text = "";
@@ -204,8 +200,6 @@ namespace POS_Project_Team2
 
             // data grid view 의 선택을 해제한다.
             datagridview_stock.Rows[selected].Selected = false;
-
-
 
             // 이 리스트 아이템을 현재 리스트뷰에 추가
             // DialogResult = DialogResult.OK;
