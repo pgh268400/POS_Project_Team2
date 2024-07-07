@@ -28,7 +28,8 @@ namespace POS_Project_Team2
         public List<(string item_name, int item_cost, int item_count)> select_items = new();
 
         int selected;
-        int listview_item_count = 1;    //listview_item의 No 컨트롤
+        int listview_item_count = 1; // listview_item의 No 컨트롤
+        private bool restart_status = false; // 다시 창을 껐다 켰는지 체크하는 변수
 
         // 결제창이 아닌 일반 메인창에서 보기 위해 접근했을때 모든 컨트롤을 비활성화 시키는 메서드
         public void block_all()
@@ -48,6 +49,7 @@ namespace POS_Project_Team2
             label_mode.Text = "* 현재 읽기 모드입니다.";
             label_tip.Text = "";
         }
+
         // 아이템 추가 및 바인딩 진행
         private void set_item_and_bind()
         {
@@ -68,6 +70,8 @@ namespace POS_Project_Team2
                   데이터 그리드 뷰에도 반영된다.
                 */
                 datagridview_stock.DataSource = stock_items;
+
+                Console.WriteLine("바인딩 완료");
             }
         }
 
@@ -76,23 +80,116 @@ namespace POS_Project_Team2
         {
             InitializeComponent();
 
-            // 아이템 추가 및 바인딩 진행
-            set_item_and_bind();
-
             // 실행시 창을 화면 중앙에 위치시키기
             this.StartPosition = FormStartPosition.CenterScreen;
 
             FormHelper.disable_resize(this);
+
+            restart_status = false;
         }
 
+        // 해당 Load 함수는 폼이 닫히고 새로 열릴때마다 매번 새로 호출된다.
         private void DataForm_Load(object sender, EventArgs e)
         {
-            // 물품명을 먼저 입력해야지 수량을 입력할 수 있도록 설정
-            textbox_count.Enabled = false; // 수량을 비활성화 한다.
+            // 아이템이 비어있는 경우 (첫 번째 창 연 경우) UI 기본 설정
+            if (stock_items.Count == 0)
+            {
+                // 물품명을 먼저 입력해야지 수량을 입력할 수 있도록 설정
+                textbox_count.Enabled = false; // 수량을 비활성화 한다.
 
-            // 버그 방지를 위해 data grid view 수정을 막는다
-            datagridview_stock.ReadOnly = true;
+                // 수량 옆에 선택 버튼도 비활성화
+                button_select.Enabled = false;
+
+                // 버그 방지를 위해 data grid view 수정을 막는다
+                datagridview_stock.ReadOnly = true;
+
+                // data grid view 선택 상태 해제
+                datagridview_stock.ClearSelection();
+
+                // 아이템 추가 및 바인딩 진행
+                set_item_and_bind();
+            }
+
+
+            /*
+              리스트뷰에 아이템이 남아 있는 경우
+              == 창을 닫고 다시 열었을 때
+              이때 data grid view에 하이라이팅을 복구한다
+              
+              이유는 모르겠지만 창을 닫고 다시 열었을 때 같은 창을 참조해 열도록
+              설계하였으나 grid view 에 선택한 포커스나 배경 하이라이팅은 소멸함을
+              확인 했다. 따라서 복구 로직이 필요하다.
+            */
+            if (listview_selected.Items.Count > 0)
+            {
+
+
+                // 데이터가 바인딩된 후 하이라이팅 복구
+                DataGridViewBindingCompleteEventHandler data_bind_complete_event_handler = null;
+                data_bind_complete_event_handler = (s, ev) =>
+                {
+                    highlight_gridview_item();
+
+                    // 한 번만 하이라이팅을 복구하고 이벤트 핸들러를 제거한다.
+                    datagridview_stock.DataBindingComplete -= data_bind_complete_event_handler;
+                };
+
+                datagridview_stock.DataBindingComplete += data_bind_complete_event_handler;
+            }
+
+            // 선택하다 중간에 나갔는 경우에도 아이템을 선택하도록 복구한다
+            if (textbox_search.Enabled == false)
+            {
+                string search_text = textbox_search.Text;
+
+                // 데이터가 바인딩된 후 선택 복구
+                DataGridViewBindingCompleteEventHandler data_bind_complete_event_handler = null;
+                data_bind_complete_event_handler = (s, ev) =>
+                {
+                    // 선택하다 중간에 나갔다는 상황을 표시하기 위해 bool 변수 설정
+                    restart_status = true;
+
+                    // 검색 버튼 다시 클릭
+                    button_search_Click(s, ev);
+
+                    // 포커싱도 다시 수량으로 넘김
+                    textbox_count.Focus();
+
+                    // 한 번만 하이라이팅을 복구하고 이벤트 핸들러를 제거한다.
+                    datagridview_stock.DataBindingComplete -= data_bind_complete_event_handler;
+                };
+
+                datagridview_stock.DataBindingComplete += data_bind_complete_event_handler;
+            }
+
         }
+
+
+        // 창 닫고 다시 들어왔을 때 리스트뷰에 아이템 남아있으면
+        // 다시 data grid view에 하이라이팅 해주는 함수
+        private void highlight_gridview_item()
+        {
+            // 리스트뷰에 아이템이 존재하는지 체크
+            if (listview_selected.Items.Count <= 0) return;
+            foreach (ListViewItem listItem in listview_selected.Items)
+            {
+                string item_name = listItem.SubItems[1].Text.Trim();
+
+                for (int i = 0; i < datagridview_stock.Rows.Count; i++)
+                {
+                    var cell_value = datagridview_stock.Rows[i].Cells[1].Value;
+                    if (cell_value != null && cell_value.ToString().Trim() == item_name)
+                    {
+                        for (int j = 0; j < datagridview_stock.Columns.Count; j++)
+                            datagridview_stock.Rows[i].Cells[j].Style.BackColor = Color.Crimson;
+                    }
+                }
+            }
+
+            datagridview_stock.ClearSelection();
+        }
+
+
 
         // 검색 버튼 클릭시 해당 물품 있는지 검사 후 해당 행을 선택.
         private void button_search_Click(object sender, EventArgs e)
@@ -143,19 +240,24 @@ namespace POS_Project_Team2
 
         private void select_item(int row_index, string item_name)
         {
-            MessageBox.Show($"{item_name} 항목이 선택되었습니다. 이제 수량을 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (restart_status == false)
+            {
+                MessageBox.Show($"{item_name} 항목이 선택되었습니다. 이제 수량을 선택해주세요.", "알림", MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
 
-            selected = row_index;   // 검색한 물품 있는 행 선택하고 선택하기 버튼 클릭 시에 사용
+
+            selected = row_index; // 검색한 물품 있는 행 선택하고 선택하기 버튼 클릭 시에 사용
 
             // 물품명을 찾으면 수량을 입력할 수 있도록 설정
             textbox_count.Enabled = true;
 
+            // 수량 옆에 선택 버튼도 활성화
+            button_select.Enabled = true;
+
             // 물품 선택이 성공적으로 진행된 경우 물품 개수를 입력하거나 
             // 선택 취소하기 버튼을 누르기 전까진 물품 이름을 함부로 변경할 수 없다.
             textbox_search.Enabled = false;
-
-            // data gridview 역시 수정을 못하게 막는다.
-            datagridview_stock.Enabled = false;
 
             // data grid view 의 선택 상태를 전부 해제한다.
             for (int i = 0; i < datagridview_stock.Rows.Count; i++)
@@ -169,6 +271,9 @@ namespace POS_Project_Team2
 
             // 선택이 완료됐으므로 포커스를 수량으로 넘긴다
             textbox_count.Focus();
+
+            // 선택 완료시 restart_status 를 false 로 변경
+            restart_status = false;
         }
 
         // CountText에 판매할 상품 개수 적고 선택하기 버튼 클릭시 선택한 물품의 이름, 가격, 갯수 반환 
@@ -177,9 +282,9 @@ namespace POS_Project_Team2
         {
             string str_item_cost = datagridview_stock.Rows[selected].Cells[2].Value.ToString(); // 문자열로 나타난 가격
             int item_cost = Convert.ToInt32(str_item_cost); // 아이템 가격을 정수로 변환
+
             int item_count = int.Parse(textbox_count.Text); // 아이템 개수를 정수로 변환
             string item_name = datagridview_stock.Rows[selected].Cells[1].Value.ToString(); // 아이템 이름
-
             string str_stock = datagridview_stock.Rows[selected].Cells[3].Value.ToString(); // 문자열로 나타난 재고
 
             // 선택전에 재고 이상의 물건을 주문하는지 검사
@@ -225,6 +330,9 @@ namespace POS_Project_Team2
 
             // 수량 텍스트 박스 비활성화
             textbox_count.Enabled = false;
+
+            // 수량 옆에 선택 버튼도 비활성화
+            button_select.Enabled = false;
         }
 
 
@@ -232,6 +340,13 @@ namespace POS_Project_Team2
         // 결제창 추가하기
         private void button_add_into_payment_Click(object sender, EventArgs e)
         {
+            // 현재 리스트뷰 아이템이 비었는 경우 오류 메세지 출력후 함수 종료
+            if (listview_selected.Items.Count <= 0)
+            {
+                MessageBox.Show("선택된 물품이 없습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             select_items.Clear();
             // 현재 리스트뷰 아이템을 items 에 저장한다.
             for (int i = 0; i < listview_selected.Items.Count; i++)
@@ -254,7 +369,6 @@ namespace POS_Project_Team2
             // 여기선 단순히 Dialog를 종료한다.
             DialogResult = DialogResult.OK;
             Close();
-
         }
 
         private void button_pay_cancle_Click(object sender, EventArgs e)
@@ -286,7 +400,6 @@ namespace POS_Project_Team2
 
             // 선택된 아이템 삭제
             listview_selected.Items.Remove(selected_item);
-
 
             // data grid view 선택 색상 원래대로 돌리기
             for (int i = 0; i < datagridview_stock.Rows.Count; i++)
@@ -357,6 +470,7 @@ namespace POS_Project_Team2
             }
 
         }
+
         // 변경된 table xml파일로 저장
         public void SaveDataTable(DataTable table, string filePath)
         {
@@ -378,15 +492,16 @@ namespace POS_Project_Team2
             dataset.Tables["ItemList"].Clear(); //변경된 데이터 지우고
             foreach (DataRow row in original_data.Rows)
             {
-                dataset.Tables["ItemList"].ImportRow(row);      //이전에 카피해둔 원본 데이터 ItemList에 삽입
+                dataset.Tables["ItemList"].ImportRow(row); //이전에 카피해둔 원본 데이터 ItemList에 삽입
             }
+
             SaveDataTable(dataset.Tables["ItemList"], "item_data.xml");
         }
 
         //애플리케이션 종료 시 실행
         private void OnApplicationExit(object sender, EventArgs e)
         {
-            remove_data_file("item_data.xml");    //어플리케이션 종료 시 item_data 변화제어하는 xml 제거 
+            remove_data_file("item_data.xml"); //어플리케이션 종료 시 item_data 변화제어하는 xml 제거 
         }
 
         // XML 파일을 제거하는 메서드

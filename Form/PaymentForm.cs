@@ -187,11 +187,14 @@ namespace POS_Project_Team2
         // 물품 선택 버튼 클릭 시 물품 선택하는 DataForm 열고 물품 값 가져오는 메서드
         private void btn_SelectProduct_Click(object sender, EventArgs e)
         {
+            // data_form 의 경우 첫 번째 열때만 생성하고
             if (data_form == null || data_form.IsDisposed)
             {
                 data_form = new StockForm();
             }
 
+            // 이후 이미 data_form 이 생성된 경우 ShowDialog() 로 열기만 해서 재활용 한다.   
+            // 이렇게 설계한 이유는 재고 선택 창을 껐다 켜도 그대로 데이터를 유지시키기 위해서다.
             if (data_form.ShowDialog() == DialogResult.OK)
             {
                 products.Clear();
@@ -200,7 +203,7 @@ namespace POS_Project_Team2
             }
         }
 
-        // 결제 버튼 클릭 시DataForm에서 재고처리 미리 해서 메시지만 띄움 >> MainForm에서 업데이트 되도록 해야함
+        // 결제 버튼 클릭 시 DataForm에서 재고처리 미리 해서 메시지만 띄움 >> MainForm에서 업데이트 되도록 해야함
         private void button_card_Click(object sender, EventArgs e)
         {
             if (listview_product.Items.Count <= 0)

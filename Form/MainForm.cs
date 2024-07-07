@@ -67,7 +67,7 @@ namespace POS_Project_Team2
             button_get_receipt.Hide();
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void button_payment_Click(object sender, EventArgs e)
         {
             // 결제를 누르면 PaymentForm으로 이동
             var payment_form = new PaymentForm();

@@ -164,7 +164,7 @@
             button_payment.TabIndex = 7;
             button_payment.Text = "결제";
             button_payment.UseVisualStyleBackColor = false;
-            button_payment.Click += button6_Click;
+            button_payment.Click += button_payment_Click;
             // 
             // group_main
             // 
