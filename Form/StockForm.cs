@@ -22,7 +22,7 @@ namespace POS_Project_Team2
           웹에서 Vue.js 에서 DOM 을 직접 수정하는게 안좋은 패턴이고, 데이터 바인딩된 변수를 수정해야만
           좋은 패턴인걸 기억해보면 된다.
         */
-        private static BindingList<StockRecord> stock_items = new();
+        public BindingList<StockRecord> stock_items = new();
 
         // 결제창과 공유할 선택한 결제 품목을 담는 리스트
         public List<(string item_name, int item_cost, int item_count)> select_items = new();
@@ -472,9 +472,9 @@ namespace POS_Project_Team2
         }
 
         // 변경된 table xml파일로 저장
-        public void SaveDataTable(DataTable table, string filePath)
+        public void SaveDataTable(DataTable table, string file_path)
         {
-            table.WriteXml(filePath);
+            table.WriteXml(file_path);
         }
 
         //저장된 table xml파일로 로드

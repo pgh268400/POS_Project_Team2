@@ -251,7 +251,6 @@ namespace POS_Project_Team2
               을 db에 기록하자.
             */
 
-
             foreach (var product in products)
             {
                 int total_cost = product.item_cost * product.item_count;
@@ -270,7 +269,15 @@ namespace POS_Project_Team2
                 db_master.insert_payment_data(payment);
             }
 
-            //결제 후 리스트 뷰 초기화
+            // 데이터 그리드뷰와 바인딩 되어 있는 재고 아이템들을 db에 반영(write) 한다
+            var stock_items = data_form.stock_items;
+
+            foreach (var stock_item in stock_items)
+            {
+                db_master.update_stock_data(stock_item);
+            }
+
+            // 결제 후 리스트 뷰 초기화
             listview_product.Clear();
             products.Clear();
             MessageBox.Show("결제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -280,8 +287,6 @@ namespace POS_Project_Team2
             mainForm.total_num_sales += 1;
             mainForm.total_num_profit += total_price_purchase;
             mainForm.total_previous_purchase = total_price_purchase;
-            this.Close();
-
         }
 
         //취소 버튼 클릭 시 담았던 재고 원상 복구

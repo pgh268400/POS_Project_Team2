@@ -99,8 +99,12 @@ namespace POS_Project_Team2.Class
                 string column_name = property.Name;
                 string column_type = get_sqlite_type(property.PropertyType);
 
-                bool is_nullable = property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
-                string nullability = is_nullable ? "" : "NOT NULL";
+                bool is_nullable = !property.PropertyType.IsValueType
+                                   ||
+                                   (property.PropertyType.IsGenericType
+                                    &&
+                                    property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>));
+                string nullability = is_nullable ? "NULL" : "NOT NULL";
 
                 // Id 열에 대해 AUTOINCREMENT 추가
                 if (string.Equals(column_name, "Id", StringComparison.OrdinalIgnoreCase))
@@ -214,7 +218,6 @@ namespace POS_Project_Team2.Class
         // 테이블 생성 공통 함수
         private void create_table(string full_query, string table_name, bool enable_debug_text = false)
         {
-
             using (var command = new SQLiteCommand(full_query, connection))
             {
                 /*
@@ -526,6 +529,22 @@ namespace POS_Project_Team2.Class
             }
         }
 
+        // ========================================================================
+        // 재고 데이터 Update 하기
+        public void update_stock_data(StockRecord record)
+        {
+            string update_query = $"UPDATE {stock_table_name} SET ItemName = @ItemName, Cost = @Cost, Count = @Count WHERE Id = @Id";
+            using (var command = new SQLiteCommand(update_query, connection))
+            {
+                command.Parameters.AddWithValue("@ItemName", record.ItemName);
+                command.Parameters.AddWithValue("@Cost", record.Cost);
+                command.Parameters.AddWithValue("@Count", record.Count);
+                command.Parameters.AddWithValue("@Id", record.Id);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        // ========================================================================
         /*
          싱글톤을 구현하는 핵심 부분
          new 가 아닌 정적 프로퍼티를 통해 인스턴스에 접근
