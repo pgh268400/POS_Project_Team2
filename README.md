@@ -1,5 +1,4 @@
 # POS_Project_Team2
-![광운 문구](https://github.com/pgh268400/POS_Project_Team2/assets/31213158/aec4ecee-b6f2-4b55-aa82-e6294de3c2d8)
 응용소프트웨어 실습 2조 팀프로젝트  
 **C#으로 구현된 최신 윈도우 환경 어디에서나 호환되는 오픈소스 포스기 프로그램 입니다.**
 
