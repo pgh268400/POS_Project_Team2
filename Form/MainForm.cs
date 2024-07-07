@@ -95,7 +95,7 @@ namespace POS_Project_Team2
         // 재고 조회
         private void button_get_stock_Click(object sender, EventArgs e)
         {
-            DataForm data_form = new DataForm();
+            StockForm data_form = new StockForm();
             FormHelper.show(data_form);
             data_form.block_all();
         }

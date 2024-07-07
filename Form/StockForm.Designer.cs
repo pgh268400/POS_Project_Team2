@@ -1,6 +1,6 @@
 ﻿namespace POS_Project_Team2
 {
-    partial class DataForm
+    partial class StockForm
     {
         /// <summary>
         /// Required designer variable.
@@ -36,7 +36,7 @@
             button_search = new Button();
             textbox_search = new TextBox();
             groupBox1 = new GroupBox();
-            listview_item = new ListView();
+            listview_selected = new ListView();
             columnHeader0 = new ColumnHeader();
             columnHeader1 = new ColumnHeader();
             columnHeader2 = new ColumnHeader();
@@ -129,7 +129,7 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(listview_item);
+            groupBox1.Controls.Add(listview_selected);
             groupBox1.Location = new Point(664, 20);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(351, 408);
@@ -137,16 +137,16 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "현재 선택된 아이템 (더블 클릭시 삭제)";
             // 
-            // listview_item
+            // listview_selected
             // 
-            listview_item.Columns.AddRange(new ColumnHeader[] { columnHeader0, columnHeader1, columnHeader2, columnHeader3, columnHeader4 });
-            listview_item.Location = new Point(17, 26);
-            listview_item.Name = "listview_item";
-            listview_item.Size = new Size(328, 372);
-            listview_item.TabIndex = 0;
-            listview_item.UseCompatibleStateImageBehavior = false;
-            listview_item.View = View.Details;
-            listview_item.MouseDoubleClick += listview_MouseDoubleClick;
+            listview_selected.Columns.AddRange(new ColumnHeader[] { columnHeader0, columnHeader1, columnHeader2, columnHeader3, columnHeader4 });
+            listview_selected.Location = new Point(17, 26);
+            listview_selected.Name = "listview_selected";
+            listview_selected.Size = new Size(328, 372);
+            listview_selected.TabIndex = 0;
+            listview_selected.UseCompatibleStateImageBehavior = false;
+            listview_selected.View = View.Details;
+            listview_selected.MouseDoubleClick += listview_selected_MouseDoubleClick;
             // 
             // columnHeader0
             // 
@@ -185,9 +185,9 @@
             // 
             // button_select_cancle
             // 
-            button_select_cancle.Location = new Point(6, 54);
+            button_select_cancle.Location = new Point(17, 54);
             button_select_cancle.Name = "button_select_cancle";
-            button_select_cancle.Size = new Size(274, 26);
+            button_select_cancle.Size = new Size(251, 26);
             button_select_cancle.TabIndex = 2;
             button_select_cancle.Text = "선택 취소하기";
             button_select_cancle.UseVisualStyleBackColor = true;
@@ -197,7 +197,7 @@
             // 
             button_pay_cancle.Location = new Point(156, 22);
             button_pay_cancle.Name = "button_pay_cancle";
-            button_pay_cancle.Size = new Size(124, 26);
+            button_pay_cancle.Size = new Size(112, 26);
             button_pay_cancle.TabIndex = 1;
             button_pay_cancle.Text = "주문 취소하기";
             button_pay_cancle.UseVisualStyleBackColor = true;
@@ -205,13 +205,13 @@
             // 
             // button_add_into_payment
             // 
-            button_add_into_payment.Location = new Point(6, 22);
+            button_add_into_payment.Location = new Point(17, 22);
             button_add_into_payment.Name = "button_add_into_payment";
-            button_add_into_payment.Size = new Size(144, 26);
+            button_add_into_payment.Size = new Size(133, 26);
             button_add_into_payment.TabIndex = 0;
             button_add_into_payment.Text = "결제창 추가하기";
             button_add_into_payment.UseVisualStyleBackColor = true;
-            button_add_into_payment.Click += button1_Click;
+            button_add_into_payment.Click += button_add_into_payment_Click;
             // 
             // label_mode
             // 
@@ -244,7 +244,7 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click_1;
             // 
-            // DataForm
+            // StockForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -257,7 +257,7 @@
             Controls.Add(groupBox1);
             Controls.Add(groupbox_search);
             Controls.Add(groupbox_current_stock);
-            Name = "DataForm";
+            Name = "StockForm";
             Text = "POS System";
             Load += DataForm_Load;
             ((System.ComponentModel.ISupportInitialize)datagridview_stock).EndInit();
@@ -280,7 +280,7 @@
         private Button button_search;
         private TextBox textbox_count;
         private GroupBox groupBox1;
-        private ListView listview_item;
+        private ListView listview_selected;
         private GroupBox groupBox2;
         private Button button_pay_cancle;
         private Button button_add_into_payment;

@@ -7,7 +7,7 @@ namespace POS_Project_Team2
         // 대기열 라벨을 담는 배열
         private Label[] labels_wait;
 
-        public DataForm data_form;
+        public StockForm data_form;
         private List<(string item_name, int item_cost, int item_count)> products = new();
 
         int total_num_purchase = 0;
@@ -184,18 +184,18 @@ namespace POS_Project_Team2
         }
 
 
-        //물품 선택 버튼 클릭 시 물품 선택하는 DataForm 열고 물품 값 가져오는 메서드
+        // 물품 선택 버튼 클릭 시 물품 선택하는 DataForm 열고 물품 값 가져오는 메서드
         private void btn_SelectProduct_Click(object sender, EventArgs e)
         {
             if (data_form == null || data_form.IsDisposed)
             {
-                data_form = new DataForm();
+                data_form = new StockForm();
             }
 
             if (data_form.ShowDialog() == DialogResult.OK)
             {
                 products.Clear();
-                products.AddRange(data_form.items);
+                products.AddRange(data_form.select_items);
                 list_view_control(products);
             }
         }
@@ -287,7 +287,7 @@ namespace POS_Project_Team2
             all_cancel = true;
             if (data_form != null)
             {
-                data_form.RestoreOriginalData();    // DataForm의 원본 데이터 복원 메서드 호출
+                data_form.restore_origin_data();    // DataForm의 원본 데이터 복원 메서드 호출
             }
             this.Close();
         }
