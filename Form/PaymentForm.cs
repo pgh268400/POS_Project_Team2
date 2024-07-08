@@ -7,8 +7,10 @@ namespace POS_Project_Team2
         // 대기열 라벨을 담는 배열
         private Label[] labels_wait;
 
-        public StockForm data_form;
-        private List<(string item_name, int item_cost, int item_count)> products = new();
+        // 결제 창에서 물품 선택 폼을 메모리 접근 하기 위한 변수
+        public StockForm stock_form;
+
+        private List<StockRecord> products = new();
 
         int total_num_purchase = 0;
         int total_price_purchase = 0;
@@ -16,13 +18,13 @@ namespace POS_Project_Team2
         // 전체 취소 버튼 누름 여부
         public bool all_cancel = false;
 
-        public PaymentForm(List<(string item_name, int item_cost, int item_count)> products = null)
+        public PaymentForm(List<StockRecord> products = null)
         {
             InitializeComponent();
 
             if (products != null)
             {
-                this.products = new List<(string item_name, int item_cost, int item_count)>(products);
+                this.products = new List<StockRecord>(products);
             }
 
             FormHelper.disable_resize(this);
@@ -68,7 +70,7 @@ namespace POS_Project_Team2
         }
 
         // ListView의 보여질 목록
-        private void list_view_control(List<(string item_name, int item_cost, int item_count)> products)
+        private void list_view_control(List<StockRecord> products)
         {
             listview_product.Clear();    //기존에 있던 물품 지움. 이전 물건들 List Products에 저장되어있어서 지우지않으면 중복으로 생김
 
@@ -87,16 +89,16 @@ namespace POS_Project_Team2
                 ListViewItem lvi = new ListViewItem(index.ToString());
                 ++index;    //물품 하나 출력할 때마다 No 수 늘려주기
 
-                lvi.SubItems.Add(product.item_name);
-                lvi.SubItems.Add(product.item_count.ToString());
-                lvi.SubItems.Add(product.item_cost.ToString());
+                lvi.SubItems.Add(product.ItemName);
+                lvi.SubItems.Add(product.Count.ToString());
+                lvi.SubItems.Add(product.Cost.ToString());
 
-                int total_cost = product.item_cost * product.item_count;  //총가격 가격 * 갯수
+                int total_cost = product.Cost * product.Count;  //총가격 가격 * 갯수
 
                 lvi.SubItems.Add(total_cost.ToString());
                 listview_product.Items.Add(lvi); //Listview에 추가
 
-                total_num_purchase += product.item_count;   //총 구매액 계산
+                total_num_purchase += product.Count;   //총 구매액 계산
                 total_price_purchase += total_cost;         //총 갯수 계산
             }
 
@@ -188,17 +190,17 @@ namespace POS_Project_Team2
         private void btn_SelectProduct_Click(object sender, EventArgs e)
         {
             // data_form 의 경우 첫 번째 열때만 생성하고
-            if (data_form == null || data_form.IsDisposed)
+            if (stock_form == null || stock_form.IsDisposed)
             {
-                data_form = new StockForm();
+                stock_form = new StockForm();
             }
 
-            // 이후 이미 data_form 이 생성된 경우 ShowDialog() 로 열기만 해서 재활용 한다.   
+            // 이후 이미 data_form 이 생성된 경우 ShowDialog() 로 열기만 해서 같은 창을 열도록 한다(재활용) 한다. 
             // 이렇게 설계한 이유는 재고 선택 창을 껐다 켜도 그대로 데이터를 유지시키기 위해서다.
-            if (data_form.ShowDialog() == DialogResult.OK)
+            if (stock_form.ShowDialog() == DialogResult.OK)
             {
                 products.Clear();
-                products.AddRange(data_form.select_items);
+                products.AddRange(stock_form.select_items);
                 list_view_control(products);
             }
         }
@@ -245,23 +247,33 @@ namespace POS_Project_Team2
 
             // 결제 내역을 DB에 기록한다.
             DBMaster db_master = DBMaster.Instance;
+
             /*
               products를 for문을 돌면서 순회하고,
               (아이템 이름, 아이템 가격, 아이템 개수, 총 금액, 포인트 결제자명, 전화번호 4자리)
               을 db에 기록하자.
             */
 
+            // products 출력
             foreach (var product in products)
             {
-                int total_cost = product.item_cost * product.item_count;
+                Console.WriteLine(product.Id);
+                Console.WriteLine(product.ItemName);
+                Console.WriteLine(product.Cost);
+                Console.WriteLine(product.Count);
+            }
+
+            foreach (var product in products)
+            {
+                int total_cost = product.Cost * product.Count;
 
                 // 결제 데이터 삽입 예시
                 var payment = new PayMentRefundRecord
                 {
                     Time = DateTime.Now,
-                    ItemName = product.item_name,
-                    UnitPrice = product.item_cost,
-                    Count = product.item_count,
+                    ItemName = product.ItemName,
+                    UnitPrice = product.Cost,
+                    Count = product.Count,
                     TotalPrice = total_cost,
                     Payer = name,
                     PhoneNumber = phone_number
@@ -269,33 +281,53 @@ namespace POS_Project_Team2
                 db_master.insert_payment_data(payment);
             }
 
-            // 데이터 그리드뷰와 바인딩 되어 있는 재고 아이템들을 db에 반영(write) 한다
-            var stock_items = data_form.stock_items;
 
-            foreach (var stock_item in stock_items)
+            // 현재 선택한 products 에 있는 데이터를 db 에 업데이트 한다.
+
+            foreach (var product in products)
             {
-                db_master.update_stock_data(stock_item);
+
+
+                // product를 활용해 Stack Record를 생성 한다
+                StockRecord stock_record = new StockRecord
+                {
+                    // Update 시 기본키인 id를 이용해 업데이트 하므로
+                    // 반드시 id를 넣어주어야 한다.
+                    Id = product.Id,
+                    ItemName = product.ItemName,
+                    Cost = product.Cost,
+                    // Count = product.Count <-- 이렇게 쓰면 현재 선택된 수량이 업데이트 되서 의미가 없어진다
+                    // 재고의 경우 data grid view에서 감소된 재고를 얻어와야 한다.
+                    Count = stock_form.get_stock_count(product.ItemName)
+                };
+
+                // 재고 데이터 업데이트
+                db_master.update_stock_data(stock_record);
             }
+
+            // 결제한 내역을 재고창 폼에 넘긴다
+            stock_form.remove_selected_items(products);
+
 
             // 결제 후 리스트 뷰 초기화
             listview_product.Clear();
             products.Clear();
             MessageBox.Show("결제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            MainForm mainForm = (MainForm)this.Owner;
-            mainForm.UpdateWaitButton(0, Color.Gray);
-            mainForm.paymentform_purchase = true;
-            mainForm.total_num_sales += 1;
-            mainForm.total_num_profit += total_price_purchase;
-            mainForm.total_previous_purchase = total_price_purchase;
+            MainForm main_form = (MainForm)this.Owner;
+            main_form.UpdateWaitButton(0, Color.Gray);
+            main_form.paymentform_purchase = true;
+            main_form.total_num_sales += 1;
+            main_form.total_num_profit += total_price_purchase;
+            main_form.total_previous_purchase = total_price_purchase;
         }
 
         //취소 버튼 클릭 시 담았던 재고 원상 복구
         private void button_all_cancle_Click(object sender, EventArgs e)
         {
             all_cancel = true;
-            if (data_form != null)
+            if (stock_form != null)
             {
-                data_form.restore_origin_data();    // DataForm의 원본 데이터 복원 메서드 호출
+                stock_form.restore_origin_data();    // DataForm의 원본 데이터 복원 메서드 호출
             }
             this.Close();
         }
@@ -311,9 +343,9 @@ namespace POS_Project_Team2
             // mainForm.paymentform_purchase = false;
             // this.Close();
         }
-        public List<(string item_name, int item_cost, int item_count)> get_products()
+        public List<StockRecord> get_products()
         {
-            return new List<(string item_name, int item_cost, int item_count)>(products);
+            return new List<StockRecord>(products);
         }
 
         private void PaymentForm_FormClosing(object sender, FormClosingEventArgs e)

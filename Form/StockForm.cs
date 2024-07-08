@@ -25,7 +25,7 @@ namespace POS_Project_Team2
         public BindingList<StockRecord> stock_items = new();
 
         // 결제창과 공유할 선택한 결제 품목을 담는 리스트
-        public List<(string item_name, int item_cost, int item_count)> select_items = new();
+        public List<StockRecord> select_items = new();
 
         int selected;
         int listview_item_count = 1; // listview_item의 No 컨트롤
@@ -48,6 +48,36 @@ namespace POS_Project_Team2
             // 라벨에 읽기 모드라고 출력
             label_mode.Text = "* 현재 읽기 모드입니다.";
             label_tip.Text = "";
+        }
+
+        // 결제폼에서 호출하는 함수로, 구매가 완료된 목록들을 이쪽 인자로 넘겨서 호출하고,
+        // 이 폼에선 그 인자로 넘거온 목록들을 리스트뷰에 찾아서 지우는 함수
+        public void remove_selected_items(List<StockRecord> selected_items)
+        {
+            foreach (var item in selected_items)
+            {
+                for (int i = 0; i < listview_selected.Items.Count; i++)
+                {
+                    if (listview_selected.Items[i].SubItems[1].Text == item.ItemName)
+                    {
+                        listview_selected.Items.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 아이템 품목을 입력 받았을때 그에 대한 재고를 뱉는 함수
+        public int get_stock_count(string item_name)
+        {
+            foreach (var item in stock_items)
+            {
+                if (item.ItemName == item_name)
+                {
+                    return item.Count;
+                }
+            }
+            return -1;
         }
 
         // 아이템 추가 및 바인딩 진행
@@ -285,26 +315,47 @@ namespace POS_Project_Team2
 
             int item_count = int.Parse(textbox_count.Text); // 아이템 개수를 정수로 변환
             string item_name = datagridview_stock.Rows[selected].Cells[1].Value.ToString(); // 아이템 이름
+
             string str_stock = datagridview_stock.Rows[selected].Cells[3].Value.ToString(); // 문자열로 나타난 재고
+            int stock = Convert.ToInt32(str_stock);
 
             // 선택전에 재고 이상의 물건을 주문하는지 검사
-            int stock = Convert.ToInt32(str_stock);
             if (item_count > stock)
             {
                 MessageBox.Show("재고 이상의 물품을 주문할 수 없습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // 이 items 를 현재 리스트뷰에 추가
-            ListViewItem listview_item = new ListViewItem((listview_item_count).ToString());
-            listview_item.SubItems.Add(item_name);
-            listview_item.SubItems.Add(item_count.ToString());
-            listview_item.SubItems.Add(item_cost.ToString());
-            listview_item.SubItems.Add((item_cost * item_count).ToString());
+            // 이미 리스트뷰에 같은 아이템이 있는지 확인
+            bool is_item_already_exist = false;
 
-            listview_selected.Items.Add(listview_item); // Listview에 추가
+            // 이미 있다면 수량과 가격만 업데이트
+            foreach (ListViewItem item in listview_selected.Items)
+            {
+                if (item.SubItems[1].Text == item_name)
+                {
+                    // 이미 존재하는 아이템의 수량과 총 가격을 업데이트
+                    int existing_count = int.Parse(item.SubItems[2].Text);
+                    int new_count = existing_count + item_count;
+                    item.SubItems[2].Text = new_count.ToString();
+                    item.SubItems[4].Text = (new_count * item_cost).ToString();
+                    is_item_already_exist = true;
+                    break;
+                }
+            }
 
-            listview_item_count++;
+            // 만약 리스트뷰에 같은 아이템이 없다면 새로운 항목 추가
+            if (!is_item_already_exist)
+            {
+                ListViewItem listview_item = new ListViewItem((listview_item_count).ToString());
+                listview_item.SubItems.Add(item_name);
+                listview_item.SubItems.Add(item_count.ToString());
+                listview_item.SubItems.Add(item_cost.ToString());
+                listview_item.SubItems.Add((item_cost * item_count).ToString());
+
+                listview_selected.Items.Add(listview_item); // Listview에 추가
+                listview_item_count++;
+            }
 
             // 선택하기가 완료된 경우 재고 개수를 stock items 에 반영 시킨다
             stock_items[selected].Count -= item_count;
@@ -348,24 +399,32 @@ namespace POS_Project_Team2
             }
 
             select_items.Clear();
-            // 현재 리스트뷰 아이템을 items 에 저장한다.
+
+            // 현재 리스트뷰 아이템을 선택한 아이템 리스트에 추가한다
             for (int i = 0; i < listview_selected.Items.Count; i++)
             {
+                int item_id = int.Parse(listview_selected.Items[i].SubItems[0].Text);
                 string item_name = listview_selected.Items[i].SubItems[1].Text;
                 int item_cost = int.Parse(listview_selected.Items[i].SubItems[3].Text);
                 int item_count = int.Parse(listview_selected.Items[i].SubItems[2].Text);
 
-                select_items.Add((item_name, item_cost, item_count));
+                // select_items 에 추가한다
+                select_items.Add(new StockRecord
+                {
+                    Id = item_id,
+                    ItemName = item_name,
+                    Cost = item_cost,
+                    Count = item_count
+                });
             }
 
             // 아이템의 내용을 콘솔에 출력한다
-            foreach (var item in select_items)
+            foreach (var element in select_items)
             {
-                Console.WriteLine($"{item.item_name} {item.item_cost} {item.item_count}");
+                Console.WriteLine($"{element.ItemName} {element.Cost} {element.Count}");
             }
 
-
-            // items 는 Payment Form에서 이어 받는다.
+            // select_items 는 PaymentForm에서 이어 받는다.
             // 여기선 단순히 Dialog를 종료한다.
             DialogResult = DialogResult.OK;
             Close();
@@ -472,13 +531,13 @@ namespace POS_Project_Team2
         }
 
         // 변경된 table xml파일로 저장
-        public void SaveDataTable(DataTable table, string file_path)
+        public void save_data_table(DataTable table, string file_path)
         {
             table.WriteXml(file_path);
         }
 
         //저장된 table xml파일로 로드
-        public void LoadDataTable(DataTable table, string file_path)
+        public void load_data_table(DataTable table, string file_path)
         {
             if (System.IO.File.Exists(file_path))
             {
@@ -495,7 +554,7 @@ namespace POS_Project_Team2
                 dataset.Tables["ItemList"].ImportRow(row); //이전에 카피해둔 원본 데이터 ItemList에 삽입
             }
 
-            SaveDataTable(dataset.Tables["ItemList"], "item_data.xml");
+            save_data_table(dataset.Tables["ItemList"], "item_data.xml");
         }
 
         //애플리케이션 종료 시 실행
@@ -517,7 +576,7 @@ namespace POS_Project_Team2
         {
             // xml 파일에서 데이터 읽어와 data grid view 에 다시 뿌리기 = 새로고침
             dataset.Tables["ItemList"].Clear();
-            LoadDataTable(dataset.Tables["ItemList"], "item_data.xml");
+            load_data_table(dataset.Tables["ItemList"], "item_data.xml");
             datagridview_stock.DataSource = dataset.Tables["ItemList"];
         }
     }

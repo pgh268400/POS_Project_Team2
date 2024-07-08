@@ -5,7 +5,7 @@ namespace POS_Project_Team2
 
     public partial class MainForm : Form
     {
-        private List<List<(string item_name, int item_cost, int item_count)>> saved_products = new();
+        private List<List<StockRecord>> saved_products = new();
         private Button[] wait_buttons;
 
         public bool paymentform_purchase = false;   // PaymentForm이 구매로 닫힐 때 대기로 닫힐 때를 구분하기 위해 생성
@@ -16,13 +16,15 @@ namespace POS_Project_Team2
 
         public MainForm()
         {
+            InitializeComponent();
+
             // 실행시 창을 화면 중앙에 위치시키기
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            InitializeComponent();
-
+            // 대기열 버튼 초기화
             InitializeWaitButtons();
 
+            // 폼 크기 조절 불가능하게 설정
             FormHelper.disable_resize(this);
         }
 
@@ -126,10 +128,6 @@ namespace POS_Project_Team2
             MessageBox.Show("현재 대기열 1에서만 작동합니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void button_wait3_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void button_receipt_Click(object sender, EventArgs e)
         {
@@ -163,33 +161,33 @@ namespace POS_Project_Team2
         }
         private void WaitButton_Click(object sender, EventArgs e)
         {
-            var clickedButton = sender as Button;
-            int index = Array.IndexOf(wait_buttons, clickedButton);
+            //var clickedButton = sender as Button;
+            //int index = Array.IndexOf(wait_buttons, clickedButton);
 
-            if (index >= 0 && index < saved_products.Count)
-            {
-                var products = saved_products[index];
-                var paymentForm = new PaymentForm(products);
-                paymentForm.FormClosing += PaymentForm_FormClosing;
-                paymentForm.Owner = this;
-                FormHelper.show(paymentForm);
-            }
+            //if (index >= 0 && index < saved_products.Count)
+            //{
+            //    var products = saved_products[index];
+            //    var paymentForm = new PaymentForm(products);
+            //    paymentForm.FormClosing += PaymentForm_FormClosing;
+            //    paymentForm.Owner = this;
+            //    FormHelper.show(paymentForm);
+            //}
         }
 
         private void PaymentForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            var closingForm = sender as PaymentForm;
+            var closing_form = sender as PaymentForm;
 
-            if (closingForm != null && !paymentform_purchase)
+            if (closing_form != null && !paymentform_purchase)
             {
-                int index = saved_products.FindIndex(products => products.SequenceEqual(closingForm.get_products()));
+                int index = saved_products.FindIndex(products => products.SequenceEqual(closing_form.get_products()));
                 if (index >= 0)
                 {
-                    saved_products[index] = closingForm.get_products();
+                    saved_products[index] = closing_form.get_products();
                 }
                 else
                 {
-                    saved_products.Add(closingForm.get_products());
+                    saved_products.Add(closing_form.get_products());
                     int waitButtonIndex = saved_products.Count - 1;
                     if (waitButtonIndex < wait_buttons.Length && !paymentform_purchase)
                     {
@@ -197,7 +195,7 @@ namespace POS_Project_Team2
                     }
                 }
             }
-            else if (closingForm != null && paymentform_purchase)
+            else if (closing_form != null && paymentform_purchase)
             {
                 label_tatal_num_sales.Text = "금일 총 판매 " + total_num_sales + "건";
                 label_total_num_profit.Text = "금일 총 수익 " + total_num_profit + "원";

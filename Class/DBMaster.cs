@@ -540,6 +540,15 @@ namespace POS_Project_Team2.Class
                 command.Parameters.AddWithValue("@Cost", record.Cost);
                 command.Parameters.AddWithValue("@Count", record.Count);
                 command.Parameters.AddWithValue("@Id", record.Id);
+
+                // 완성된 쿼리 출력
+                string completed_query = command.CommandText;
+                foreach (SQLiteParameter parameter in command.Parameters)
+                {
+                    completed_query = completed_query.Replace(parameter.ParameterName, parameter.Value.ToString());
+                }
+                Console.WriteLine("Completed Query: " + completed_query);
+
                 command.ExecuteNonQuery();
             }
         }

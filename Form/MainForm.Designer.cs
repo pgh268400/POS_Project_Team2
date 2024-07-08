@@ -311,7 +311,6 @@
             button_wait3.TabIndex = 8;
             button_wait3.Text = "대기열 3";
             button_wait3.UseVisualStyleBackColor = false;
-            button_wait3.Click += button_wait3_Click;
             // 
             // button_wait2
             // 
