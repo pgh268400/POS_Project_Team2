@@ -150,7 +150,7 @@
             // 
             // columnHeader0
             // 
-            columnHeader0.Text = "No";
+            columnHeader0.Text = "Id";
             columnHeader0.Width = 40;
             // 
             // columnHeader1

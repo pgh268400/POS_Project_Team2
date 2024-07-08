@@ -6,6 +6,9 @@ namespace POS_Project_Team2
 {
     public partial class StockForm : Form
     {
+        // 부모폼인 결제 폼에 접근하기 위한 변수
+        PaymentForm payment_form;
+
         public ItemData dataset;
         DataTable original_data;
 
@@ -106,7 +109,8 @@ namespace POS_Project_Team2
         }
 
 
-        public StockForm()
+
+        public StockForm(PaymentForm payment_form = null)
         {
             InitializeComponent();
 
@@ -116,7 +120,11 @@ namespace POS_Project_Team2
             FormHelper.disable_resize(this);
 
             restart_status = false;
+
+            if (payment_form != null)
+                this.payment_form = payment_form;
         }
+
 
         // 해당 Load 함수는 폼이 닫히고 새로 열릴때마다 매번 새로 호출된다.
         private void DataForm_Load(object sender, EventArgs e)
@@ -152,13 +160,12 @@ namespace POS_Project_Team2
             */
             if (listview_selected.Items.Count > 0)
             {
-
-
                 // 데이터가 바인딩된 후 하이라이팅 복구
                 DataGridViewBindingCompleteEventHandler data_bind_complete_event_handler = null;
                 data_bind_complete_event_handler = (s, ev) =>
                 {
                     highlight_gridview_item();
+                    Console.WriteLine("하이라이팅 복구 완료");
 
                     // 한 번만 하이라이팅을 복구하고 이벤트 핸들러를 제거한다.
                     datagridview_stock.DataBindingComplete -= data_bind_complete_event_handler;
@@ -184,6 +191,8 @@ namespace POS_Project_Team2
 
                     // 포커싱도 다시 수량으로 넘김
                     textbox_count.Focus();
+
+                    Console.WriteLine("선택 복구 완료");
 
                     // 한 번만 하이라이팅을 복구하고 이벤트 핸들러를 제거한다.
                     datagridview_stock.DataBindingComplete -= data_bind_complete_event_handler;
@@ -276,7 +285,6 @@ namespace POS_Project_Team2
                     MessageBoxIcon.Information);
             }
 
-
             selected = row_index; // 검색한 물품 있는 행 선택하고 선택하기 버튼 클릭 시에 사용
 
             // 물품명을 찾으면 수량을 입력할 수 있도록 설정
@@ -310,6 +318,7 @@ namespace POS_Project_Team2
         // 물건을 선택해서 오른쪽 리스트뷰에 추가하는 함수
         private void button_select_click(object sender, EventArgs e)
         {
+            int id = int.Parse(datagridview_stock.Rows[selected].Cells[0].Value.ToString()); // 아이템 번호 (unique id)
             string str_item_cost = datagridview_stock.Rows[selected].Cells[2].Value.ToString(); // 문자열로 나타난 가격
             int item_cost = Convert.ToInt32(str_item_cost); // 아이템 가격을 정수로 변환
 
@@ -347,14 +356,13 @@ namespace POS_Project_Team2
             // 만약 리스트뷰에 같은 아이템이 없다면 새로운 항목 추가
             if (!is_item_already_exist)
             {
-                ListViewItem listview_item = new ListViewItem((listview_item_count).ToString());
+                ListViewItem listview_item = new ListViewItem(id.ToString());
                 listview_item.SubItems.Add(item_name);
                 listview_item.SubItems.Add(item_count.ToString());
                 listview_item.SubItems.Add(item_cost.ToString());
                 listview_item.SubItems.Add((item_cost * item_count).ToString());
 
                 listview_selected.Items.Add(listview_item); // Listview에 추가
-                listview_item_count++;
             }
 
             // 선택하기가 완료된 경우 재고 개수를 stock items 에 반영 시킨다
@@ -436,6 +444,7 @@ namespace POS_Project_Team2
             restore_origin_data();
         }
 
+
         // 리스트뷰 아이템 더블 클릭시 요소 삭제
         private void listview_selected_MouseDoubleClick(object sender, MouseEventArgs e)
         {
@@ -460,11 +469,24 @@ namespace POS_Project_Team2
             // 선택된 아이템 삭제
             listview_selected.Items.Remove(selected_item);
 
+            // 결제 창에도 삭제를 반영
+            payment_form.remove_item(item_name);
+
             // data grid view 선택 색상 원래대로 돌리기
             for (int i = 0; i < datagridview_stock.Rows.Count; i++)
-                datagridview_stock.Rows[i].DefaultCellStyle.BackColor = Color.White;
+            {
+                if (datagridview_stock.Rows[i].Cells[1].Value.ToString() == item_name)
+                {
+                    for (int j = 0; j < datagridview_stock.Columns.Count; j++)
+                    {
+                        datagridview_stock.Rows[i].Cells[j].Style.BackColor = Color.White;
+                    }
+                    break;
+                }
+            }
 
         }
+
 
         // 물품명 텍스트 박스에서 엔터 입력 => 버튼 클릭
         private void textbox_search_KeyDown(object sender, KeyEventArgs e)

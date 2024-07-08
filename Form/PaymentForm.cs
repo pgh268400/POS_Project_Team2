@@ -45,6 +45,46 @@ namespace POS_Project_Team2
             RealTimeClock.Instance.start_clock();
         }
 
+        // 품목명을 받아서 리스트뷰 아이템을 삭제하는 함수, 못찾았다면 아무것도 하지 않는다.
+        public void remove_item(string item_name)
+        {
+            bool item_found = false;
+
+            // 리스트뷰 아이템을 삭제한다.
+            foreach (ListViewItem item in listview_product.Items)
+            {
+                if (item.SubItems[1].Text == item_name)
+                {
+                    listview_product.Items.Remove(item);
+                    item_found = true;
+                    break;
+                }
+            }
+
+            // 아이템을 찾지 못했으면 아무것도 하지 않는다
+            if (!item_found)
+            {
+                return;
+            }
+
+            // 물품 개수와 총 금액을 업데이트한다.
+            total_num_purchase -= 1;
+            label_num_product.Text = total_num_purchase.ToString() + "개";
+
+            // 물품 개수와 총 금액을 업데이트한다.
+            foreach (var product in products)
+            {
+                if (product.ItemName == item_name)
+                {
+                    total_price_purchase -= product.Cost * product.Count;
+                    break;
+                }
+            }
+
+            label_amount_money.Text = total_price_purchase.ToString() + "원";
+            label_total_amount.Text = total_price_purchase.ToString();
+        }
+
         // 대기열 라벨 초기화
         private void init_label_wait()
         {
@@ -86,7 +126,7 @@ namespace POS_Project_Team2
 
             foreach (var product in products)    //products 리스트 돌면서 선택된 '물품 넘버', '이름', '갯수', '가격', '총가격' ListView에 추가
             {
-                ListViewItem lvi = new ListViewItem(index.ToString());
+                ListViewItem lvi = new ListViewItem(product.Id.ToString());
                 ++index;    //물품 하나 출력할 때마다 No 수 늘려주기
 
                 lvi.SubItems.Add(product.ItemName);
@@ -103,7 +143,7 @@ namespace POS_Project_Team2
             }
 
             // Column 설정
-            listview_product.Columns.Add("No", 30, HorizontalAlignment.Left);
+            listview_product.Columns.Add("Id", 30, HorizontalAlignment.Left);
             listview_product.Columns.Add("물품명", 200, HorizontalAlignment.Left);
             listview_product.Columns.Add("수량", 70, HorizontalAlignment.Left);
             listview_product.Columns.Add("단가", 70, HorizontalAlignment.Left);
@@ -192,7 +232,7 @@ namespace POS_Project_Team2
             // data_form 의 경우 첫 번째 열때만 생성하고
             if (stock_form == null || stock_form.IsDisposed)
             {
-                stock_form = new StockForm();
+                stock_form = new StockForm(this);
             }
 
             // 이후 이미 data_form 이 생성된 경우 ShowDialog() 로 열기만 해서 같은 창을 열도록 한다(재활용) 한다. 

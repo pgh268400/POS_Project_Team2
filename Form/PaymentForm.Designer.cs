@@ -155,7 +155,7 @@
             // 
             // columnHeader1
             // 
-            columnHeader1.Text = "NO";
+            columnHeader1.Text = "Id";
             // 
             // columnHeader2
             // 
