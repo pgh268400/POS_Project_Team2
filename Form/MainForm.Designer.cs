@@ -323,7 +323,6 @@
             button_wait2.TabIndex = 7;
             button_wait2.Text = "대기열 2";
             button_wait2.UseVisualStyleBackColor = false;
-            button_wait2.Click += button2_Click;
             // 
             // button_wait1
             // 

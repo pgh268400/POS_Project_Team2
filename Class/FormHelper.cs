@@ -80,24 +80,24 @@
         }
 
         // 사각 패널 깎아서 뭉툭하게 만들기 (디자인)
-        public static void make_panel_round(object sender, PaintEventArgs e)
+        public static void make_panel_round(Panel panel)
         {
-            Panel panel = sender as Panel;
-            if (panel != null)
-            {
-                GraphicsPath path = new GraphicsPath();
-                int radius = 20;
-                int diameter = radius * 2;
-                Rectangle bounds = new Rectangle(0, 0, panel.Width, panel.Height);
+            if (panel == null)
+                throw new ArgumentNullException("panel", "panel is null.");
 
-                path.AddArc(bounds.X, bounds.Y, diameter, diameter, 180, 90);
-                path.AddArc(bounds.X + bounds.Width - diameter, bounds.Y, diameter, diameter, 270, 90);
-                path.AddArc(bounds.X + bounds.Width - diameter, bounds.Y + bounds.Height - diameter, diameter, diameter, 0, 90);
-                path.AddArc(bounds.X, bounds.Y + bounds.Height - diameter, diameter, diameter, 90, 90);
-                path.CloseAllFigures();
+            GraphicsPath path = new GraphicsPath();
+            int radius = 20;
+            int diameter = radius * 2;
+            Rectangle bounds = new Rectangle(0, 0, panel.Width, panel.Height);
 
-                panel.Region = new Region(path);
-            }
+            path.AddArc(bounds.X, bounds.Y, diameter, diameter, 180, 90);
+            path.AddArc(bounds.X + bounds.Width - diameter, bounds.Y, diameter, diameter, 270, 90);
+            path.AddArc(bounds.X + bounds.Width - diameter, bounds.Y + bounds.Height - diameter, diameter, diameter, 0, 90);
+            path.AddArc(bounds.X, bounds.Y + bounds.Height - diameter, diameter, diameter, 90, 90);
+            path.CloseAllFigures();
+
+            panel.Region = new Region(path);
+
         }
     }
 }

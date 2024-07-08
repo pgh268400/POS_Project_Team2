@@ -27,8 +27,17 @@ public class PayMentRefundRecord
 }
 
 // 통합 조회 데이터를 담을 클래스
-public class TotalRecord : PayMentRefundRecord
+public class TotalRecord
 {
+    public int Id { get; set; }
+    public DateTime Time { get; set; }
+    public string ItemName { get; set; }
+    public int UnitPrice { get; set; }
+    public int Count { get; set; }
+    public int TotalPrice { get; set; }
+    public string? Payer { get; set; } // nullable
+    public string? PhoneNumber { get; set; } // nullable
+
     // SQlite에는 boolean 타입이 없어 int로 구분한다.
     // 0 = 결제, 1 = 환불
     public int isRefund { get; set; }

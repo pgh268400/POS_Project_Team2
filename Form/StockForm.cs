@@ -441,7 +441,6 @@ namespace POS_Project_Team2
         private void button_pay_cancle_Click(object sender, EventArgs e)
         {
             listview_selected.Clear();
-            restore_origin_data();
         }
 
 
@@ -567,17 +566,7 @@ namespace POS_Project_Team2
             }
         }
 
-        // 원본 데이터를 복원하는 메서드
-        public void restore_origin_data()
-        {
-            dataset.Tables["ItemList"].Clear(); //변경된 데이터 지우고
-            foreach (DataRow row in original_data.Rows)
-            {
-                dataset.Tables["ItemList"].ImportRow(row); //이전에 카피해둔 원본 데이터 ItemList에 삽입
-            }
 
-            save_data_table(dataset.Tables["ItemList"], "item_data.xml");
-        }
 
         //애플리케이션 종료 시 실행
         private void OnApplicationExit(object sender, EventArgs e)

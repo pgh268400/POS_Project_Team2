@@ -18,7 +18,6 @@ namespace POS_Project_Team2
 
         public LoginForm()
         {
-
             InitializeComponent();
 
             // 실행시 창을 화면 중앙에 위치시키기
@@ -28,12 +27,33 @@ namespace POS_Project_Team2
             FormHelper.disable_resize(this);
         }
 
+        /*
+          Load = 실제로 폼이 그려지기 직전에 발동한다.
+          따라서 여기서 Hide를 걸면 작동하지 않는다.
+          다 그려지지 않았는데 숨긴다고 했기 때문이다.
+        */
+        private void LoginForm_Load(object sender, EventArgs e)
+        {
+            // ID, PW 입력창에 KeyPress 이벤트 핸들러 등록
+            textbox_id.KeyPress += new KeyPressEventHandler(get_enter);
+            textbox_pw.KeyPress += new KeyPressEventHandler(get_enter);
+
+            // 편의를 위해 ID, PW를 미리 입력해놓는다.
+            textbox_id.Text = "admin@naver.com";
+            textbox_pw.Text = "admin";
+
+            // 비밀번호에 포커스를 건다.
+            textbox_pw.Focus();
+        }
+
         // 사각 패널 깎아서 뭉툭하게 만들기 (디자인)
         private void panel_background_Paint(object sender, PaintEventArgs e)
         {
-            FormHelper.make_panel_round(sender, e);
+            // 패널을 둥글게 만드는 이 함수는 panel 이 다 Paint 된 이후에 호출해야한다.
+            FormHelper.make_panel_round(panel_background);
         }
 
+        // 자동 로그인 파일 생성 함수
         private void process_auto_login(string user_id)
         {
             DBMaster db_master = DBMaster.Instance; // 싱글톤 접근이라 new를 쓰지 않는다.
@@ -151,27 +171,6 @@ namespace POS_Project_Team2
                     checkbox_auto_login.Checked = false;
                 }
             }
-        }
-
-
-        /*
-         Load = 실제로 폼이 그려지기 직전에 발동한다.
-         따라서 여기서 Hide를 걸면 작동하지 않는다.
-         다 그려지지 않았는데 숨긴다고 했기 때문이다.
-        */
-        private void LoginForm_Load(object sender, EventArgs e)
-        {
-            // ID, PW 입력창에 KeyPress 이벤트 핸들러 등록
-            textbox_id.KeyPress += new KeyPressEventHandler(get_enter);
-            textbox_pw.KeyPress += new KeyPressEventHandler(get_enter);
-
-            // 편의를 위해 ID, PW를 미리 입력해놓는다.
-            textbox_id.Text = "admin@naver.com";
-            textbox_pw.Text = "admin";
-
-            // 비밀번호에 포커스를 건다.
-            textbox_pw.Focus();
-
         }
     }
 }

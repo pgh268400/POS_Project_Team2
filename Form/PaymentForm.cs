@@ -112,42 +112,41 @@ namespace POS_Project_Team2
         // ListView의 보여질 목록
         private void list_view_control(List<StockRecord> products)
         {
-            listview_product.Clear();    //기존에 있던 물품 지움. 이전 물건들 List Products에 저장되어있어서 지우지않으면 중복으로 생김
+            // 기존에 있던 물품 지움. 이전 물건들 List Products에 저장되어있어서 지우지않으면 중복으로 생김
+            listview_product.Items.Clear();
 
-            total_num_purchase = 0;   //기존 물품 정보 초기화
+            // 기존 물품 정보 초기화
+            total_num_purchase = 0;
             total_price_purchase = 0;
 
-            listview_product.BeginUpdate();  //업데이트 끝날 때까지 UI 중지
+            //업데이트 끝날 때까지 UI 중지
+            listview_product.BeginUpdate();
 
-            listview_product.View = View.Details;    //뷰모드 지정
-
-
-            int index = 1;  //No 나타내는 index 값
+            // 뷰모드 지정
+            listview_product.View = View.Details;
 
             foreach (var product in products)    //products 리스트 돌면서 선택된 '물품 넘버', '이름', '갯수', '가격', '총가격' ListView에 추가
             {
-                ListViewItem lvi = new ListViewItem(product.Id.ToString());
-                ++index;    //물품 하나 출력할 때마다 No 수 늘려주기
-
-                lvi.SubItems.Add(product.ItemName);
-                lvi.SubItems.Add(product.Count.ToString());
-                lvi.SubItems.Add(product.Cost.ToString());
+                ListViewItem listview_item = new ListViewItem(product.Id.ToString());
+                listview_item.SubItems.Add(product.ItemName);
+                listview_item.SubItems.Add(product.Count.ToString());
+                listview_item.SubItems.Add(product.Cost.ToString());
 
                 int total_cost = product.Cost * product.Count;  //총가격 가격 * 갯수
 
-                lvi.SubItems.Add(total_cost.ToString());
-                listview_product.Items.Add(lvi); //Listview에 추가
+                listview_item.SubItems.Add(total_cost.ToString());
+                listview_product.Items.Add(listview_item); //Listview에 추가
 
                 total_num_purchase += product.Count;   //총 구매액 계산
                 total_price_purchase += total_cost;         //총 갯수 계산
             }
 
             // Column 설정
-            listview_product.Columns.Add("Id", 30, HorizontalAlignment.Left);
-            listview_product.Columns.Add("물품명", 200, HorizontalAlignment.Left);
-            listview_product.Columns.Add("수량", 70, HorizontalAlignment.Left);
-            listview_product.Columns.Add("단가", 70, HorizontalAlignment.Left);
-            listview_product.Columns.Add("금액", 70, HorizontalAlignment.Left);
+            //listview_product.Columns.Add("Id", 30, HorizontalAlignment.Left);
+            //listview_product.Columns.Add("물품명", 200, HorizontalAlignment.Left);
+            //listview_product.Columns.Add("수량", 70, HorizontalAlignment.Left);
+            //listview_product.Columns.Add("단가", 70, HorizontalAlignment.Left);
+            //listview_product.Columns.Add("금액", 70, HorizontalAlignment.Left);
 
             listview_product.EndUpdate();    //업데이트 끝
 
@@ -303,11 +302,11 @@ namespace POS_Project_Team2
                 Console.WriteLine(product.Count);
             }
 
+            // for문을 돌면서 DB에 결제 데이터를 삽입한다.
             foreach (var product in products)
             {
                 int total_cost = product.Cost * product.Count;
 
-                // 결제 데이터 삽입 예시
                 var payment = new PayMentRefundRecord
                 {
                     Time = DateTime.Now,
@@ -348,10 +347,10 @@ namespace POS_Project_Team2
             // 결제한 내역을 재고창 폼에 넘긴다
             stock_form.remove_selected_items(products);
 
-
             // 결제 후 리스트 뷰 초기화
             listview_product.Clear();
             products.Clear();
+
             MessageBox.Show("결제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             MainForm main_form = (MainForm)this.Owner;
             main_form.UpdateWaitButton(0, Color.Gray);
@@ -359,17 +358,21 @@ namespace POS_Project_Team2
             main_form.total_num_sales += 1;
             main_form.total_num_profit += total_price_purchase;
             main_form.total_previous_purchase = total_price_purchase;
+
+            // 받을 금액 초기화
+            label_total_amount.Text = "0";
         }
 
-        //취소 버튼 클릭 시 담았던 재고 원상 복구
+        // 취소 버튼
         private void button_all_cancle_Click(object sender, EventArgs e)
         {
             all_cancel = true;
-            if (stock_form != null)
-            {
-                stock_form.restore_origin_data();    // DataForm의 원본 데이터 복원 메서드 호출
-            }
-            this.Close();
+
+            // 모든 물품 삭제
+            listview_product.Items.Clear();
+
+            // 받을 금액 초기화
+            label_total_amount.Text = "0";
         }
 
         private void button1_Click(object sender, EventArgs e)

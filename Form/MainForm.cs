@@ -72,7 +72,7 @@ namespace POS_Project_Team2
         private void button_payment_Click(object sender, EventArgs e)
         {
             // 결제를 누르면 PaymentForm으로 이동
-            var payment_form = new PaymentForm();
+            PaymentForm payment_form = new PaymentForm();
             FormHelper.show(payment_form);
             payment_form.FormClosing += PaymentForm_FormClosing;
             payment_form.Owner = this;
@@ -80,6 +80,7 @@ namespace POS_Project_Team2
         }
 
 
+        // 통합 조회 버튼
         private void button_get_all_Click(object sender, EventArgs e)
         {
             // DB 에서 결제 내역을 가져온다
@@ -94,7 +95,7 @@ namespace POS_Project_Team2
             log_form.set_form_role(payment_data, "현재 모든 로그 기록을 확인중입니다.");
         }
 
-        // 재고 조회
+        // 재고 조회 버튼
         private void button_get_stock_Click(object sender, EventArgs e)
         {
             StockForm data_form = new StockForm();
@@ -117,11 +118,6 @@ namespace POS_Project_Team2
             log_form.set_form_role(payment_data, "현재 총 결제 기록을 확인중입니다.");
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void button_wait1_Click(object sender, EventArgs e)
         {
             // 현재 대기열 1에서만 작동합니다 메세지 박스 출력
@@ -142,23 +138,6 @@ namespace POS_Project_Team2
 
         }
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-            // 정말 모든걸 삭제할거냐는 메세지 출력
-            DialogResult result = MessageBox.Show("정말 모든 데이터를 삭제하시겠습니까? 모든 로그 데이터는 삭제되고, 재고 데이터가 원상 복구됩니다.", "경고", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (result == DialogResult.Yes)
-            {
-                // Logger 이용해 로그 삭제
-                Logger logger = new Logger();
-                logger.delete_all_log();
-
-                // 재고 데이터 원상복귀 (추후 구현)
-
-                // 데이터 청소가 완료되었습니다 메세지 출력
-                MessageBox.Show("모든 데이터가 삭제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-
-        }
         private void WaitButton_Click(object sender, EventArgs e)
         {
             //var clickedButton = sender as Button;
@@ -211,6 +190,8 @@ namespace POS_Project_Team2
             }
         }
 
+
+        // 모든 기록 삭제 버튼
         private void button_clear_all_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show("해당 기능 사용시 저장된 모든 데이터가 삭제되며, 초기 프로그램 상태로 돌아갑니다. 또한 프로그램이 자동 재실행 됩니다. 수행하시겠습니까?", "경고", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -247,6 +228,7 @@ namespace POS_Project_Team2
             label_total_num_refund.Text = "금일 총 환불 " + total_num_refund + "건";
         }
 
+        // 환불 버튼
         private void button_refund_Click(object sender, EventArgs e)
         {
             DBMaster db_master = DBMaster.Instance;
@@ -254,7 +236,7 @@ namespace POS_Project_Team2
 
             // 총 결제 내역 창 열기
             MultiPurposeShowForm log_form = new MultiPurposeShowForm();
-            log_form.Owner = this;  //나중에 수익 값 조절하기 위해 Main폼 부모로
+            log_form.Owner = this;  // 나중에 수익 값 조절하기 위해 Main 폼 부모로
 
             FormHelper.show(log_form);
 
@@ -263,6 +245,7 @@ namespace POS_Project_Team2
 
         }
 
+        // 환불 내역 버튼
         private void button_get_refund_Click(object sender, EventArgs e)
         {
             // 환불 내역 조회
