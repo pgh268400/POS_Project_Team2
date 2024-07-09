@@ -37,6 +37,7 @@ namespace POS_Project_Team2
         private void LoginForm_Load(object sender, EventArgs e)
         {
             // ID, PW 입력창에 KeyPress 이벤트 핸들러 등록
+            // ID 와 PW를 입력하고 엔터를 감지하기 위해서 등록한다.
             textbox_id.KeyPress += new KeyPressEventHandler(get_enter);
             textbox_pw.KeyPress += new KeyPressEventHandler(get_enter);
 
@@ -59,7 +60,7 @@ namespace POS_Project_Team2
         private void process_auto_login(string user_id)
         {
             DBMaster db_master = DBMaster.Instance; // 싱글톤 접근이라 new를 쓰지 않는다.
-            string hashed_pw = db_master.get_user_pw_by_id(user_id);
+            string hashed_pw = db_master.get_user_pw_by_id(user_id); // id로부터 pw를 가져온다
 
             if (hashed_pw != "")
             {
@@ -68,7 +69,7 @@ namespace POS_Project_Team2
             }
             else
             {
-                throw new Exception("자동 로그인 파일 생성에 실패했습니다.");
+                throw new Exception("자동 로그인 파일 생성에 실패했습니다. DB 조회에 실패했습니다.");
             }
         }
 
@@ -82,7 +83,7 @@ namespace POS_Project_Team2
                1. admin / admin
                2. admin@naver.com / admin
                3. pgh268400@naver.com / 내가 항상 쓰던 비밀번호 (sqlite에 bcrypt로 암호화, 해싱되어 있다.)
-             */
+            */
 
             // 입력된 ID와 비밀번호를 변수에 저장
             string input_id = textbox_id.Text.Trim();

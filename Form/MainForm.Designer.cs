@@ -94,9 +94,9 @@
             // 
             button_get_receipt.BackColor = SystemColors.WindowFrame;
             button_get_receipt.ForeColor = SystemColors.ControlLightLight;
-            button_get_receipt.Location = new Point(252, 66);
+            button_get_receipt.Location = new Point(20, 171);
             button_get_receipt.Name = "button_get_receipt";
-            button_get_receipt.Size = new Size(121, 47);
+            button_get_receipt.Size = new Size(112, 53);
             button_get_receipt.TabIndex = 3;
             button_get_receipt.Text = "영수증 조회";
             button_get_receipt.UseVisualStyleBackColor = false;
@@ -107,7 +107,7 @@
             button_get_stock.ForeColor = SystemColors.ControlLightLight;
             button_get_stock.Location = new Point(20, 108);
             button_get_stock.Name = "button_get_stock";
-            button_get_stock.Size = new Size(112, 116);
+            button_get_stock.Size = new Size(112, 59);
             button_get_stock.TabIndex = 4;
             button_get_stock.Text = "재고 조회";
             button_get_stock.UseVisualStyleBackColor = false;
@@ -130,6 +130,7 @@
             // 
             group_get.Controls.Add(button_get_refund);
             group_get.Controls.Add(button_get_all);
+            group_get.Controls.Add(button_get_receipt);
             group_get.Controls.Add(button_get_tpt);
             group_get.Controls.Add(button_get_stock);
             group_get.Controls.Add(label_realtime_clock);
@@ -184,15 +185,14 @@
             // 
             groupBox3.Controls.Add(label9);
             groupBox3.Controls.Add(label_total_previous_payment);
-            groupBox3.Controls.Add(button_get_receipt);
             groupBox3.Controls.Add(label_total_previous_purchase);
             groupBox3.Controls.Add(button_receipt);
             groupBox3.Controls.Add(label6);
             groupBox3.Controls.Add(label5);
             groupBox3.Controls.Add(label4);
-            groupBox3.Location = new Point(15, 111);
+            groupBox3.Location = new Point(15, 127);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(379, 173);
+            groupBox3.Size = new Size(379, 157);
             groupBox3.TabIndex = 11;
             groupBox3.TabStop = false;
             groupBox3.Text = "직전 결제 내역";
@@ -229,7 +229,7 @@
             button_receipt.BackColor = Color.LightGray;
             button_receipt.Location = new Point(252, 19);
             button_receipt.Name = "button_receipt";
-            button_receipt.Size = new Size(121, 41);
+            button_receipt.Size = new Size(121, 35);
             button_receipt.TabIndex = 15;
             button_receipt.Text = "영수증 출력";
             button_receipt.UseVisualStyleBackColor = false;
@@ -326,7 +326,7 @@
             // 
             // button_wait1
             // 
-            button_wait1.BackColor = SystemColors.WindowFrame;
+            button_wait1.BackColor = SystemColors.MenuHighlight;
             button_wait1.ForeColor = SystemColors.ControlLightLight;
             button_wait1.Location = new Point(15, 25);
             button_wait1.Name = "button_wait1";

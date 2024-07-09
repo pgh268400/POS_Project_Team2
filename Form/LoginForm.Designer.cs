@@ -82,6 +82,7 @@
             // button_online
             // 
             button_online.BackColor = Color.Gray;
+            button_online.Enabled = false;
             button_online.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
             button_online.ForeColor = Color.White;
             button_online.Location = new Point(218, 357);

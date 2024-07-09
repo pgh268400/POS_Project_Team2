@@ -22,39 +22,15 @@ namespace POS_Project_Team2
             // 실행시 창을 화면 중앙에 위치시키기
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            // 대기열 버튼 초기화
-            InitializeWaitButtons();
-
             // 폼 크기 조절 불가능하게 설정
             FormHelper.disable_resize(this);
         }
 
-        private void InitializeWaitButtons()
-        {
-            wait_buttons = new Button[] { button_wait1, button_wait2, button_wait3 };
-
-            foreach (var button in wait_buttons)
-            {
-                button.Click += WaitButton_Click;
-                button.BackColor = Color.Gray;
-            }
-        }
-
-
-        private void set_picture_box_transparent()
-        {
-            // picturebox 투명으로 설정하기
-            picture_box_alarm.BackColor = Color.Transparent;
-
-            // picturebox 투명을 위해선 자신이 겹쳐있는 컨트롤을 부모로 설정해야 제대로 설정된다 : 중요
-            picture_box_alarm.Parent = picture_box_top;
-
-            picture_box_menu.BackColor = Color.Transparent;
-            picture_box_menu.Parent = picture_box_top;
-        }
-
         private void MainForm_Load(object sender, EventArgs e)
         {
+            // 대기열 버튼 이벤트 핸들러 등록
+            register_wait_button_event_handler();
+
             // RealTimeClock 싱글톤 인스턴스를 가져와서 레이블을 등록
             RealTimeClock.Instance.register_label(label_realtime_clock);
 
@@ -67,6 +43,25 @@ namespace POS_Project_Team2
             // 영수증, 상품 조회, 영수증 조회 숨기기
             button_receipt.Hide();
             button_get_receipt.Hide();
+        }
+
+        // 대기열 버튼 이벤트 핸들러 등록
+        private void register_wait_button_event_handler()
+        {
+            foreach (var button in wait_buttons)
+                button.Click += WaitButton_Click;
+        }
+
+        private void set_picture_box_transparent()
+        {
+            // picturebox 투명으로 설정하기
+            picture_box_alarm.BackColor = Color.Transparent;
+
+            // picturebox 투명을 위해선 자신이 겹쳐있는 컨트롤을 부모로 설정해야 제대로 설정된다 : 중요
+            picture_box_alarm.Parent = picture_box_top;
+
+            picture_box_menu.BackColor = Color.Transparent;
+            picture_box_menu.Parent = picture_box_top;
         }
 
         // 결제 버튼
