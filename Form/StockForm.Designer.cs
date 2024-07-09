@@ -185,9 +185,9 @@
             // 
             // button_select_cancle
             // 
-            button_select_cancle.Location = new Point(17, 54);
+            button_select_cancle.Location = new Point(146, 22);
             button_select_cancle.Name = "button_select_cancle";
-            button_select_cancle.Size = new Size(251, 26);
+            button_select_cancle.Size = new Size(122, 26);
             button_select_cancle.TabIndex = 2;
             button_select_cancle.Text = "선택 취소하기";
             button_select_cancle.UseVisualStyleBackColor = true;
@@ -195,11 +195,11 @@
             // 
             // button_pay_cancle
             // 
-            button_pay_cancle.Location = new Point(156, 22);
+            button_pay_cancle.Location = new Point(17, 59);
             button_pay_cancle.Name = "button_pay_cancle";
-            button_pay_cancle.Size = new Size(112, 26);
+            button_pay_cancle.Size = new Size(251, 26);
             button_pay_cancle.TabIndex = 1;
-            button_pay_cancle.Text = "주문 취소하기";
+            button_pay_cancle.Text = "전체 주문 취소하기";
             button_pay_cancle.UseVisualStyleBackColor = true;
             button_pay_cancle.Click += button_pay_cancle_Click;
             // 
@@ -207,7 +207,7 @@
             // 
             button_add_into_payment.Location = new Point(17, 22);
             button_add_into_payment.Name = "button_add_into_payment";
-            button_add_into_payment.Size = new Size(133, 26);
+            button_add_into_payment.Size = new Size(123, 26);
             button_add_into_payment.TabIndex = 0;
             button_add_into_payment.Text = "결제창 추가하기";
             button_add_into_payment.UseVisualStyleBackColor = true;

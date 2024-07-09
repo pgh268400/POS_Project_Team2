@@ -361,6 +361,12 @@ namespace POS_Project_Team2
             label_total_amount.Text = "0";
         }
 
+        // Stock Form 쪽에서 호출하는 리스트뷰 아이템 전체 삭제 함수
+        public void clear_all_items()
+        {
+            listview_product.Items.Clear();
+        }
+
         // 취소 버튼
         private void button_all_cancle_Click(object sender, EventArgs e)
         {

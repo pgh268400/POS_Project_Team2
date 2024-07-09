@@ -71,7 +71,7 @@
             // label_realtime_clock
             // 
             label_realtime_clock.AutoSize = true;
-            label_realtime_clock.Location = new Point(20, 282);
+            label_realtime_clock.Location = new Point(20, 286);
             label_realtime_clock.Name = "label_realtime_clock";
             label_realtime_clock.Size = new Size(103, 19);
             label_realtime_clock.TabIndex = 0;

@@ -98,6 +98,12 @@ namespace POS_Project_Team2
         {
             StockForm data_form = new StockForm();
             FormHelper.show(data_form);
+
+            /*
+              재고 조회 창을 열었을 때는 수정을 모두 막아야 한다.
+              말그대로 "조회" 만 가능한 Read Only 상태를 만들기 위해
+              data form의 block_all 함수를 호출한다.
+            */
             data_form.block_all();
         }
 
@@ -129,7 +135,7 @@ namespace POS_Project_Team2
             // 영수증 출력을 위해 PayMentLogShowForm으로 이동
             MultiPurposeShowForm log_form = new MultiPurposeShowForm();
 
-            // 영수증 출력할거라고 함수 호출
+            // 영수증 출력하기 위해 영수증 출력 모드로 변경하는 함수 호출
             log_form.enable_recepit_mode();
 
             FormHelper.show(log_form);

@@ -27,7 +27,6 @@ namespace POS_Project_Team2
         public List<StockRecord> select_items = new();
 
         int selected;
-        int listview_item_count = 1; // listview_item의 No 컨트롤
         private bool restart_status = false; // 다시 창을 껐다 켰는지 체크하는 변수
 
         // 생성자, 생성시 payment_form 을 부모로 참조해 함수를 호출할 수 있도록 한다
@@ -42,6 +41,7 @@ namespace POS_Project_Team2
 
             restart_status = false;
 
+            // 부모폼인 결제폼에 접근하기 위한 변수를 초기화한다.
             if (payment_form != null)
                 this.payment_form = payment_form;
         }
@@ -75,8 +75,6 @@ namespace POS_Project_Team2
             // 선택하다 중간에 나갔는 경우에도 아이템을 선택하도록 복구한다
             if (textbox_search.Enabled == false)
             {
-                string search_text = textbox_search.Text;
-
                 after_bind_execute_func(datagridview_stock, () =>
                 {
                     // 선택하다 중간에 나갔다는 상황을 표시하기 위해 bool 변수 설정
@@ -107,7 +105,6 @@ namespace POS_Project_Team2
 
             data_grid_view.DataBindingComplete += data_bind_complete_event_handler;
         }
-
 
         /*
           data grid view 의 아이템이 비어있을 때,
@@ -140,7 +137,7 @@ namespace POS_Project_Team2
         }
 
 
-        // 결제창이 아닌 일반 메인창에서 보기 위해 접근했을때 모든 컨트롤을 비활성화 시키는 메서드
+        // 결제창이 아닌 일반 메인창에서 보기 위해 접근했을때 모든 컨트롤을 수정 못하게 block 시키는 메서드
         public void block_all()
         {
             textbox_search.Enabled = false;
@@ -230,8 +227,6 @@ namespace POS_Project_Team2
             datagridview_stock.ClearSelection();
         }
 
-
-
         // 검색 버튼 클릭시 해당 물품 있는지 검사 후 해당 행을 선택.
         private void button_search_Click(object sender, EventArgs e)
         {
@@ -250,7 +245,8 @@ namespace POS_Project_Team2
                     if (cell_value != null && cell_value.ToString() == search_text)
                     {
                         var item_name = datagridview_stock.Rows[i].Cells[1].Value.ToString(); // 물품명은 인덱스 1
-                        select_item(i, item_name);
+                        var item_count = datagridview_stock.Rows[i].Cells[3].Value.ToString(); // 수량은 인덱스 3
+                        select_item(i, item_name, Int32.Parse(item_count));
                         item_found = true;
                         break;
                     }
@@ -261,12 +257,13 @@ namespace POS_Project_Team2
                 // 물품명을 기준으로 검색
                 for (int i = 0; i < datagridview_stock.Rows.Count; i++)
                 {
-                    var cell_value = datagridview_stock.Rows[i].Cells[1].Value; // 물품명 컬럼은 인덱스 1
+                    var cell_value = datagridview_stock.Rows[i].Cells[1].Value.ToString(); // 물품명 컬럼은 인덱스 1
+                    var item_count = datagridview_stock.Rows[i].Cells[3].Value.ToString(); // 수량은 인덱스 3
 
                     // null 체크 후 검색한 물품명이 있는 행 선택
-                    if (cell_value != null && cell_value.ToString() == search_text)
+                    if (cell_value != null && cell_value == search_text)
                     {
-                        select_item(i, cell_value.ToString());
+                        select_item(i, cell_value, Int32.Parse(item_count));
                         item_found = true;
                         break;
                     }
@@ -279,8 +276,15 @@ namespace POS_Project_Team2
             }
         }
 
-        private void select_item(int row_index, string item_name)
+        private void select_item(int row_index, string item_name, int item_count)
         {
+            if (item_count == 0)
+            {
+                // 재고가 없으면 선택 불가
+                MessageBox.Show("재고가 없는 물품입니다. 다른 항목을 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             if (restart_status == false)
             {
                 MessageBox.Show($"{item_name} 항목이 선택되었습니다. 이제 수량을 선택해주세요.", "알림", MessageBoxButtons.OK,
@@ -389,12 +393,19 @@ namespace POS_Project_Team2
             // data grid view 의 선택을 해제한다.
             datagridview_stock.Rows[selected].Selected = false;
 
+            // 선택된 행의 색상을 빨간색으로 변경
+            for (int i = 0; i < datagridview_stock.Columns.Count; i++)
+            {
+                datagridview_stock.Rows[selected].Cells[i].Style.BackColor = Color.Crimson;
+            }
+
             // 수량 텍스트 박스 비활성화
             textbox_count.Enabled = false;
 
             // 수량 옆에 선택 버튼도 비활성화
             button_select.Enabled = false;
         }
+
 
 
 
@@ -440,11 +451,39 @@ namespace POS_Project_Team2
             Close();
         }
 
+        // 주문 취소 버튼
         private void button_pay_cancle_Click(object sender, EventArgs e)
         {
-            listview_selected.Clear();
-        }
+            // 리스트뷰 아이템을 순회하면서, 아이템을 삭제하고 재고를 복원한다.
+            // 그리고 부모폼인 결제폼에 있는 아이템도 삭제한다.
 
+            foreach (ListViewItem item in listview_selected.Items)
+            {
+                string item_name = item.SubItems[1].Text;
+                int item_count = int.Parse(item.SubItems[2].Text);
+
+                // 해당 아이템의 재고를 stock_items 에 복원
+                for (int i = 0; i < datagridview_stock.Rows.Count; i++)
+                {
+                    if (datagridview_stock.Rows[i].Cells[1].Value.ToString() == item_name)
+                    {
+                        stock_items[i].Count += item_count;
+
+                        // 선택된 셀의 색상을 흰색으로 복구
+                        for (int j = 0; j < datagridview_stock.Columns.Count; j++)
+                            datagridview_stock.Rows[i].Cells[j].Style.BackColor = Color.White;
+
+                        break;
+                    }
+                }
+
+                // 결제 창에서도 삭제를 반영
+                payment_form.remove_item(item_name);
+            }
+
+            // 리스트뷰 아이템을 모두 삭제한다.
+            listview_selected.Items.Clear();
+        }
 
         // 리스트뷰 아이템 더블 클릭시 요소 삭제
         private void listview_selected_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -552,6 +591,5 @@ namespace POS_Project_Team2
             }
 
         }
-
     }
 }
