@@ -242,7 +242,6 @@
             button1.TabIndex = 7;
             button1.Text = "새로고침";
             button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click_1;
             // 
             // StockForm
             // 

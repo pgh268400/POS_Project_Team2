@@ -325,8 +325,6 @@ namespace POS_Project_Team2
 
             foreach (var product in products)
             {
-
-
                 // product를 활용해 Stack Record를 생성 한다
                 StockRecord stock_record = new StockRecord
                 {
@@ -366,13 +364,15 @@ namespace POS_Project_Team2
         // 취소 버튼
         private void button_all_cancle_Click(object sender, EventArgs e)
         {
-            all_cancel = true;
-
             // 모든 물품 삭제
             listview_product.Items.Clear();
 
             // 받을 금액 초기화
             label_total_amount.Text = "0";
+
+            // 개수랑 원도 초기화
+            label_num_product.Text = "0개";
+            label_amount_money.Text = "0원";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -389,24 +389,6 @@ namespace POS_Project_Team2
         public List<StockRecord> get_products()
         {
             return new List<StockRecord>(products);
-        }
-
-        private void PaymentForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // 리스트뷰에 항목이 있는지 확인
-            if (listview_product.Items.Count > 0)
-            {
-                // 경고 메시지 박스 표시
-                DialogResult result = MessageBox.Show("리스트뷰에 데이터가 남아있습니다. 전체 취소 버튼을 클릭해 나가주세요.",
-                    "경고",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-
-                if (!all_cancel)
-                {
-                    e.Cancel = true;
-                }
-            }
         }
     }
 }

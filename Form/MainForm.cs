@@ -14,6 +14,7 @@ namespace POS_Project_Team2
         public int total_num_profit = 0;            // 금일 총 수익
         public int total_previous_purchase = 0;     // 이전 구매액
 
+
         public MainForm()
         {
             InitializeComponent();
@@ -50,7 +51,6 @@ namespace POS_Project_Team2
 
             picture_box_menu.BackColor = Color.Transparent;
             picture_box_menu.Parent = picture_box_top;
-
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -69,16 +69,14 @@ namespace POS_Project_Team2
             button_get_receipt.Hide();
         }
 
+        // 결제 버튼
         private void button_payment_Click(object sender, EventArgs e)
         {
-            // 결제를 누르면 PaymentForm으로 이동
             PaymentForm payment_form = new PaymentForm();
-            FormHelper.show(payment_form);
             payment_form.FormClosing += PaymentForm_FormClosing;
             payment_form.Owner = this;
-            payment_form.Show();
+            FormHelper.show(payment_form);
         }
-
 
         // 통합 조회 버튼
         private void button_get_all_Click(object sender, EventArgs e)

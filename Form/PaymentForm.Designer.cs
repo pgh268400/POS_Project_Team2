@@ -404,7 +404,6 @@
             Controls.Add(panel1);
             Name = "PaymentForm";
             Text = "POS System";
-            FormClosing += PaymentForm_FormClosing;
             Load += PaymentForm_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();

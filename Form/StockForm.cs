@@ -1,6 +1,5 @@
 ﻿using POS_Project_Team2.Class;
 using System.ComponentModel;
-using System.Data;
 
 namespace POS_Project_Team2
 {
@@ -8,9 +7,6 @@ namespace POS_Project_Team2
     {
         // 부모폼인 결제 폼에 접근하기 위한 변수
         PaymentForm payment_form;
-
-        public ItemData dataset;
-        DataTable original_data;
 
         /*
           폼을 열었다 닫아도 계속 유지되도록,
@@ -34,6 +30,116 @@ namespace POS_Project_Team2
         int listview_item_count = 1; // listview_item의 No 컨트롤
         private bool restart_status = false; // 다시 창을 껐다 켰는지 체크하는 변수
 
+        // 생성자, 생성시 payment_form 을 부모로 참조해 함수를 호출할 수 있도록 한다
+        public StockForm(PaymentForm payment_form = null)
+        {
+            InitializeComponent();
+
+            // 실행시 창을 화면 중앙에 위치시키기
+            this.StartPosition = FormStartPosition.CenterScreen;
+
+            FormHelper.disable_resize(this);
+
+            restart_status = false;
+
+            if (payment_form != null)
+                this.payment_form = payment_form;
+        }
+
+
+        // 해당 Load 함수는 폼이 닫히고 새로 열릴때마다 매번 새로 호출된다.
+        private void DataForm_Load(object sender, EventArgs e)
+        {
+            // 아이템이 비어있는 경우 (첫 번째 창 연 경우) UI 기본 설정
+            first_init_ui();
+
+            /*
+              리스트뷰에 아이템이 남아 있는 경우
+              == 창을 닫고 다시 열었을 때
+              이때 data grid view에 하이라이팅을 복구한다
+              
+              이유는 모르겠지만 창을 닫고 다시 열었을 때 같은 창을 참조해 열도록
+              설계하였으나 grid view 에 선택한 포커스나 배경 하이라이팅은 소멸함을
+              확인 했다. 따라서 복구 로직이 필요하다.
+            */
+            if (listview_selected.Items.Count > 0)
+            {
+                // 데이터가 바인딩된 후 하이라이팅 복구
+                after_bind_execute_func(datagridview_stock, () =>
+                {
+                    highlight_gridview_item();
+                    Console.WriteLine("하이라이팅 복구 완료");
+                });
+            }
+
+            // 선택하다 중간에 나갔는 경우에도 아이템을 선택하도록 복구한다
+            if (textbox_search.Enabled == false)
+            {
+                string search_text = textbox_search.Text;
+
+                after_bind_execute_func(datagridview_stock, () =>
+                {
+                    // 선택하다 중간에 나갔다는 상황을 표시하기 위해 bool 변수 설정
+                    restart_status = true;
+
+                    // 검색 버튼 다시 클릭
+                    button_search_Click(null, null);
+
+                    // 포커싱도 다시 수량으로 넘김
+                    textbox_count.Focus();
+
+                    Console.WriteLine("선택 복구 완료");
+                });
+            }
+        }
+
+        // 데이터가 바인딩된 후 특정 동작을 수행하고 이벤트 핸들러를 제거하는 함수
+        private void after_bind_execute_func(DataGridView data_grid_view, Action callback_func)
+        {
+            DataGridViewBindingCompleteEventHandler data_bind_complete_event_handler = null;
+            data_bind_complete_event_handler = (s, ev) =>
+            {
+                callback_func();
+
+                // 한 번만 동작을 수행하고 이벤트 핸들러를 제거한다.
+                data_grid_view.DataBindingComplete -= data_bind_complete_event_handler;
+            };
+
+            data_grid_view.DataBindingComplete += data_bind_complete_event_handler;
+        }
+
+
+        /*
+          data grid view 의 아이템이 비어있을 때,
+          최초로 ui를 설정하는 함수. 아래는 수행하는 작업들이다.
+          1. 물품명을 먼저 입력해야지 수량을 입력할 수 있으므로, 
+             수량 텍스트 박스 및 수량 선택 버튼을 비활성화 한다.
+          2. data grid view 를 수정할 수 없도록 ReadOnly로 설정한다.
+          3. data grid view 선택 상태를 해제한다. (data grid view는 처음에 0행 0열에 선택되어 있다.)
+          4. stock_items 를 초기화하고 데이터 그리드 뷰에 바인딩한다.
+        */
+        private void first_init_ui()
+        {
+            if (stock_items.Count == 0)
+            {
+                // 물품명을 먼저 입력해야지 수량을 입력할 수 있도록 설정
+                textbox_count.Enabled = false; // 수량을 비활성화 한다.
+
+                // 수량 옆에 선택 버튼도 비활성화
+                button_select.Enabled = false;
+
+                // 버그 방지를 위해 data grid view 수정을 막는다
+                datagridview_stock.ReadOnly = true;
+
+                // data grid view 선택 상태 해제
+                datagridview_stock.ClearSelection();
+
+                // 아이템 추가 및 바인딩 진행
+                set_item_and_bind();
+            }
+        }
+
+
         // 결제창이 아닌 일반 메인창에서 보기 위해 접근했을때 모든 컨트롤을 비활성화 시키는 메서드
         public void block_all()
         {
@@ -44,7 +150,6 @@ namespace POS_Project_Team2
             button_select_cancle.Enabled = false;
             button_pay_cancle.Enabled = false;
             listview_selected.Enabled = false;
-            //datagridview_stock.Enabled = false;
             datagridview_stock.ReadOnly = true;
             button_add_into_payment.Enabled = false;
 
@@ -76,9 +181,7 @@ namespace POS_Project_Team2
             foreach (var item in stock_items)
             {
                 if (item.ItemName == item_name)
-                {
                     return item.Count;
-                }
             }
             return -1;
         }
@@ -86,123 +189,22 @@ namespace POS_Project_Team2
         // 아이템 추가 및 바인딩 진행
         private void set_item_and_bind()
         {
-            // stock_items 가 비어있다면 DB에서 로드
-            // 바인딩은 이미 이루어져 있어, stock_items 에 수정만 하면 된다.
-            if (stock_items.Count == 0)
-            {
-                // stock_items 가 비어있으면 DB에서 로드후 stock_items 에 저장
-                var db_master = DBMaster.Instance;
-                List<StockRecord> all_stock_list = db_master.get_all_stock_table();
+            // stock_items 가 비어있으면 DB에서 로드후 stock_items 에 저장
+            var db_master = DBMaster.Instance;
+            List<StockRecord> all_stock_list = db_master.get_all_stock_table();
 
-                // stock_items를 새로운 BindingList로 초기화하고 all_stock_list의 항목들을 추가합니다.
-                stock_items = new BindingList<StockRecord>(all_stock_list);
-
-                /*
-                  리스트와 데이터 그리드 뷰 DataSource 를 동기화 시킨다.
-                  이 코드 실행 이후 앞으로 stock_items 가 바뀌면 바로 바로
-                  데이터 그리드 뷰에도 반영된다.
-                */
-                datagridview_stock.DataSource = stock_items;
-
-                Console.WriteLine("바인딩 완료");
-            }
-        }
-
-
-
-        public StockForm(PaymentForm payment_form = null)
-        {
-            InitializeComponent();
-
-            // 실행시 창을 화면 중앙에 위치시키기
-            this.StartPosition = FormStartPosition.CenterScreen;
-
-            FormHelper.disable_resize(this);
-
-            restart_status = false;
-
-            if (payment_form != null)
-                this.payment_form = payment_form;
-        }
-
-
-        // 해당 Load 함수는 폼이 닫히고 새로 열릴때마다 매번 새로 호출된다.
-        private void DataForm_Load(object sender, EventArgs e)
-        {
-            // 아이템이 비어있는 경우 (첫 번째 창 연 경우) UI 기본 설정
-            if (stock_items.Count == 0)
-            {
-                // 물품명을 먼저 입력해야지 수량을 입력할 수 있도록 설정
-                textbox_count.Enabled = false; // 수량을 비활성화 한다.
-
-                // 수량 옆에 선택 버튼도 비활성화
-                button_select.Enabled = false;
-
-                // 버그 방지를 위해 data grid view 수정을 막는다
-                datagridview_stock.ReadOnly = true;
-
-                // data grid view 선택 상태 해제
-                datagridview_stock.ClearSelection();
-
-                // 아이템 추가 및 바인딩 진행
-                set_item_and_bind();
-            }
-
+            // stock_items를 새로운 BindingList로 초기화하고 all_stock_list의 항목들을 추가합니다.
+            stock_items = new BindingList<StockRecord>(all_stock_list);
 
             /*
-              리스트뷰에 아이템이 남아 있는 경우
-              == 창을 닫고 다시 열었을 때
-              이때 data grid view에 하이라이팅을 복구한다
-              
-              이유는 모르겠지만 창을 닫고 다시 열었을 때 같은 창을 참조해 열도록
-              설계하였으나 grid view 에 선택한 포커스나 배경 하이라이팅은 소멸함을
-              확인 했다. 따라서 복구 로직이 필요하다.
+              리스트와 데이터 그리드 뷰 DataSource 를 동기화 시킨다.
+              이 코드 실행 이후 앞으로 stock_items 가 바뀌면 바로 바로
+              데이터 그리드 뷰에도 반영된다.
             */
-            if (listview_selected.Items.Count > 0)
-            {
-                // 데이터가 바인딩된 후 하이라이팅 복구
-                DataGridViewBindingCompleteEventHandler data_bind_complete_event_handler = null;
-                data_bind_complete_event_handler = (s, ev) =>
-                {
-                    highlight_gridview_item();
-                    Console.WriteLine("하이라이팅 복구 완료");
+            datagridview_stock.DataSource = stock_items;
 
-                    // 한 번만 하이라이팅을 복구하고 이벤트 핸들러를 제거한다.
-                    datagridview_stock.DataBindingComplete -= data_bind_complete_event_handler;
-                };
-
-                datagridview_stock.DataBindingComplete += data_bind_complete_event_handler;
-            }
-
-            // 선택하다 중간에 나갔는 경우에도 아이템을 선택하도록 복구한다
-            if (textbox_search.Enabled == false)
-            {
-                string search_text = textbox_search.Text;
-
-                // 데이터가 바인딩된 후 선택 복구
-                DataGridViewBindingCompleteEventHandler data_bind_complete_event_handler = null;
-                data_bind_complete_event_handler = (s, ev) =>
-                {
-                    // 선택하다 중간에 나갔다는 상황을 표시하기 위해 bool 변수 설정
-                    restart_status = true;
-
-                    // 검색 버튼 다시 클릭
-                    button_search_Click(s, ev);
-
-                    // 포커싱도 다시 수량으로 넘김
-                    textbox_count.Focus();
-
-                    Console.WriteLine("선택 복구 완료");
-
-                    // 한 번만 하이라이팅을 복구하고 이벤트 핸들러를 제거한다.
-                    datagridview_stock.DataBindingComplete -= data_bind_complete_event_handler;
-                };
-
-                datagridview_stock.DataBindingComplete += data_bind_complete_event_handler;
-            }
-
+            Console.WriteLine("바인딩 완료");
         }
-
 
         // 창 닫고 다시 들어왔을 때 리스트뷰에 아이템 남아있으면
         // 다시 data grid view에 하이라이팅 해주는 함수
@@ -551,44 +553,5 @@ namespace POS_Project_Team2
 
         }
 
-        // 변경된 table xml파일로 저장
-        public void save_data_table(DataTable table, string file_path)
-        {
-            table.WriteXml(file_path);
-        }
-
-        //저장된 table xml파일로 로드
-        public void load_data_table(DataTable table, string file_path)
-        {
-            if (System.IO.File.Exists(file_path))
-            {
-                table.ReadXml(file_path);
-            }
-        }
-
-
-
-        //애플리케이션 종료 시 실행
-        private void OnApplicationExit(object sender, EventArgs e)
-        {
-            remove_data_file("item_data.xml"); //어플리케이션 종료 시 item_data 변화제어하는 xml 제거 
-        }
-
-        // XML 파일을 제거하는 메서드
-        private void remove_data_file(string filePath)
-        {
-            if (File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
-        }
-
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            // xml 파일에서 데이터 읽어와 data grid view 에 다시 뿌리기 = 새로고침
-            dataset.Tables["ItemList"].Clear();
-            load_data_table(dataset.Tables["ItemList"], "item_data.xml");
-            datagridview_stock.DataSource = dataset.Tables["ItemList"];
-        }
     }
 }

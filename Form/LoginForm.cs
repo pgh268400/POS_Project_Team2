@@ -5,16 +5,17 @@ namespace POS_Project_Team2
     public partial class LoginForm : Form
     {
         /*
-          사용자 입장에서 가장 처음 만나는
-          로그인 창 (Entry Point)
-        */
-
-        /*
-          sqlite를 이용하면 서버 없이 파일 단 1개만으로 db를 연습해볼 수 있다.
-          참고 : https://ainayoon.tistory.com/7
-          만약 db 파일이 없을경우 만드는 db 파일 이름
+          ======================================================================
+           사용자 입장에서 가장 처음 만나는
+           로그인 창 (Entry Point)
+          ======================================================================
+           sqlite를 이용하면 서버 없이 파일 단 1개만으로 db를 연습해볼 수 있다.
+           참고 : https://ainayoon.tistory.com/7
+           만약 db 파일이 없을경우 만드는 db 파일 이름
          */
-        public static string auto_login_file_path = "autologin"; // program.cs에서 사용하기 위해 public으로 변경
+
+        // program.cs에서 사용하기 위해 public으로 변경
+        public static string auto_login_file_path = "autologin";
 
         public LoginForm()
         {
