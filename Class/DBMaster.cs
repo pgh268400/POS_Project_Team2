@@ -385,6 +385,28 @@ namespace POS_Project_Team2.Class
                 Count = reader.GetInt32(3)
             });
         }
+
+        // 아이템 이름을 입력 받아서 재고 테이블에서 해당 아이템을 읽어들여 반환하는 함수
+        public StockRecord get_stock_record_by_item_name(string item_name)
+        {
+            string select_query = $"SELECT * FROM {stock_table_name} WHERE ItemName = @ItemName";
+            using (var command = new SQLiteCommand(select_query, connection))
+            {
+                command.Parameters.AddWithValue("@ItemName", item_name);
+
+                using var reader = command.ExecuteReader();
+                if (!reader.Read()) return null;
+
+                return new StockRecord
+                {
+                    Id = reader.GetInt32(0),
+                    ItemName = reader.GetString(1),
+                    Cost = reader.GetInt32(2),
+                    Count = reader.GetInt32(3)
+                };
+            }
+        }
+
         // 삽입 관련 ==============================================================
         // 참고 : password 의 경우 반드시 비밀번호를 bcrypt 로 해싱한 값을 넣어야 한다.
         private void insert_user_data(string username, string hashed_password)

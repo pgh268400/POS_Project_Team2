@@ -120,10 +120,10 @@ namespace POS_Project_Team2
             total_price_purchase = 0;
 
             //업데이트 끝날 때까지 UI 중지
-            listview_product.BeginUpdate();
+            //listview_product.BeginUpdate();
 
             // 뷰모드 지정
-            listview_product.View = View.Details;
+            //listview_product.View = View.Details;
 
             foreach (var product in products)    //products 리스트 돌면서 선택된 '물품 넘버', '이름', '갯수', '가격', '총가격' ListView에 추가
             {
@@ -148,7 +148,7 @@ namespace POS_Project_Team2
             //listview_product.Columns.Add("단가", 70, HorizontalAlignment.Left);
             //listview_product.Columns.Add("금액", 70, HorizontalAlignment.Left);
 
-            listview_product.EndUpdate();    //업데이트 끝
+            //listview_product.EndUpdate();    //업데이트 끝
 
             label_num_product.Text = total_num_purchase.ToString() + "개";     //총 물품 개수
             label_amount_money.Text = total_price_purchase.ToString() + "원";  //총 구매액
@@ -224,6 +224,19 @@ namespace POS_Project_Team2
 
         }
 
+        // 현재 listview product 의 모든 아이템 반환
+        // ListView의 모든 아이템을 반환하는 함수
+        public List<string> get_all_listview_item()
+        {
+            List<string> items = new List<string>();
+
+            foreach (ListViewItem item in listview_product.Items)
+            {
+                items.Add(item.Text);
+            }
+
+            return items;
+        }
 
         // 물품 선택 버튼 클릭 시 물품 선택하는 DataForm 열고 물품 값 가져오는 메서드
         private void btn_SelectProduct_Click(object sender, EventArgs e)
@@ -252,6 +265,8 @@ namespace POS_Project_Team2
                 MessageBox.Show("상품을 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+
 
             // 포인트 정립 상태. 기본은 null이다.
             // 문자열에 null을 허용하기 위해 nullable 타입인 string? 을 사용한다.
@@ -335,7 +350,7 @@ namespace POS_Project_Team2
                     Cost = product.Cost,
                     // Count = product.Count <-- 이렇게 쓰면 현재 선택된 수량이 업데이트 되서 의미가 없어진다
                     // 재고의 경우 data grid view에서 감소된 재고를 얻어와야 한다.
-                    Count = stock_form.get_stock_count(product.ItemName)
+                    Count = stock_form.get_stock_count(product.ItemName, product.Count)
                 };
 
                 // 재고 데이터 업데이트
@@ -346,7 +361,7 @@ namespace POS_Project_Team2
             stock_form.remove_selected_items(products);
 
             // 결제 후 리스트 뷰 초기화
-            listview_product.Clear();
+            listview_product.Items.Clear();
             products.Clear();
 
             MessageBox.Show("결제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -359,6 +374,9 @@ namespace POS_Project_Team2
 
             // 받을 금액 초기화
             label_total_amount.Text = "0";
+
+            // StockForm 에서 data grid view를 다시 db에서 로드하도록 한다
+            stock_form.reload_data();
         }
 
         // Stock Form 쪽에서 호출하는 리스트뷰 아이템 전체 삭제 함수

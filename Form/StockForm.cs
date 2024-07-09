@@ -29,6 +29,9 @@ namespace POS_Project_Team2
         int selected;
         private bool restart_status = false; // 다시 창을 껐다 켰는지 체크하는 변수
 
+        // 결제창 추가하기에 의해 창이 닫힌지 체크하는 변수
+        public bool is_closed_by_payment = false;
+
         // 생성자, 생성시 payment_form 을 부모로 참조해 함수를 호출할 수 있도록 한다
         public StockForm(PaymentForm payment_form = null)
         {
@@ -163,7 +166,10 @@ namespace POS_Project_Team2
             {
                 for (int i = 0; i < listview_selected.Items.Count; i++)
                 {
-                    if (listview_selected.Items[i].SubItems[1].Text == item.ItemName)
+                    // 모든 항목이 같아야만 삭제한다
+                    if (listview_selected.Items[i].SubItems[1].Text == item.ItemName &&
+                        listview_selected.Items[i].SubItems[2].Text == item.Count.ToString() &&
+                        listview_selected.Items[i].SubItems[3].Text == item.Cost.ToString())
                     {
                         listview_selected.Items.RemoveAt(i);
                         break;
@@ -172,15 +178,39 @@ namespace POS_Project_Team2
             }
         }
 
-        // 아이템 품목을 입력 받았을때 그에 대한 재고를 뱉는 함수
-        public int get_stock_count(string item_name)
+        // db 에서 데이터를 다시 불러와 바인딩하는 함수
+        public void reload_data()
         {
-            foreach (var item in stock_items)
+            // stock_items 가 비어있으면 DB에서 로드후 stock_items 에 저장
+            var db_master = DBMaster.Instance;
+            List<StockRecord> all_stock_list = db_master.get_all_stock_table();
+
+            stock_items.Clear();
+
+            // 기존 참조에 데이터를 추가한다
+            foreach (var item in all_stock_list)
             {
-                if (item.ItemName == item_name)
-                    return item.Count;
+                stock_items.Add(item);
             }
-            return -1;
+
+        }
+
+        // 아이템 품목 이름을 입력 받았을때 그에 대한 재고를 뱉는 함수
+        // db 에서 아이템 이름으로 읽어와서 원본 재고를 구하고,
+        // 그 원본 재고해서 고른 아이템의 재고를 빼서 반환한다.
+        public int get_stock_count(string item_name, int item_count)
+        {
+            // db에서 아이템 이름으로 읽어와서 원본 재고를 구한다.
+            // sql 쿼리문을 이용해 db에서 아이템 이름으로 읽어온다.
+            var db_master = DBMaster.Instance;
+            var stock_data = db_master.get_stock_record_by_item_name(item_name);
+
+            // stock_data, item_count를 출력한다
+            Console.WriteLine($"stock_data.Count : {stock_data.Count}");
+            Console.WriteLine($"item_count : {item_count}");
+
+            // 원본 재고에서 고른 아이템의 재고를 빼서 반환한다.
+            return stock_data.Count - item_count;
         }
 
         // 아이템 추가 및 바인딩 진행
@@ -419,6 +449,21 @@ namespace POS_Project_Team2
                 return;
             }
 
+            // 추가 전에 재고 이상의 물건을 주문하는지 일일히 검사
+            // listview item 의 구매하려는 개수가 data grid view item의 재고보다 많은지 검사
+            foreach (ListViewItem item in listview_selected.Items)
+            {
+                string item_name = item.SubItems[1].Text;
+                int item_count = int.Parse(item.SubItems[2].Text);
+
+                // 재고가 부족한 경우
+                if (get_stock_count(item_name, item_count) < 0)
+                {
+                    MessageBox.Show("재고 이상의 물품을 주문할 수 없습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
             select_items.Clear();
 
             // 현재 리스트뷰 아이템을 선택한 아이템 리스트에 추가한다
@@ -444,6 +489,8 @@ namespace POS_Project_Team2
             {
                 Console.WriteLine($"{element.ItemName} {element.Cost} {element.Count}");
             }
+
+            is_closed_by_payment = true;
 
             // select_items 는 PaymentForm에서 이어 받는다.
             // 여기선 단순히 Dialog를 종료한다.
@@ -589,6 +636,46 @@ namespace POS_Project_Team2
             {
                 datagridview_stock.Rows[i].DefaultCellStyle.BackColor = Color.White;
             }
+
+        }
+
+        // 현재 listview product 의 모든 아이템 반환
+        // ListView의 모든 아이템을 반환하는 함수
+        public List<string> get_all_listview_item()
+        {
+            List<string> items = new List<string>();
+
+            foreach (ListViewItem item in listview_selected.Items)
+            {
+                items.Add(item.Text);
+            }
+
+            return items;
+        }
+
+
+        private void StockForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //if (is_closed_by_payment)
+            //{
+            //    is_closed_by_payment = !is_closed_by_payment;
+            //    return;
+            //}
+
+            //// 결제창에서 리스트뷰 아이템을 가져온다
+            //List<string> payment_list_item = payment_form.get_all_listview_item();
+
+            //// 현재 폼의 리스트뷰 아이템을 가져온다
+            //List<string> stock_list_item = get_all_listview_item();
+
+            //// 두 리스트를 비교한다
+            //bool is_different = !payment_list_item.SequenceEqual(stock_list_item);
+
+            //if (is_different)
+            //{
+            //    DialogResult result = MessageBox.Show("선택한 항목을 결제창에 추가하시거나, 주문을 취소해주세요.", "경고", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    e.Cancel = true; // 종료 취소
+            //}
 
         }
     }
