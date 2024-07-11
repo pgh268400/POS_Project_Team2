@@ -54,13 +54,7 @@ namespace POS_Project_Team2
             init_label_wait();
 
             // 현재 활성화된 대기열 번호에 따라 대기열 라벨을 자동 클릭
-            if (active_wait_number == WaitNumber.Wait1)
-                wait_click_event(label_wait1, EventArgs.Empty);
-            else if (active_wait_number == WaitNumber.Wait2)
-                wait_click_event(label_wait2, EventArgs.Empty);
-            else if (active_wait_number == WaitNumber.Wait3)
-                wait_click_event(label_wait3, EventArgs.Empty);
-
+            auto_click_wait_label();
 
             // 리스트뷰 너비 비율 조정
             FormHelper.adjust_column_widths(listview_product, new int[] { 10, 40, 20, 15, 15 });
@@ -72,6 +66,16 @@ namespace POS_Project_Team2
                 var active_products = get_active_products();
                 set_listview_item_and_update_money(active_products);
             }
+        }
+
+        private void auto_click_wait_label()
+        {
+            if (active_wait_number == WaitNumber.Wait1)
+                wait_click_event(label_wait1, EventArgs.Empty);
+            else if (active_wait_number == WaitNumber.Wait2)
+                wait_click_event(label_wait2, EventArgs.Empty);
+            else if (active_wait_number == WaitNumber.Wait3)
+                wait_click_event(label_wait3, EventArgs.Empty);
         }
 
 
@@ -203,7 +207,7 @@ namespace POS_Project_Team2
             total_price_purchase = 0;
 
             // products 리스트안 항목을 반복하면서
-            // 선택된 '물품 넘버', '이름', '갯수', '가격', '총 가격' ListView에 추가
+            // 선택된 '물품 번호', '이름', '갯수', '가격', '총 가격' ListView에 추가
             foreach (var product in products)
             {
                 ListViewItem listview_item = new ListViewItem(product.Id.ToString());
@@ -211,13 +215,13 @@ namespace POS_Project_Team2
                 listview_item.SubItems.Add(product.Count.ToString());
                 listview_item.SubItems.Add(product.Cost.ToString());
 
-                int total_cost = product.Cost * product.Count; //총가격 가격 * 갯수
+                int total_cost = product.Cost * product.Count; // 총가격 가격 * 갯수
 
                 listview_item.SubItems.Add(total_cost.ToString());
-                listview_product.Items.Add(listview_item); //Listview에 추가
+                listview_product.Items.Add(listview_item); // Listview에 추가
 
-                total_num_purchase += product.Count; //총 구매액 계산
-                total_price_purchase += total_cost; //총 갯수 계산
+                total_num_purchase += product.Count; // 총 구매액 계산
+                total_price_purchase += total_cost; // 총 개수 계산
             }
 
             // 라벨도 동시에 업데이트
@@ -252,7 +256,7 @@ namespace POS_Project_Team2
         {
             Label clicked_label = sender as Label; // 클릭된 라벨을 가져온다.
 
-            // 모종의 이유로 클릭 라벨이 빈 경우 함수를 강제 종료한다.
+            // 모종의 이유로 클릭 라벨이 null인 경우 함수를 강제 종료한다.
             if (clicked_label == null)
                 return;
 
@@ -284,9 +288,7 @@ namespace POS_Project_Team2
             List<string> items = new List<string>();
 
             foreach (ListViewItem item in listview_product.Items)
-            {
                 items.Add(item.Text);
-            }
 
             return items;
         }
@@ -305,19 +307,40 @@ namespace POS_Project_Team2
             // 이렇게 설계한 이유는 재고 선택 창을 껐다 켜도 그대로 데이터를 유지시키기 위해서다.
             if (stock_form.ShowDialog() == DialogResult.OK)
             {
-                // products 리스트 초기화
-                products.Clear();
-
-                // 현재 활성화된 대기열 번호에 데이터를 삽입한다
+                // 선택 성공한 아이템을 가져와 변수로 저장한다.
                 List<StockRecord> selected_items = stock_form.select_items;
 
-                // 현재 활성화된 대기열 번호 위치에 데이터를 삽입한다.
-                products.Add(new SavedProduct(active_wait_number, selected_items));
+                // 현재 활성화된 대기열에 해당하는 제품 리스트를 가져온다
+                var active_products = get_active_products();
 
+                // 선택된 아이템들을 활성화된 대기열에 추가한다
+                // 참조(주소로 접근) 하는 방식으로 추가하므로,
+                // 원본 리스트 안에 추가되는 것이다.
+                active_products.AddRange(selected_items);
 
-                var active_products = get_products_by_wait_number(active_wait_number);
+                // 리스트뷰를 업데이트한다
                 set_listview_item_and_update_money(active_products);
             }
+        }
+
+        // DB 재고보다 더 많은 수량을 선택한지 체크하는 함수
+        private (bool is_exceed, string exceed_item_name) is_exceed_stock()
+        {
+            // 결제시 DB 재고보다 더 많은 수량을 선택한 경우 경고창을 띄운다.
+            foreach (ListViewItem item in listview_product.Items)
+            {
+                string item_name = item.SubItems[1].Text;
+                int count = int.Parse(item.SubItems[2].Text);
+
+                int available_stock_count = stock_form.get_available_stock_count(item_name, count);
+
+                // 재고보다 더 많은 수량을 선택한 경우 경고창을 띄운다.
+                if (available_stock_count < 0)
+                {
+                    return (true, item_name);
+                }
+            }
+            return (false, "");
         }
 
         // 결제 버튼 클릭 시 DataForm에서 재고처리 미리 해서 메시지만 띄움 >> MainForm에서 업데이트 되도록 해야함
@@ -328,6 +351,15 @@ namespace POS_Project_Team2
                 MessageBox.Show("상품을 선택해주세요.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            // 결제시 DB 재고보다 더 많은 수량을 선택한 경우 경고창을 띄운다.
+            var (is_exceed, exceed_item_name) = is_exceed_stock();
+            if (is_exceed)
+            {
+                MessageBox.Show($"{exceed_item_name}의 재고가 부족합니다. 결제할 수 없습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
 
             // 포인트 정립 상태. 기본은 null이다.
             // 문자열에 null을 허용하기 위해 nullable 타입인 string? 을 사용한다.
@@ -360,8 +392,6 @@ namespace POS_Project_Team2
                     // 포인트 적립을 취소하는 경우 아무것도 하지 않는다.
                 }
             }
-
-
 
             // 결제 내역을 DB에 기록한다.
             DBMaster db_master = DBMaster.Instance;
@@ -417,7 +447,7 @@ namespace POS_Project_Team2
                     Cost = product.Cost,
                     // Count = product.Count <-- 이렇게 쓰면 현재 선택된 수량이 업데이트 되서 의미가 없어진다
                     // 재고의 경우 data grid view에서 감소된 재고를 얻어와야 한다.
-                    Count = stock_form.get_stock_count(product.ItemName, product.Count)
+                    Count = stock_form.get_available_stock_count(product.ItemName, product.Count)
                 };
 
                 // 재고 데이터 업데이트
@@ -429,8 +459,10 @@ namespace POS_Project_Team2
 
             // 결제 후 리스트 뷰 초기화
             listview_product.Items.Clear();
-            products.Clear();
 
+            // 현재 활성화된 대기열 번호에 해당하는 물품 리스트를 초기화 한다.
+            var active_product = get_active_products();
+            active_product.Clear();
 
             MainForm main_form = (MainForm)this.Owner;
             main_form.update_wait_button(0, Color.Gray);

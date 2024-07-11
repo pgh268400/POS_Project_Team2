@@ -205,10 +205,12 @@ namespace POS_Project_Team2
 
         }
 
-        // 아이템 품목 이름을 입력 받았을때 그에 대한 재고를 뱉는 함수
-        // db 에서 아이템 이름으로 읽어와서 원본 재고를 구하고,
-        // 그 원본 재고해서 고른 아이템의 재고를 빼서 반환한다.
-        public int get_stock_count(string item_name, int item_count)
+        /*
+          아이템 품목 이름을 입력 받았을때 그에 대한 재고를 뱉는 함수
+          db 에서 아이템 이름으로 읽어와서 원본 재고를 구하고,
+          그 원본 재고해서 고른 아이템의 재고를 빼서 반환한다.
+        */
+        public int get_available_stock_count(string item_name, int item_count)
         {
             // db에서 아이템 이름으로 읽어와서 원본 재고를 구한다.
             // sql 쿼리문을 이용해 db에서 아이템 이름으로 읽어온다.
@@ -468,7 +470,7 @@ namespace POS_Project_Team2
                 int item_count = int.Parse(item.SubItems[2].Text);
 
                 // 재고가 부족한 경우
-                if (get_stock_count(item_name, item_count) < 0)
+                if (get_available_stock_count(item_name, item_count) < 0)
                 {
                     MessageBox.Show("재고 이상의 물품을 주문할 수 없습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
