@@ -53,7 +53,7 @@ namespace POS_Project_Team2
         private void panel_background_Paint(object sender, PaintEventArgs e)
         {
             // 패널을 둥글게 만드는 이 함수는 panel 이 다 Paint 된 이후에 호출해야한다.
-            FormHelper.make_panel_round(panel_background);
+            // FormHelper.make_panel_round(panel_background);
         }
 
         // 자동 로그인 파일 생성 함수

@@ -536,7 +536,7 @@ namespace POS_Project_Team2
                 }
 
                 // 결제 창에서도 삭제를 반영
-                payment_form.remove_item(item_name);
+                payment_form.remove_listview_item_by_name(item_name);
             }
 
             // 리스트뷰 아이템을 모두 삭제한다.
@@ -568,7 +568,7 @@ namespace POS_Project_Team2
             listview_selected.Items.Remove(selected_item);
 
             // 결제 창에도 삭제를 반영
-            payment_form.remove_item(item_name);
+            payment_form.remove_listview_item_by_name(item_name);
 
             // data grid view 선택 색상 원래대로 돌리기
             for (int i = 0; i < datagridview_stock.Rows.Count; i++)
