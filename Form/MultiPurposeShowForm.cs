@@ -113,7 +113,6 @@ namespace POS_Project_Team2
         {
             if (selected_item == null) return;
 
-
             // string item_details = string.Join(", ", selected_item.SubItems.Cast<ListViewItem.ListViewSubItem>().Select(subItem => subItem.Text));
             // MessageBox.Show($"출력 버튼이 클릭되었습니다. 선택된 행의 정보: {item_details}");
 
@@ -167,29 +166,9 @@ namespace POS_Project_Team2
 
 
             // 환불 했으니 재고를 원래대로 돌려야 한다
-            // 재고를 불러온다
-            DataSet itemDataSet = new DataSet();
-            using (StreamReader reader = new StreamReader("item_data.xml"))
-            {
-                itemDataSet.ReadXml(reader);
-            }
+            // db를 업데이트 해서 재고를 원래대로 돌린다
+            // TODO : 재고를 원래대로 돌리는 코드 작성
 
-            DataTable itemList = itemDataSet.Tables["ItemList"];
-
-            // 환불한 제품을 찾아서 재고를 늘려준다
-            foreach (DataRow row in itemList.Rows)
-            {
-                // MessageBox.Show(refund_data[1].Replace("(환불) ", ""));
-                if (row["Name"].ToString() == item_name)
-                {
-                    row["Stock"] = int.Parse(row["Stock"].ToString()) + int.Parse(count);
-                    break;
-                }
-            }
-
-            // 변경된 데이터를 다시 저장
-            using (StreamWriter writer = new StreamWriter("item_data.xml"))
-                itemDataSet.WriteXml(writer);
 
             MessageBox.Show("환불 처리가 완료되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

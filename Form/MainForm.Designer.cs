@@ -94,20 +94,21 @@
             // 
             button_get_receipt.BackColor = SystemColors.WindowFrame;
             button_get_receipt.ForeColor = SystemColors.ControlLightLight;
-            button_get_receipt.Location = new Point(20, 171);
+            button_get_receipt.Location = new Point(20, 168);
             button_get_receipt.Name = "button_get_receipt";
-            button_get_receipt.Size = new Size(112, 53);
+            button_get_receipt.Size = new Size(113, 60);
             button_get_receipt.TabIndex = 3;
             button_get_receipt.Text = "영수증 조회";
             button_get_receipt.UseVisualStyleBackColor = false;
+            button_get_receipt.Click += button_get_receipt_Click;
             // 
             // button_get_stock
             // 
             button_get_stock.BackColor = SystemColors.WindowFrame;
             button_get_stock.ForeColor = SystemColors.ControlLightLight;
-            button_get_stock.Location = new Point(20, 108);
+            button_get_stock.Location = new Point(20, 105);
             button_get_stock.Name = "button_get_stock";
-            button_get_stock.Size = new Size(112, 59);
+            button_get_stock.Size = new Size(113, 60);
             button_get_stock.TabIndex = 4;
             button_get_stock.Text = "재고 조회";
             button_get_stock.UseVisualStyleBackColor = false;
@@ -118,9 +119,9 @@
             button_get_tpt.BackColor = SystemColors.WindowFrame;
             button_get_tpt.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
             button_get_tpt.ForeColor = SystemColors.ControlLightLight;
-            button_get_tpt.Location = new Point(138, 108);
+            button_get_tpt.Location = new Point(138, 105);
             button_get_tpt.Name = "button_get_tpt";
-            button_get_tpt.Size = new Size(113, 59);
+            button_get_tpt.Size = new Size(113, 60);
             button_get_tpt.TabIndex = 5;
             button_get_tpt.Text = "총 결제\r\n내역 조회";
             button_get_tpt.UseVisualStyleBackColor = false;
@@ -146,9 +147,9 @@
             button_get_refund.BackColor = SystemColors.WindowFrame;
             button_get_refund.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
             button_get_refund.ForeColor = SystemColors.ControlLightLight;
-            button_get_refund.Location = new Point(138, 171);
+            button_get_refund.Location = new Point(138, 168);
             button_get_refund.Name = "button_get_refund";
-            button_get_refund.Size = new Size(113, 53);
+            button_get_refund.Size = new Size(113, 60);
             button_get_refund.TabIndex = 6;
             button_get_refund.Text = "환불 내역 조회";
             button_get_refund.UseVisualStyleBackColor = false;

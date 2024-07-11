@@ -194,8 +194,7 @@ namespace POS_Project_Team2.Class
             }
             catch (Exception e)
             {
-                // 메세지 박스 출력
-                MessageBox.Show(e.Message, "이름", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw e;
             }
 
             // _instance 초기화, 이 구문에 의해 현재 싱글턴 객체는 버려지고

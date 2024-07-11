@@ -392,7 +392,7 @@
             button_select_product.TabIndex = 21;
             button_select_product.Text = "상품 선택";
             button_select_product.UseVisualStyleBackColor = false;
-            button_select_product.Click += btn_SelectProduct_Click;
+            button_select_product.Click += button_select_product_Click;
             // 
             // PaymentForm
             // 

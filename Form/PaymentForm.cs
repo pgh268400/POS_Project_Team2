@@ -7,27 +7,98 @@ namespace POS_Project_Team2
         // 대기열 라벨을 담는 배열
         private Label[] labels_wait;
 
-        // 결제 창에서 물품 선택 폼을 메모리 접근 하기 위한 변수
-        public StockForm stock_form;
+        // SavedProduct 클래스 정의
+        public class SavedProduct
+        {
+            public WaitNumber wait_number { get; set; }
+            public List<StockRecord> stock_records { get; set; }
 
-        private List<StockRecord> products = new();
+            public SavedProduct(WaitNumber wait_number, List<StockRecord> stock_records)
+            {
+                this.wait_number = wait_number;
+                this.stock_records = stock_records;
+            }
+        }
+
+        /*
+          저장할 (대기열 번호, 물품 리스트) static 으로 선언해
+          프로그램 종료 전까지 메모리에 남아있도록 한다.
+          활성화된 대기열 번호는 active_wait_number 번호로
+          얻어낼 수 있다.
+
+          (대기열 번호 1, List<StockRecord>), 
+          (대기열 번호 2, List<StockRecord>), 
+          (대기열 번호 3, List<StockRecord>)
+
+          와 같은 형태로 저장된다.
+        */
+        private static List<SavedProduct> products;
+
+        // 결제 창에서 물품 선택 폼을 메모리 접근 하기 위한 변수
+        // 역시 static
+        public static StockForm stock_form;
+
+        // ENUM 으로 선언된 대기열 번호
+        // 단순히 1,2,3 으로 하기보단 조금 더 의미 있게 선언
+        public enum WaitNumber
+        {
+            Wait1 = 1,
+            Wait2 = 2,
+            Wait3 = 3
+        }
+
+        // 현재 활성화된 대기열 번호, 기본은 1번 대기열로 시작
+        private static WaitNumber active_wait_number = WaitNumber.Wait1;
 
         int total_num_purchase = 0;
         int total_price_purchase = 0;
 
-        // 전체 취소 버튼 누름 여부
-        public bool all_cancel = false;
-
-        public PaymentForm(List<StockRecord> products = null)
+        public PaymentForm()
         {
             InitializeComponent();
 
-            if (products != null)
-            {
-                this.products = new List<StockRecord>(products);
-            }
-
+            // 창 수정 하지 못하게 막기
             FormHelper.disable_resize(this);
+
+            if (products == null)
+                init_products();
+        }
+
+        private void PaymentForm_Load(object sender, EventArgs e)
+        {
+            // 실시간 시계 등록 및 시작
+            register_realtime_clock();
+
+            // 대기열 라벨 이벤트 핸들러 등록 및 초기화
+            init_label_wait();
+
+            // 리스트뷰 너비 비율 조정
+            FormHelper.adjust_column_widths(listview_product, new int[] { 10, 40, 20, 15, 15 });
+
+            // products 가 비어있지 않다면 (static 변수이므로 프로그램 종료까지 메모리가 남아 있다)
+            // 리스트뷰에 물품 정보를 추가한다.
+            if (products.Count > 0)
+            {
+                var active_products = get_products_by_wait_number(active_wait_number);
+                set_listview_item_and_update_money(active_products);
+            }
+        }
+
+        // products 변수 생성 및 초기화
+        public static void init_products()
+        {
+            products = new List<SavedProduct>
+            {
+                /*
+                  내부 데이터는 (대기열 번호, 물품 리스트) 형태로 저장된다.
+                  데이터를 묶기 위해 C#에서 새로 도입된 튜플을 활용한다.
+                  파이썬에서 보던 바로 그것이다.
+                  * 물론 정확히는 파이썬의 것과 100% 동일하지는 않다
+                */
+                new (WaitNumber.Wait1, new List<StockRecord>()),
+                new (WaitNumber.Wait2, new List<StockRecord>()),
+                new (WaitNumber.Wait3, new List<StockRecord>())
+            };
         }
 
         // 실시간 시계 등록 및 시작
@@ -43,6 +114,17 @@ namespace POS_Project_Team2
               객체를 그대로 가져와서 사용하기에 시간 동기화 문제가 발생하지 않는다.
             */
             RealTimeClock.Instance.start_clock();
+        }
+
+        // 대기열 번호를 받아서 그 대기열에 해당하는 물품 리스트를 반환하는 함수
+        // 만약 active_wait_number를 넣고 호출하면 현재 활성화된 대기열에 해당하는 물품 리스트를 반환한다.
+        // 그 이외에 대기열 번호를 넣고 호출하면 해당 대기열에 해당하는 물품 리스트를 반환한다.
+        public List<StockRecord> get_products_by_wait_number(WaitNumber wait_number)
+        {
+            // products 리스트에서 대기열 번호에 해당하는 물품 리스트를 찾아 반환한다.
+            return products.Find(
+                element => element.wait_number == wait_number
+                ).stock_records;
         }
 
         // 품목명을 받아서 리스트뷰 아이템을 삭제하는 함수, 못찾았다면 아무것도 하지 않는다.
@@ -71,8 +153,11 @@ namespace POS_Project_Team2
             total_num_purchase -= 1;
             label_num_product.Text = total_num_purchase.ToString() + "개";
 
+            // 현재 활성화된 wait number 의 리스트 획득
+            var active_products = get_products_by_wait_number(active_wait_number);
+
             // 물품 개수와 총 금액을 업데이트한다.
-            foreach (var product in products)
+            foreach (var product in active_products)
             {
                 if (product.ItemName == item_name)
                 {
@@ -109,8 +194,8 @@ namespace POS_Project_Team2
             label_wait3.ForeColor = Color.Gray;
         }
 
-        // ListView의 보여질 목록
-        private void list_view_control(List<StockRecord> products)
+        // 선택한 물품을 입력받아, 리스트뷰에 뿌리는 함수
+        private void set_listview_item_and_update_money(List<StockRecord> products)
         {
             // 기존에 있던 물품 지움. 이전 물건들 List Products에 저장되어있어서 지우지않으면 중복으로 생김
             listview_product.Items.Clear();
@@ -119,13 +204,9 @@ namespace POS_Project_Team2
             total_num_purchase = 0;
             total_price_purchase = 0;
 
-            //업데이트 끝날 때까지 UI 중지
-            //listview_product.BeginUpdate();
-
-            // 뷰모드 지정
-            //listview_product.View = View.Details;
-
-            foreach (var product in products)    //products 리스트 돌면서 선택된 '물품 넘버', '이름', '갯수', '가격', '총가격' ListView에 추가
+            // products 리스트안 항목을 반복하면서
+            // 선택된 '물품 넘버', '이름', '갯수', '가격', '총 가격' ListView에 추가
+            foreach (var product in products)
             {
                 ListViewItem listview_item = new ListViewItem(product.Id.ToString());
                 listview_item.SubItems.Add(product.ItemName);
@@ -141,38 +222,12 @@ namespace POS_Project_Team2
                 total_price_purchase += total_cost;         //총 갯수 계산
             }
 
-            // Column 설정
-            //listview_product.Columns.Add("Id", 30, HorizontalAlignment.Left);
-            //listview_product.Columns.Add("물품명", 200, HorizontalAlignment.Left);
-            //listview_product.Columns.Add("수량", 70, HorizontalAlignment.Left);
-            //listview_product.Columns.Add("단가", 70, HorizontalAlignment.Left);
-            //listview_product.Columns.Add("금액", 70, HorizontalAlignment.Left);
-
-            //listview_product.EndUpdate();    //업데이트 끝
-
+            // 라벨도 동시에 업데이트
             label_num_product.Text = total_num_purchase.ToString() + "개";     //총 물품 개수
             label_amount_money.Text = total_price_purchase.ToString() + "원";  //총 구매액
             label_total_amount.Text = total_price_purchase.ToString();  //거스름돈 0원 고정하고 총 구매액하고 같게 설정
-
         }
 
-        private void PaymentForm_Load(object sender, EventArgs e)
-        {
-            // 실시간 시계 등록 및 시작
-            register_realtime_clock();
-
-            // 대기열 라벨 이벤트 핸들러 등록 및 초기화
-            // init_label_wait();
-
-            // 리스트뷰 너비 비율 조정
-            FormHelper.adjust_column_widths(listview_product, new int[] { 10, 40, 20, 15, 15 });
-
-            if (products.Count > 0)
-            {
-                list_view_control(products);
-            }
-
-        }
 
         // 마우스가 라벨 위에 있을 때 호출되는 메소드
         private void label_mouse_enter(object sender, EventArgs e)
@@ -238,8 +293,9 @@ namespace POS_Project_Team2
             return items;
         }
 
-        // 물품 선택 버튼 클릭 시 물품 선택하는 DataForm 열고 물품 값 가져오는 메서드
-        private void btn_SelectProduct_Click(object sender, EventArgs e)
+        // 상품 선택 버튼
+        // 클릭 시 물품 선택하는 DataForm 열고 물품 값 가져오는 메서드
+        private void button_select_product_Click(object sender, EventArgs e)
         {
             // data_form 의 경우 첫 번째 열때만 생성하고
             if (stock_form == null || stock_form.IsDisposed)
@@ -251,9 +307,18 @@ namespace POS_Project_Team2
             // 이렇게 설계한 이유는 재고 선택 창을 껐다 켜도 그대로 데이터를 유지시키기 위해서다.
             if (stock_form.ShowDialog() == DialogResult.OK)
             {
+                // products 리스트 초기화
                 products.Clear();
-                products.AddRange(stock_form.select_items);
-                list_view_control(products);
+
+                // 현재 활성화된 대기열 번호에 데이터를 삽입한다
+                List<StockRecord> selected_items = stock_form.select_items;
+
+                // 현재 활성화된 대기열 번호 위치에 데이터를 삽입한다.
+                products.Add(new SavedProduct(active_wait_number, selected_items));
+
+
+                var active_products = get_products_by_wait_number(active_wait_number);
+                set_listview_item_and_update_money(active_products);
             }
         }
 
@@ -266,8 +331,6 @@ namespace POS_Project_Team2
                 return;
             }
 
-
-
             // 포인트 정립 상태. 기본은 null이다.
             // 문자열에 null을 허용하기 위해 nullable 타입인 string? 을 사용한다.
             string? name = null;
@@ -276,6 +339,7 @@ namespace POS_Project_Team2
             // 포인트를 적립할 건지 메세지 박스를 띄운다.
             DialogResult result = MessageBox.Show("포인트를 적립하시겠습니까?", "포인트 적립", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
+
             if (result == DialogResult.Yes)
             {
                 // 이 포인트의 경우 유저의 전화번호 뒷자리와 이름을 입력받아야 한다.
@@ -299,6 +363,8 @@ namespace POS_Project_Team2
                 }
             }
 
+
+
             // 결제 내역을 DB에 기록한다.
             DBMaster db_master = DBMaster.Instance;
 
@@ -308,8 +374,11 @@ namespace POS_Project_Team2
               을 db에 기록하자.
             */
 
+            // 현재 활성화된 wait number 의 리스트 획득
+            var active_products = get_products_by_wait_number(active_wait_number);
+
             // products 출력
-            foreach (var product in products)
+            foreach (var product in active_products)
             {
                 Console.WriteLine(product.Id);
                 Console.WriteLine(product.ItemName);
@@ -318,7 +387,7 @@ namespace POS_Project_Team2
             }
 
             // for문을 돌면서 DB에 결제 데이터를 삽입한다.
-            foreach (var product in products)
+            foreach (var product in active_products)
             {
                 int total_cost = product.Cost * product.Count;
 
@@ -338,7 +407,7 @@ namespace POS_Project_Team2
 
             // 현재 선택한 products 에 있는 데이터를 db 에 업데이트 한다.
 
-            foreach (var product in products)
+            foreach (var product in active_products)
             {
                 // product를 활용해 Stack Record를 생성 한다
                 StockRecord stock_record = new StockRecord
@@ -358,15 +427,15 @@ namespace POS_Project_Team2
             }
 
             // 결제한 내역을 재고창 폼에 넘긴다
-            stock_form.remove_selected_items(products);
+            stock_form.remove_selected_items(active_products);
 
             // 결제 후 리스트 뷰 초기화
             listview_product.Items.Clear();
             products.Clear();
 
-            MessageBox.Show("결제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
             MainForm main_form = (MainForm)this.Owner;
-            main_form.UpdateWaitButton(0, Color.Gray);
+            main_form.update_wait_button(0, Color.Gray);
             main_form.paymentform_purchase = true;
             main_form.total_num_sales += 1;
             main_form.total_num_profit += total_price_purchase;
@@ -377,6 +446,12 @@ namespace POS_Project_Team2
 
             // StockForm 에서 data grid view를 다시 db에서 로드하도록 한다
             stock_form.reload_data();
+
+            // 회색 글자들도 초기화
+            label_num_product.Text = "0개";
+            label_amount_money.Text = "0원";
+
+            MessageBox.Show("결제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         // Stock Form 쪽에서 호출하는 리스트뷰 아이템 전체 삭제 함수
@@ -410,9 +485,9 @@ namespace POS_Project_Team2
             // mainForm.paymentform_purchase = false;
             // this.Close();
         }
-        public List<StockRecord> get_products()
+        public List<StockRecord> get_active_products()
         {
-            return new List<StockRecord>(products);
+            return get_products_by_wait_number(active_wait_number);
         }
     }
 }

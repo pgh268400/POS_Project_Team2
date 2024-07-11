@@ -140,9 +140,15 @@ namespace POS_Project_Team2
         }
 
 
-        // 결제창이 아닌 일반 메인창에서 보기 위해 접근했을때 모든 컨트롤을 수정 못하게 block 시키는 메서드
-        public void block_all()
+        // 메인 화면에서 호출하는 함수로, 메인 화면에서
+        // "재고 조회" 버튼을 눌렀을 때 이 함수를 호출한다.
+        public void set_stock_view_mode()
         {
+            /*
+              재고 조회 창을 열었을 때는 수정을 모두 막아야 한다.
+              말그대로 "조회" 만 가능한 Read Only 상태를 만들기 위해
+              폼 구성 요소들을 아래와 같이 설정한다.
+            */
             textbox_search.Enabled = false;
             textbox_count.Enabled = false;
             button_search.Enabled = false;
@@ -151,11 +157,15 @@ namespace POS_Project_Team2
             button_pay_cancle.Enabled = false;
             listview_selected.Enabled = false;
             datagridview_stock.ReadOnly = true;
+            datagridview_stock.AllowUserToAddRows = false;
             button_add_into_payment.Enabled = false;
 
-            // 라벨에 읽기 모드라고 출력
+            // 오른쪽 라벨에 읽기 모드라고 출력
             label_mode.Text = "* 현재 읽기 모드입니다.";
             label_tip.Text = "";
+
+            // 왼쪽 라벨에 설명 출력
+            label_tip.Text = "현재 재고 조회 모드로 읽기 전용 상태입니다.";
         }
 
         // 결제폼에서 호출하는 함수로, 구매가 완료된 목록들을 이쪽 인자로 넘겨서 호출하고,
@@ -287,6 +297,7 @@ namespace POS_Project_Team2
                 // 물품명을 기준으로 검색
                 for (int i = 0; i < datagridview_stock.Rows.Count; i++)
                 {
+
                     var cell_value = datagridview_stock.Rows[i].Cells[1].Value.ToString(); // 물품명 컬럼은 인덱스 1
                     var item_count = datagridview_stock.Rows[i].Cells[3].Value.ToString(); // 수량은 인덱스 3
 

@@ -39,19 +39,17 @@ namespace POS_Project_Team2
 
             // picturebox 배경 투명으로 설정하기
             set_picture_box_transparent();
-
-            // 영수증, 상품 조회, 영수증 조회 숨기기
-            button_receipt.Hide();
-            button_get_receipt.Hide();
         }
 
         // 대기열 버튼 이벤트 핸들러 등록
         private void register_wait_button_event_handler()
         {
+            wait_buttons = new Button[] { button_wait1, button_wait2, button_wait3 };
             foreach (var button in wait_buttons)
                 button.Click += WaitButton_Click;
         }
 
+        // picturebox 배경 투명으로 설정하기
         private void set_picture_box_transparent()
         {
             // picturebox 투명으로 설정하기
@@ -78,7 +76,7 @@ namespace POS_Project_Team2
         {
             // DB 에서 결제 내역을 가져온다
             DBMaster db_master = DBMaster.Instance;
-            var payment_data = db_master.get_all_total_records();
+            List<TotalRecord> payment_data = db_master.get_all_total_records();
 
             // 총 결제 내역 창 열기
             MultiPurposeShowForm log_form = new MultiPurposeShowForm();
@@ -91,15 +89,10 @@ namespace POS_Project_Team2
         // 재고 조회 버튼
         private void button_get_stock_Click(object sender, EventArgs e)
         {
-            StockForm data_form = new StockForm();
-            FormHelper.show(data_form);
-
-            /*
-              재고 조회 창을 열었을 때는 수정을 모두 막아야 한다.
-              말그대로 "조회" 만 가능한 Read Only 상태를 만들기 위해
-              data form의 block_all 함수를 호출한다.
-            */
-            data_form.block_all();
+            // 재고 조회 모드로 재고 창을 연다.
+            StockForm stock_form = new StockForm();
+            stock_form.set_stock_view_mode();
+            FormHelper.show(stock_form);
         }
 
         // 총 결제 내역 조회
@@ -124,19 +117,6 @@ namespace POS_Project_Team2
         }
 
 
-        private void button_receipt_Click(object sender, EventArgs e)
-        {
-
-            // 영수증 출력을 위해 PayMentLogShowForm으로 이동
-            MultiPurposeShowForm log_form = new MultiPurposeShowForm();
-
-            // 영수증 출력하기 위해 영수증 출력 모드로 변경하는 함수 호출
-            log_form.enable_recepit_mode();
-
-            FormHelper.show(log_form);
-
-        }
-
         private void WaitButton_Click(object sender, EventArgs e)
         {
             //var clickedButton = sender as Button;
@@ -158,14 +138,14 @@ namespace POS_Project_Team2
 
             if (closing_form != null && !paymentform_purchase)
             {
-                int index = saved_products.FindIndex(products => products.SequenceEqual(closing_form.get_products()));
+                int index = saved_products.FindIndex(products => products.SequenceEqual(closing_form.get_active_products()));
                 if (index >= 0)
                 {
-                    saved_products[index] = closing_form.get_products();
+                    saved_products[index] = closing_form.get_active_products();
                 }
                 else
                 {
-                    saved_products.Add(closing_form.get_products());
+                    saved_products.Add(closing_form.get_active_products());
                     int waitButtonIndex = saved_products.Count - 1;
                     if (waitButtonIndex < wait_buttons.Length && !paymentform_purchase)
                     {
@@ -181,7 +161,7 @@ namespace POS_Project_Team2
                 label_total_previous_purchase.Text = total_previous_purchase + "원";
             }
         }
-        public void UpdateWaitButton(int index, Color color)
+        public void update_wait_button(int index, Color color)
         {
             if (index >= 0 && index < wait_buttons.Length)
             {
@@ -196,27 +176,28 @@ namespace POS_Project_Team2
             DialogResult result = MessageBox.Show("해당 기능 사용시 저장된 모든 데이터가 삭제되며, 초기 프로그램 상태로 돌아갑니다. 또한 프로그램이 자동 재실행 됩니다. 수행하시겠습니까?", "경고", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (result == DialogResult.Yes)
             {
-                // Logger 이용해 로그 삭제
-                Logger logger = new Logger();
-                logger.delete_all_log();
+                try
+                {
+                    // 자동 로그인 파일 삭제
+                    if (File.Exists(LoginForm.auto_login_file_path))
+                        File.Delete(LoginForm.auto_login_file_path);
 
-                // 컴퓨터에 저장된 재고 데이터 item_data.xml 존재하는 경우 삭제
-                if (File.Exists("item_data.xml"))
-                    File.Delete("item_data.xml");
+                    // db 파일 삭제
+                    DBMaster db_master = DBMaster.Instance;
+                    db_master.clear_db_file();
 
-                // 자동 로그인 파일 삭제
-                if (File.Exists(LoginForm.auto_login_file_path))
-                    File.Delete(LoginForm.auto_login_file_path);
+                    // 데이터 청소가 완료되었습니다 메세지 출력
+                    MessageBox.Show("모든 데이터가 삭제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // db 파일 삭제
-                DBMaster db_master = DBMaster.Instance;
-                db_master.clear_db_file();
+                    // 프로그램 재시작
+                    Application.Restart();
+                }
+                catch (Exception ex)
+                {
+                    // 오류 발생시 메세지 박스로 오류 출력
+                    MessageBox.Show(ex.Message, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
 
-                // 데이터 청소가 완료되었습니다 메세지 출력
-                MessageBox.Show("모든 데이터가 삭제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // 프로그램 재시작
-                Application.Restart();
             }
         }
 
@@ -257,8 +238,8 @@ namespace POS_Project_Team2
 
         }
 
-        //환불 후 MainForm의 라벨 업데이트하는 함수
-        public void UpdateLabel()
+        // 환불 후 MainForm의 라벨 업데이트하는 함수
+        public void update_label()
         {
             label_tatal_num_sales.Text = "금일 총 판매 " + total_num_sales + "건";
             label_total_num_profit.Text = "금일 총 수익 " + total_num_profit + "원";
@@ -267,5 +248,13 @@ namespace POS_Project_Team2
             label_total_previous_purchase.Text = total_previous_purchase + "원";
         }
 
+        // 영수증 조회 버튼
+        private void button_get_receipt_Click(object sender, EventArgs e)
+        {
+            // 영수증 출력을 위해 영수증 출력 모드로 변경하여 창 열기
+            MultiPurposeShowForm log_form = new MultiPurposeShowForm();
+            log_form.enable_recepit_mode();
+            FormHelper.show(log_form);
+        }
     }
 }
