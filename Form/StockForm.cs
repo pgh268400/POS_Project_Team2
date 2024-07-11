@@ -269,48 +269,51 @@ namespace POS_Project_Team2
             datagridview_stock.ClearSelection();
         }
 
-        // 검색 버튼 클릭시 해당 물품 있는지 검사 후 해당 행을 선택.
+
+        private bool search_item(SearchBy search_by, string keyword)
+        {
+            for (int i = 0; i < datagridview_stock.Rows.Count; i++)
+            {
+                string cell_value = "";
+                string item_name = "";
+                string item_count = "";
+
+                if (search_by == SearchBy.Number)
+                {
+                    cell_value = datagridview_stock.Rows[i].Cells[0].Value?.ToString(); // No 컬럼은 인덱스 0
+                    item_name = datagridview_stock.Rows[i].Cells[1].Value?.ToString(); // 물품명은 인덱스 1
+                    item_count = datagridview_stock.Rows[i].Cells[3].Value?.ToString(); // 수량은 인덱스 3
+                }
+                else if (search_by == SearchBy.Name)
+                {
+                    cell_value = datagridview_stock.Rows[i].Cells[1].Value?.ToString(); // 물품명 컬럼은 인덱스 1
+                    item_count = datagridview_stock.Rows[i].Cells[3].Value?.ToString(); // 수량은 인덱스 3
+                }
+
+                if (cell_value != null && cell_value == keyword)
+                {
+                    select_item(i, item_name, Int32.Parse(item_count));
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // 검색 버튼 클릭
         private void button_search_Click(object sender, EventArgs e)
         {
             string search_text = textbox_search.Text;
             bool item_found = false;
 
-            // search_text 가 숫자로만 이루어졌는지 확인
             if (search_text.All(char.IsDigit))
             {
                 // No 번호를 기준으로 검색
-                for (int i = 0; i < datagridview_stock.Rows.Count; i++)
-                {
-                    var cell_value = datagridview_stock.Rows[i].Cells[0].Value; // No 컬럼은 인덱스 0
-
-                    // null 체크 후 검색한 No 번호가 있는 행 선택
-                    if (cell_value != null && cell_value.ToString() == search_text)
-                    {
-                        var item_name = datagridview_stock.Rows[i].Cells[1].Value.ToString(); // 물품명은 인덱스 1
-                        var item_count = datagridview_stock.Rows[i].Cells[3].Value.ToString(); // 수량은 인덱스 3
-                        select_item(i, item_name, Int32.Parse(item_count));
-                        item_found = true;
-                        break;
-                    }
-                }
+                item_found = search_item(SearchBy.Number, search_text);
             }
             else
             {
                 // 물품명을 기준으로 검색
-                for (int i = 0; i < datagridview_stock.Rows.Count; i++)
-                {
-
-                    var cell_value = datagridview_stock.Rows[i].Cells[1].Value.ToString(); // 물품명 컬럼은 인덱스 1
-                    var item_count = datagridview_stock.Rows[i].Cells[3].Value.ToString(); // 수량은 인덱스 3
-
-                    // null 체크 후 검색한 물품명이 있는 행 선택
-                    if (cell_value != null && cell_value == search_text)
-                    {
-                        select_item(i, cell_value, Int32.Parse(item_count));
-                        item_found = true;
-                        break;
-                    }
-                }
+                item_found = search_item(SearchBy.Name, search_text);
             }
 
             if (!item_found)
@@ -367,6 +370,13 @@ namespace POS_Project_Team2
         // 물건을 선택해서 오른쪽 리스트뷰에 추가하는 함수
         private void button_select_click(object sender, EventArgs e)
         {
+            // 수량이 비었거나, 숫자가 입력되지 않았으면 함수 강제 종료
+            if (textbox_count.Text == "" || !(textbox_count.Text.All(char.IsDigit)))
+            {
+                MessageBox.Show("수량엔 숫자만 입력 가능합니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             int id = int.Parse(datagridview_stock.Rows[selected].Cells[0].Value.ToString()); // 아이템 번호 (unique id)
             string str_item_cost = datagridview_stock.Rows[selected].Cells[2].Value.ToString(); // 문자열로 나타난 가격
             int item_cost = Convert.ToInt32(str_item_cost); // 아이템 가격을 정수로 변환

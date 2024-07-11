@@ -493,6 +493,8 @@ namespace POS_Project_Team2
         // 취소 버튼
         private void button_all_cancle_Click(object sender, EventArgs e)
         {
+            // 우선 리스트뷰에서 처리
+
             // 모든 물품 삭제
             listview_product.Items.Clear();
 
@@ -502,6 +504,10 @@ namespace POS_Project_Team2
             // 개수랑 원도 초기화
             label_num_product.Text = "0개";
             label_amount_money.Text = "0원";
+
+            // 현재 활성화된 대기열 번호에 해당하는 물품 리스트 초기화
+            var active_products = get_active_products();
+            active_products.Clear();
         }
 
         private void button1_Click(object sender, EventArgs e)

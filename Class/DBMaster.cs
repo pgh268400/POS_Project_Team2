@@ -194,6 +194,7 @@ namespace POS_Project_Team2.Class
             }
             catch (Exception e)
             {
+                // 예외 발생시 호출자쪽으로 떠넘긴다. (java의 throws 처럼)
                 throw e;
             }
 
@@ -203,6 +204,7 @@ namespace POS_Project_Team2.Class
 
         }
 
+        // 테이블이 존재하는지 확인하는 함수
         private bool is_table_exist(string table_name)
         {
             string query = $"SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}';";
@@ -392,6 +394,27 @@ namespace POS_Project_Team2.Class
             using (var command = new SQLiteCommand(select_query, connection))
             {
                 command.Parameters.AddWithValue("@ItemName", item_name);
+
+                using var reader = command.ExecuteReader();
+                if (!reader.Read()) return null;
+
+                return new StockRecord
+                {
+                    Id = reader.GetInt32(0),
+                    ItemName = reader.GetString(1),
+                    Cost = reader.GetInt32(2),
+                    Count = reader.GetInt32(3)
+                };
+            }
+        }
+
+        // id 번호를 입력 받아서 재고 테이블에서 해당 아이템을 읽어들여 반환하는 함수
+        public StockRecord get_stock_record_by_id(int id)
+        {
+            string select_query = $"SELECT * FROM {stock_table_name} WHERE Id = @Id";
+            using (var command = new SQLiteCommand(select_query, connection))
+            {
+                command.Parameters.AddWithValue("@Id", id);
 
                 using var reader = command.ExecuteReader();
                 if (!reader.Read()) return null;

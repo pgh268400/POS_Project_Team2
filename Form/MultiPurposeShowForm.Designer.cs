@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             listView1 = new ListView();
+            first = new ColumnHeader();
             columnHeader0 = new ColumnHeader();
             columnHeader1 = new ColumnHeader();
             columnHeader2 = new ColumnHeader();
@@ -41,14 +42,19 @@
             // 
             // listView1
             // 
-            listView1.Columns.AddRange(new ColumnHeader[] { columnHeader0, columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5, columnHeader6 });
+            listView1.Columns.AddRange(new ColumnHeader[] { first, columnHeader0, columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5, columnHeader6 });
             listView1.Location = new Point(9, 9);
             listView1.Margin = new Padding(2);
             listView1.Name = "listView1";
-            listView1.Size = new Size(658, 416);
+            listView1.Size = new Size(702, 416);
             listView1.TabIndex = 0;
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.View = View.Details;
+            // 
+            // first
+            // 
+            first.Text = "Id";
+            first.Width = 35;
             // 
             // columnHeader0
             // 
@@ -98,7 +104,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(678, 462);
+            ClientSize = new Size(722, 462);
             Controls.Add(label_show);
             Controls.Add(listView1);
             Margin = new Padding(2);
@@ -120,5 +126,6 @@
         private ColumnHeader columnHeader6;
         private Label label_show;
         private ColumnHeader columnHeader0;
+        private ColumnHeader first;
     }
 }

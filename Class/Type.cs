@@ -24,4 +24,11 @@ namespace POS_Project_Team2.Class
             this.stock_records = stock_records;
         }
     }
+
+    // 물품 선택시 어떤 방식으로 검색할 것인지
+    public enum SearchBy
+    {
+        Number,
+        Name
+    }
 }
