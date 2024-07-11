@@ -24,5 +24,10 @@ namespace POS_Project_Team2
                 label_total_price.Text = total_price;
             */
         }
+
+        private void ReceiptForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
