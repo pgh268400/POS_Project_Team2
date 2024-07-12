@@ -65,12 +65,29 @@ namespace POS_Project_Team2
         // 결제 버튼
         private void button_payment_Click(object sender, EventArgs e)
         {
-            PaymentForm payment_form = new PaymentForm();
+            PaymentForm payment_form = new PaymentForm(this);
             payment_form.FormClosing += PaymentForm_FormClosing;
             payment_form.Owner = this;
             FormHelper.show(payment_form);
         }
 
+        // 대기열 버튼 활성화 시키는 함수 WaitNumber 을 인자로 받아서 버튼을 활성화 시킨다
+        public void enable_wait_button(WaitNumber wait_number)
+        {
+            // 버튼 전체를 우선 다 비활성화 시킨다
+            foreach (var button in wait_buttons)
+                button.Enabled = false;
+
+            // 색상도 모두 회색으로 설정
+            foreach (var button in wait_buttons)
+                button.BackColor = Color.Gray;
+
+            // 해당 버튼만 활성화 시킨다
+            wait_buttons[(int)wait_number - 1].Enabled = true;
+
+            // 활성화된 버튼을 파란색으로
+            wait_buttons[(int)wait_number - 1].BackColor = Color.Blue;
+        }
         // 통합 조회 버튼
         private void button_get_all_Click(object sender, EventArgs e)
         {
@@ -113,7 +130,7 @@ namespace POS_Project_Team2
         private void button_wait1_Click(object sender, EventArgs e)
         {
             // 현재 대기열 1에서만 작동합니다 메세지 박스 출력
-            MessageBox.Show("현재 대기열 1에서만 작동합니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // MessageBox.Show("현재 대기열 1에서만 작동합니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -134,32 +151,32 @@ namespace POS_Project_Team2
 
         private void PaymentForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            var closing_form = sender as PaymentForm;
+            //var closing_form = sender as PaymentForm;
 
-            if (closing_form != null && !paymentform_purchase)
-            {
-                int index = saved_products.FindIndex(products => products.SequenceEqual(closing_form.get_active_products()));
-                if (index >= 0)
-                {
-                    saved_products[index] = closing_form.get_active_products();
-                }
-                else
-                {
-                    saved_products.Add(closing_form.get_active_products());
-                    int waitButtonIndex = saved_products.Count - 1;
-                    if (waitButtonIndex < wait_buttons.Length && !paymentform_purchase)
-                    {
-                        wait_buttons[waitButtonIndex].BackColor = Color.Red;
-                    }
-                }
-            }
-            else if (closing_form != null && paymentform_purchase)
-            {
-                label_tatal_num_sales.Text = "금일 총 판매 " + total_num_sales + "건";
-                label_total_num_profit.Text = "금일 총 수익 " + total_num_profit + "원";
-                label_total_previous_payment.Text = total_previous_purchase + "원";
-                label_total_previous_purchase.Text = total_previous_purchase + "원";
-            }
+            //if (closing_form != null && !paymentform_purchase)
+            //{
+            //    int index = saved_products.FindIndex(products => products.SequenceEqual(closing_form.get_active_products()));
+            //    if (index >= 0)
+            //    {
+            //        saved_products[index] = closing_form.get_active_products();
+            //    }
+            //    else
+            //    {
+            //        saved_products.Add(closing_form.get_active_products());
+            //        int wait_button_index = saved_products.Count - 1;
+            //        if (wait_button_index < wait_buttons.Length && !paymentform_purchase)
+            //        {
+            //            wait_buttons[wait_button_index].BackColor = Color.Red;
+            //        }
+            //    }
+            //}
+            //else if (closing_form != null && paymentform_purchase)
+            //{
+            //    label_tatal_num_sales.Text = "금일 총 판매 " + total_num_sales + "건";
+            //    label_total_num_profit.Text = "금일 총 수익 " + total_num_profit + "원";
+            //    label_total_previous_payment.Text = total_previous_purchase + "원";
+            //    label_total_previous_purchase.Text = total_previous_purchase + "원";
+            //}
         }
         public void update_wait_button(int index, Color color)
         {

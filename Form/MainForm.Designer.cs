@@ -94,21 +94,22 @@
             // 
             button_get_receipt.BackColor = SystemColors.WindowFrame;
             button_get_receipt.ForeColor = SystemColors.ControlLightLight;
-            button_get_receipt.Location = new Point(20, 168);
+            button_get_receipt.Location = new Point(252, 60);
             button_get_receipt.Name = "button_get_receipt";
-            button_get_receipt.Size = new Size(113, 60);
+            button_get_receipt.Size = new Size(121, 37);
             button_get_receipt.TabIndex = 3;
             button_get_receipt.Text = "영수증 조회";
             button_get_receipt.UseVisualStyleBackColor = false;
+            button_get_receipt.Visible = false;
             button_get_receipt.Click += button_get_receipt_Click;
             // 
             // button_get_stock
             // 
             button_get_stock.BackColor = SystemColors.WindowFrame;
             button_get_stock.ForeColor = SystemColors.ControlLightLight;
-            button_get_stock.Location = new Point(20, 105);
+            button_get_stock.Location = new Point(20, 167);
             button_get_stock.Name = "button_get_stock";
-            button_get_stock.Size = new Size(113, 60);
+            button_get_stock.Size = new Size(231, 60);
             button_get_stock.TabIndex = 4;
             button_get_stock.Text = "재고 조회";
             button_get_stock.UseVisualStyleBackColor = false;
@@ -131,7 +132,6 @@
             // 
             group_get.Controls.Add(button_get_refund);
             group_get.Controls.Add(button_get_all);
-            group_get.Controls.Add(button_get_receipt);
             group_get.Controls.Add(button_get_tpt);
             group_get.Controls.Add(button_get_stock);
             group_get.Controls.Add(label_realtime_clock);
@@ -147,7 +147,7 @@
             button_get_refund.BackColor = SystemColors.WindowFrame;
             button_get_refund.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
             button_get_refund.ForeColor = SystemColors.ControlLightLight;
-            button_get_refund.Location = new Point(138, 168);
+            button_get_refund.Location = new Point(20, 105);
             button_get_refund.Name = "button_get_refund";
             button_get_refund.Size = new Size(113, 60);
             button_get_refund.TabIndex = 6;
@@ -186,6 +186,7 @@
             // 
             groupBox3.Controls.Add(label9);
             groupBox3.Controls.Add(label_total_previous_payment);
+            groupBox3.Controls.Add(button_get_receipt);
             groupBox3.Controls.Add(label_total_previous_purchase);
             groupBox3.Controls.Add(button_receipt);
             groupBox3.Controls.Add(label6);

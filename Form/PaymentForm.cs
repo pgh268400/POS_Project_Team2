@@ -26,12 +26,19 @@ namespace POS_Project_Team2
         // 현재 활성화된 대기열 번호, 기본은 우선 비워둔다.
         private static WaitNumber active_wait_number = WaitNumber.None;
 
+        // main form에 접근하기 위한 변수
+        private MainForm main_form;
+
         int total_num_purchase = 0;
         int total_price_purchase = 0;
 
-        public PaymentForm()
+        // 부모 폼 참조(=주소로 원본 접근)를 위해 생성자에서 받아온다.
+        public PaymentForm(MainForm main_form = null)
         {
             InitializeComponent();
+
+            if (main_form != null)
+                this.main_form = main_form;
 
             // 창 수정 하지 못하게 막기
             FormHelper.disable_resize(this);
@@ -279,6 +286,9 @@ namespace POS_Project_Team2
             // 활성화된 대기열 번호로 리스트뷰에 출력
             var active_products = get_active_products();
             set_listview_item_and_update_money(active_products);
+
+            // main form에 대기열 버튼 활성화 설정
+            main_form.enable_wait_button(active_wait_number);
         }
 
         // 현재 listview product 의 모든 아이템 반환
@@ -313,9 +323,11 @@ namespace POS_Project_Team2
                 // 현재 활성화된 대기열에 해당하는 제품 리스트를 가져온다
                 var active_products = get_active_products();
 
-                // 선택된 아이템들을 활성화된 대기열에 추가한다
-                // 참조(주소로 접근) 하는 방식으로 추가하므로,
-                // 원본 리스트 안에 추가되는 것이다.
+                /*
+                  선택된 아이템들을 활성화된 대기열에 추가한다
+                  참조(주소로 접근) 하는 방식으로 추가하므로,
+                  원본 리스트 안에 추가되는 것이다.
+                */
                 active_products.AddRange(selected_items);
 
                 // 리스트뷰를 업데이트한다
@@ -517,9 +529,6 @@ namespace POS_Project_Team2
 
         private void button_wait_Click(object sender, EventArgs e)
         {
-            // MainForm mainForm = (MainForm)this.Owner;
-            // mainForm.paymentform_purchase = false;
-            // this.Close();
         }
 
         // 매번 get_products_by_wait_number(active_wait_number) 로 호출해서
