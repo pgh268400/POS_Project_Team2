@@ -234,6 +234,7 @@
             button_receipt.TabIndex = 15;
             button_receipt.Text = "영수증 출력";
             button_receipt.UseVisualStyleBackColor = false;
+            button_receipt.Click += button_receipt_Click;
             // 
             // label6
             // 

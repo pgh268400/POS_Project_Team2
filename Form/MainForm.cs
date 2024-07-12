@@ -256,5 +256,24 @@ namespace POS_Project_Team2
             log_form.enable_recepit_mode();
             FormHelper.show(log_form);
         }
+
+        // 영수증 출력 버튼
+        private void button_receipt_Click(object sender, EventArgs e)
+        {
+            // DB 에서 결제 내역을 가져온다
+            DBMaster db_master = DBMaster.Instance;
+            var payment_data = db_master.get_all_payments_table();
+
+            MultiPurposeShowForm log_form = new MultiPurposeShowForm();
+
+            // 총 결제 내역 창 리스트뷰 및 라벨 설정
+            log_form.set_form_role(payment_data, "");
+
+            // 영수증 모드 활성화
+            log_form.enable_recepit_mode();
+
+            // 총 결제 내역 창 열기
+            FormHelper.show(log_form);
+        }
     }
 }

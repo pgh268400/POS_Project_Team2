@@ -203,12 +203,26 @@ namespace POS_Project_Team2
         {
             if (selected_item != null)
             {
-                string itemDetails = string.Join(", ", selected_item.SubItems.Cast<ListViewItem.ListViewSubItem>().Select(subItem => subItem.Text));
-                MessageBox.Show($"출력 버튼이 클릭되었습니다. 선택된 행의 정보: {itemDetails}");
+                string item_details = string.Join(", ", selected_item.SubItems.Cast<ListViewItem.ListViewSubItem>().Select(subItem => subItem.Text));
+                MessageBox.Show($"출력 버튼이 클릭되었습니다. 선택된 행의 정보: {item_details}");
 
                 // 출력을 위해 영수증 출력창을 연다.
                 ReceiptForm receipt_form = new ReceiptForm();
-                // receipt_form.set_receipt(selectedItem.SubItems[0].Text, selectedItem.SubItems[1].Text, selectedItem.SubItems[2].Text, selectedItem.SubItems[3].Text, selectedItem.SubItems[4].Text);
+
+                // 선택한 아이템으로부터 총 가격, 적립자를 얻어온다
+                string total_price = selected_item.SubItems[5].Text;
+                string earner = selected_item.SubItems[6].Text;
+
+                // 결제일도 얻어온다
+                string str_payday = selected_item.SubItems[1].Text;
+                DateTime payday = DateTime.Parse(str_payday);
+
+
+
+                // 총 가격, 적립자를 인자로 넘긴다
+                receipt_form.set_receipt_data(total_price, earner, payday);
+
+                FormHelper.show(receipt_form);
             }
         }
     }

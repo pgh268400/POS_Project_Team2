@@ -28,365 +28,367 @@
         /// </summary>
         private void InitializeComponent()
         {
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
-            label5 = new Label();
-            label6 = new Label();
-            label7 = new Label();
-            label8 = new Label();
-            label9 = new Label();
-            label10 = new Label();
-            label11 = new Label();
-            label12 = new Label();
-            label13 = new Label();
-            tableLayoutPanel1 = new TableLayoutPanel();
-            label14 = new Label();
-            label15 = new Label();
-            label16 = new Label();
-            label17 = new Label();
-            label18 = new Label();
-            label19 = new Label();
-            label20 = new Label();
-            label21 = new Label();
-            label22 = new Label();
-            button1 = new Button();
-            tableLayoutPanel1.SuspendLayout();
+            label_ic_approval = new Label();
+            label_for_customer_use = new Label();
+            label_terminal = new Label();
+            label_store_name = new Label();
+            label_earner = new Label();
+            label_business_number = new Label();
+            label_receipt_number = new Label();
+            label_tel = new Label();
+            label_separator1 = new Label();
+            label_amount = new Label();
+            label_vat = new Label();
+            label_total = new Label();
+            label_separator2 = new Label();
+            table_layout_panel_amounts = new TableLayoutPanel();
+            label_amount_value = new Label();
+            label_vat_value = new Label();
+            label_total_value = new Label();
+            label_card_company = new Label();
+            label_card_number = new Label();
+            label_installment = new Label();
+            label_payday = new Label();
+            label_approval_number = new Label();
+            label_approval_number_value = new Label();
+            button_print = new Button();
+            table_layout_panel_amounts.SuspendLayout();
             SuspendLayout();
             // 
-            // label1
+            // label_ic_approval
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.ForeColor = SystemColors.HotTrack;
-            label1.Location = new Point(23, 23);
-            label1.Name = "label1";
-            label1.Size = new Size(113, 19);
-            label1.TabIndex = 0;
-            label1.Text = "IC 신용승인";
+            label_ic_approval.AutoSize = true;
+            label_ic_approval.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_ic_approval.ForeColor = SystemColors.HotTrack;
+            label_ic_approval.Location = new Point(23, 23);
+            label_ic_approval.Name = "label_ic_approval";
+            label_ic_approval.Size = new Size(113, 19);
+            label_ic_approval.TabIndex = 0;
+            label_ic_approval.Text = "IC 신용승인";
             // 
-            // label2
+            // label_for_customer_use
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label2.ForeColor = SystemColors.HotTrack;
-            label2.Location = new Point(263, 23);
-            label2.Name = "label2";
-            label2.Size = new Size(111, 19);
-            label2.TabIndex = 1;
-            label2.Text = "(고  객  용)";
+            label_for_customer_use.AutoSize = true;
+            label_for_customer_use.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_for_customer_use.ForeColor = SystemColors.HotTrack;
+            label_for_customer_use.Location = new Point(263, 23);
+            label_for_customer_use.Name = "label_for_customer_use";
+            label_for_customer_use.Size = new Size(111, 19);
+            label_for_customer_use.TabIndex = 1;
+            label_for_customer_use.Text = "(고  객  용)";
             // 
-            // label3
+            // label_terminal
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label3.ForeColor = SystemColors.HotTrack;
-            label3.Location = new Point(23, 52);
-            label3.Name = "label3";
-            label3.Size = new Size(140, 16);
-            label3.TabIndex = 2;
-            label3.Text = "단말기 : IA1594795";
+            label_terminal.AutoSize = true;
+            label_terminal.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label_terminal.ForeColor = SystemColors.HotTrack;
+            label_terminal.Location = new Point(23, 52);
+            label_terminal.Name = "label_terminal";
+            label_terminal.Size = new Size(140, 16);
+            label_terminal.TabIndex = 2;
+            label_terminal.Text = "단말기 : IA1594795";
             // 
-            // label4
+            // label_store_name
             // 
-            label4.AutoSize = true;
-            label4.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label4.ForeColor = SystemColors.HotTrack;
-            label4.Location = new Point(23, 75);
-            label4.Name = "label4";
-            label4.Size = new Size(134, 16);
-            label4.TabIndex = 3;
-            label4.Text = "가맹점 : 가짜문구";
+            label_store_name.AutoSize = true;
+            label_store_name.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label_store_name.ForeColor = SystemColors.HotTrack;
+            label_store_name.Location = new Point(23, 75);
+            label_store_name.Name = "label_store_name";
+            label_store_name.Size = new Size(134, 16);
+            label_store_name.TabIndex = 3;
+            label_store_name.Text = "가맹점 : 가짜문구";
             // 
-            // label5
+            // label_earner
             // 
-            label5.AutoSize = true;
-            label5.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label5.ForeColor = SystemColors.HotTrack;
-            label5.Location = new Point(23, 99);
-            label5.Name = "label5";
-            label5.Size = new Size(118, 16);
-            label5.TabIndex = 4;
-            label5.Text = "대표자 : 홍길동";
+            label_earner.AutoSize = true;
+            label_earner.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label_earner.ForeColor = SystemColors.HotTrack;
+            label_earner.Location = new Point(23, 99);
+            label_earner.Name = "label_earner";
+            label_earner.Size = new Size(171, 16);
+            label_earner.TabIndex = 4;
+            label_earner.Text = "포인트 적립자 : 홍길동";
             // 
-            // label6
+            // label_business_number
             // 
-            label6.AutoSize = true;
-            label6.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label6.ForeColor = SystemColors.HotTrack;
-            label6.Location = new Point(23, 124);
-            label6.Name = "label6";
-            label6.Size = new Size(167, 16);
-            label6.TabIndex = 5;
-            label6.Text = "사업자 : 425-15-79797";
+            label_business_number.AutoSize = true;
+            label_business_number.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label_business_number.ForeColor = SystemColors.HotTrack;
+            label_business_number.Location = new Point(23, 124);
+            label_business_number.Name = "label_business_number";
+            label_business_number.Size = new Size(204, 16);
+            label_business_number.TabIndex = 5;
+            label_business_number.Text = "사업자 번호 : 425-15-79797";
             // 
-            // label7
+            // label_receipt_number
             // 
-            label7.AutoSize = true;
-            label7.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label7.ForeColor = SystemColors.HotTrack;
-            label7.Location = new Point(252, 52);
-            label7.Name = "label7";
-            label7.Size = new Size(134, 16);
-            label7.TabIndex = 6;
-            label7.Text = "전표번호 : 020202";
+            label_receipt_number.AutoSize = true;
+            label_receipt_number.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label_receipt_number.ForeColor = SystemColors.HotTrack;
+            label_receipt_number.Location = new Point(252, 52);
+            label_receipt_number.Name = "label_receipt_number";
+            label_receipt_number.Size = new Size(134, 16);
+            label_receipt_number.TabIndex = 6;
+            label_receipt_number.Text = "전표번호 : 020202";
             // 
-            // label8
+            // label_tel
             // 
-            label8.AutoSize = true;
-            label8.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label8.ForeColor = SystemColors.HotTrack;
-            label8.Location = new Point(252, 124);
-            label8.Name = "label8";
-            label8.Size = new Size(138, 16);
-            label8.TabIndex = 7;
-            label8.Text = "TEL : 02-000-0000";
+            label_tel.AutoSize = true;
+            label_tel.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label_tel.ForeColor = SystemColors.HotTrack;
+            label_tel.Location = new Point(252, 124);
+            label_tel.Name = "label_tel";
+            label_tel.Size = new Size(138, 16);
+            label_tel.TabIndex = 7;
+            label_tel.Text = "TEL : 02-000-0000";
             // 
-            // label9
+            // label_separator1
             // 
-            label9.AutoSize = true;
-            label9.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label9.ForeColor = SystemColors.HotTrack;
-            label9.Location = new Point(16, 153);
-            label9.Name = "label9";
-            label9.Size = new Size(383, 16);
-            label9.TabIndex = 8;
-            label9.Text = "-----------------------------------------------";
+            label_separator1.AutoSize = true;
+            label_separator1.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label_separator1.ForeColor = SystemColors.HotTrack;
+            label_separator1.Location = new Point(16, 153);
+            label_separator1.Name = "label_separator1";
+            label_separator1.Size = new Size(383, 16);
+            label_separator1.TabIndex = 8;
+            label_separator1.Text = "-----------------------------------------------";
             // 
-            // label10
+            // label_amount
             // 
-            label10.AutoSize = true;
-            label10.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label10.ForeColor = SystemColors.HotTrack;
-            label10.Location = new Point(28, 169);
-            label10.Name = "label10";
-            label10.Size = new Size(70, 19);
-            label10.TabIndex = 9;
-            label10.Text = "금   액";
+            label_amount.AutoSize = true;
+            label_amount.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_amount.ForeColor = SystemColors.HotTrack;
+            label_amount.Location = new Point(28, 169);
+            label_amount.Name = "label_amount";
+            label_amount.Size = new Size(70, 19);
+            label_amount.TabIndex = 9;
+            label_amount.Text = "금   액";
             // 
-            // label11
+            // label_vat
             // 
-            label11.AutoSize = true;
-            label11.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label11.ForeColor = SystemColors.HotTrack;
-            label11.Location = new Point(28, 193);
-            label11.Name = "label11";
-            label11.Size = new Size(69, 19);
-            label11.TabIndex = 10;
-            label11.Text = "부가세";
+            label_vat.AutoSize = true;
+            label_vat.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_vat.ForeColor = SystemColors.HotTrack;
+            label_vat.Location = new Point(28, 193);
+            label_vat.Name = "label_vat";
+            label_vat.Size = new Size(69, 19);
+            label_vat.TabIndex = 10;
+            label_vat.Text = "부가세";
             // 
-            // label12
+            // label_total
             // 
-            label12.AutoSize = true;
-            label12.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label12.ForeColor = SystemColors.HotTrack;
-            label12.Location = new Point(28, 216);
-            label12.Name = "label12";
-            label12.Size = new Size(70, 19);
-            label12.TabIndex = 11;
-            label12.Text = "합   계";
+            label_total.AutoSize = true;
+            label_total.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_total.ForeColor = SystemColors.HotTrack;
+            label_total.Location = new Point(28, 216);
+            label_total.Name = "label_total";
+            label_total.Size = new Size(70, 19);
+            label_total.TabIndex = 11;
+            label_total.Text = "합   계";
             // 
-            // label13
+            // label_separator2
             // 
-            label13.AutoSize = true;
-            label13.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label13.ForeColor = SystemColors.HotTrack;
-            label13.Location = new Point(16, 235);
-            label13.Name = "label13";
-            label13.Size = new Size(383, 16);
-            label13.TabIndex = 12;
-            label13.Text = "-----------------------------------------------";
+            label_separator2.AutoSize = true;
+            label_separator2.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label_separator2.ForeColor = SystemColors.HotTrack;
+            label_separator2.Location = new Point(16, 235);
+            label_separator2.Name = "label_separator2";
+            label_separator2.Size = new Size(383, 16);
+            label_separator2.TabIndex = 12;
+            label_separator2.Text = "-----------------------------------------------";
             // 
-            // tableLayoutPanel1
+            // table_layout_panel_amounts
             // 
-            tableLayoutPanel1.ColumnCount = 1;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.Controls.Add(label14, 0, 0);
-            tableLayoutPanel1.Controls.Add(label15, 0, 2);
-            tableLayoutPanel1.Controls.Add(label16, 0, 1);
-            tableLayoutPanel1.Location = new Point(199, 169);
-            tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 3;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel1.Size = new Size(200, 66);
-            tableLayoutPanel1.TabIndex = 13;
+            table_layout_panel_amounts.ColumnCount = 1;
+            table_layout_panel_amounts.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            table_layout_panel_amounts.Controls.Add(label_amount_value, 0, 0);
+            table_layout_panel_amounts.Controls.Add(label_vat_value, 0, 1);
+            table_layout_panel_amounts.Controls.Add(label_total_value, 0, 2);
+            table_layout_panel_amounts.Location = new Point(199, 169);
+            table_layout_panel_amounts.Name = "table_layout_panel_amounts";
+            table_layout_panel_amounts.RowCount = 3;
+            table_layout_panel_amounts.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            table_layout_panel_amounts.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            table_layout_panel_amounts.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            table_layout_panel_amounts.Size = new Size(200, 66);
+            table_layout_panel_amounts.TabIndex = 13;
             // 
-            // label14
+            // label_amount_value
             // 
-            label14.Anchor = AnchorStyles.Right;
-            label14.AutoSize = true;
-            label14.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label14.ForeColor = SystemColors.HotTrack;
-            label14.Location = new Point(157, 2);
-            label14.Name = "label14";
-            label14.Size = new Size(40, 19);
-            label14.TabIndex = 14;
-            label14.Text = "0원";
+            label_amount_value.Anchor = AnchorStyles.Right;
+            label_amount_value.AutoSize = true;
+            label_amount_value.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_amount_value.ForeColor = SystemColors.HotTrack;
+            label_amount_value.Location = new Point(157, 2);
+            label_amount_value.Name = "label_amount_value";
+            label_amount_value.Size = new Size(40, 19);
+            label_amount_value.TabIndex = 14;
+            label_amount_value.Text = "0원";
             // 
-            // label15
+            // label_vat_value
             // 
-            label15.Anchor = AnchorStyles.Right;
-            label15.AutoSize = true;
-            label15.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label15.ForeColor = SystemColors.HotTrack;
-            label15.Location = new Point(157, 46);
-            label15.Name = "label15";
-            label15.Size = new Size(40, 19);
-            label15.TabIndex = 15;
-            label15.Text = "0원";
+            label_vat_value.Anchor = AnchorStyles.Right;
+            label_vat_value.AutoSize = true;
+            label_vat_value.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_vat_value.ForeColor = SystemColors.HotTrack;
+            label_vat_value.Location = new Point(157, 25);
+            label_vat_value.Name = "label_vat_value";
+            label_vat_value.Size = new Size(40, 19);
+            label_vat_value.TabIndex = 15;
+            label_vat_value.Text = "0원";
             // 
-            // label16
+            // label_total_value
             // 
-            label16.Anchor = AnchorStyles.Right;
-            label16.AutoSize = true;
-            label16.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label16.ForeColor = SystemColors.HotTrack;
-            label16.Location = new Point(157, 25);
-            label16.Name = "label16";
-            label16.Size = new Size(40, 19);
-            label16.TabIndex = 16;
-            label16.Text = "0원";
+            label_total_value.Anchor = AnchorStyles.Right;
+            label_total_value.AutoSize = true;
+            label_total_value.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_total_value.ForeColor = SystemColors.HotTrack;
+            label_total_value.Location = new Point(157, 46);
+            label_total_value.Name = "label_total_value";
+            label_total_value.Size = new Size(40, 19);
+            label_total_value.TabIndex = 16;
+            label_total_value.Text = "0원";
             // 
-            // label17
+            // label_card_company
             // 
-            label17.AutoSize = true;
-            label17.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label17.ForeColor = SystemColors.HotTrack;
-            label17.Location = new Point(28, 259);
-            label17.Name = "label17";
-            label17.Size = new Size(127, 19);
-            label17.TabIndex = 14;
-            label17.Text = "ABC비씨카드";
+            label_card_company.AutoSize = true;
+            label_card_company.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_card_company.ForeColor = SystemColors.HotTrack;
+            label_card_company.Location = new Point(28, 259);
+            label_card_company.Name = "label_card_company";
+            label_card_company.Size = new Size(127, 19);
+            label_card_company.TabIndex = 14;
+            label_card_company.Text = "ABC비씨카드";
             // 
-            // label18
+            // label_card_number
             // 
-            label18.AutoSize = true;
-            label18.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label18.ForeColor = SystemColors.HotTrack;
-            label18.Location = new Point(28, 282);
-            label18.Name = "label18";
-            label18.Size = new Size(251, 16);
-            label18.TabIndex = 15;
-            label18.Text = "카드번호 : 1788-03**-****-****(C)";
+            label_card_number.AutoSize = true;
+            label_card_number.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label_card_number.ForeColor = SystemColors.HotTrack;
+            label_card_number.Location = new Point(28, 282);
+            label_card_number.Name = "label_card_number";
+            label_card_number.Size = new Size(251, 16);
+            label_card_number.TabIndex = 15;
+            label_card_number.Text = "카드번호 : 1788-03**-****-****(C)";
             // 
-            // label19
+            // label_installment
             // 
-            label19.AutoSize = true;
-            label19.Font = new Font("굴림", 12.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label19.ForeColor = SystemColors.HotTrack;
-            label19.Location = new Point(334, 281);
-            label19.Name = "label19";
-            label19.Size = new Size(62, 17);
-            label19.TabIndex = 16;
-            label19.Text = "일시불";
+            label_installment.AutoSize = true;
+            label_installment.Font = new Font("굴림", 12.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_installment.ForeColor = SystemColors.HotTrack;
+            label_installment.Location = new Point(334, 281);
+            label_installment.Name = "label_installment";
+            label_installment.Size = new Size(62, 17);
+            label_installment.TabIndex = 16;
+            label_installment.Text = "일시불";
             // 
-            // label20
+            // label_payday
             // 
-            label20.AutoSize = true;
-            label20.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label20.ForeColor = SystemColors.HotTrack;
-            label20.Location = new Point(28, 306);
-            label20.Name = "label20";
-            label20.Size = new Size(230, 16);
-            label20.TabIndex = 17;
-            label20.Text = "거래일시 : 2024-07-12 00:00:00";
+            label_payday.AutoSize = true;
+            label_payday.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label_payday.ForeColor = SystemColors.HotTrack;
+            label_payday.Location = new Point(28, 306);
+            label_payday.Name = "label_payday";
+            label_payday.Size = new Size(230, 16);
+            label_payday.TabIndex = 17;
+            label_payday.Text = "거래일시 : 2024-07-12 00:00:00";
             // 
-            // label21
+            // label_approval_number
             // 
-            label21.AutoSize = true;
-            label21.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label21.ForeColor = SystemColors.HotTrack;
-            label21.Location = new Point(28, 330);
-            label21.Name = "label21";
-            label21.Size = new Size(86, 16);
-            label21.TabIndex = 18;
-            label21.Text = "승인번호 : ";
+            label_approval_number.AutoSize = true;
+            label_approval_number.Font = new Font("굴림", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label_approval_number.ForeColor = SystemColors.HotTrack;
+            label_approval_number.Location = new Point(28, 330);
+            label_approval_number.Name = "label_approval_number";
+            label_approval_number.Size = new Size(86, 16);
+            label_approval_number.TabIndex = 18;
+            label_approval_number.Text = "승인번호 : ";
             // 
-            // label22
+            // label_approval_number_value
             // 
-            label22.AutoSize = true;
-            label22.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            label22.ForeColor = SystemColors.HotTrack;
-            label22.Location = new Point(111, 328);
-            label22.Name = "label22";
-            label22.Size = new Size(97, 19);
-            label22.TabIndex = 19;
-            label22.Text = "79794456";
+            label_approval_number_value.AutoSize = true;
+            label_approval_number_value.Font = new Font("굴림", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
+            label_approval_number_value.ForeColor = SystemColors.HotTrack;
+            label_approval_number_value.Location = new Point(111, 328);
+            label_approval_number_value.Name = "label_approval_number_value";
+            label_approval_number_value.Size = new Size(97, 19);
+            label_approval_number_value.TabIndex = 19;
+            label_approval_number_value.Text = "79794456";
             // 
-            // button1
+            // button_print
             // 
-            button1.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            button1.ForeColor = SystemColors.ActiveCaptionText;
-            button1.Location = new Point(151, 377);
-            button1.Name = "button1";
-            button1.Size = new Size(107, 30);
-            button1.TabIndex = 20;
-            button1.Text = "출력";
-            button1.UseVisualStyleBackColor = true;
+            button_print.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Point);
+            button_print.ForeColor = SystemColors.ActiveCaptionText;
+            button_print.Location = new Point(151, 377);
+            button_print.Name = "button_print";
+            button_print.Size = new Size(107, 30);
+            button_print.TabIndex = 20;
+            button_print.Text = "출력";
+            button_print.UseVisualStyleBackColor = true;
+            button_print.Click += button_print_Click;
             // 
             // ReceiptForm
             // 
             BackColor = Color.White;
             ClientSize = new Size(418, 419);
-            Controls.Add(button1);
-            Controls.Add(label22);
-            Controls.Add(label21);
-            Controls.Add(label20);
-            Controls.Add(label19);
-            Controls.Add(label18);
-            Controls.Add(label17);
-            Controls.Add(tableLayoutPanel1);
-            Controls.Add(label13);
-            Controls.Add(label12);
-            Controls.Add(label11);
-            Controls.Add(label10);
-            Controls.Add(label9);
-            Controls.Add(label8);
-            Controls.Add(label7);
-            Controls.Add(label6);
-            Controls.Add(label5);
-            Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(button_print);
+            Controls.Add(label_approval_number_value);
+            Controls.Add(label_approval_number);
+            Controls.Add(label_payday);
+            Controls.Add(label_installment);
+            Controls.Add(label_card_number);
+            Controls.Add(label_card_company);
+            Controls.Add(table_layout_panel_amounts);
+            Controls.Add(label_separator2);
+            Controls.Add(label_total);
+            Controls.Add(label_vat);
+            Controls.Add(label_amount);
+            Controls.Add(label_separator1);
+            Controls.Add(label_tel);
+            Controls.Add(label_receipt_number);
+            Controls.Add(label_business_number);
+            Controls.Add(label_earner);
+            Controls.Add(label_store_name);
+            Controls.Add(label_terminal);
+            Controls.Add(label_for_customer_use);
+            Controls.Add(label_ic_approval);
             ForeColor = SystemColors.ControlLight;
             Name = "ReceiptForm";
             Text = "ReceiptForm";
             Load += ReceiptForm_Load;
-            tableLayoutPanel1.ResumeLayout(false);
-            tableLayoutPanel1.PerformLayout();
+            table_layout_panel_amounts.ResumeLayout(false);
+            table_layout_panel_amounts.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private Label label1;
-        private Label label2;
-        private Label label3;
-        private Label label4;
-        private Label label5;
-        private Label label6;
-        private Label label7;
-        private Label label8;
-        private Label label9;
-        private Label label10;
-        private Label label11;
-        private Label label12;
-        private Label label13;
-        private TableLayoutPanel tableLayoutPanel1;
-        private Label label14;
-        private Label label15;
-        private Label label16;
-        private Label label17;
-        private Label label18;
-        private Label label19;
-        private Label label20;
-        private Label label21;
-        private Label label22;
-        private Button button1;
+        private Label label_ic_approval;
+        private Label label_for_customer_use;
+        private Label label_terminal;
+        private Label label_store_name;
+        private Label label_earner;
+        private Label label_business_number;
+        private Label label_receipt_number;
+        private Label label_tel;
+        private Label label_separator1;
+        private Label label_amount;
+        private Label label_vat;
+        private Label label_total;
+        private Label label_separator2;
+        private TableLayoutPanel table_layout_panel_amounts;
+        private Label label_amount_value;
+        private Label label_vat_value;
+        private Label label_total_value;
+        private Label label_card_company;
+        private Label label_card_number;
+        private Label label_installment;
+        private Label label_payday;
+        private Label label_approval_number;
+        private Label label_approval_number_value;
+        private Button button_print;
+
     }
 }
