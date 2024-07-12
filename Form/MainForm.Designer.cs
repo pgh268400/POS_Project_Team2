@@ -305,7 +305,7 @@
             // 
             // button_wait3
             // 
-            button_wait3.BackColor = SystemColors.WindowFrame;
+            button_wait3.BackColor = Color.LightGray;
             button_wait3.Enabled = false;
             button_wait3.ForeColor = SystemColors.ControlLightLight;
             button_wait3.Location = new Point(15, 120);
@@ -317,7 +317,7 @@
             // 
             // button_wait2
             // 
-            button_wait2.BackColor = SystemColors.WindowFrame;
+            button_wait2.BackColor = Color.LightGray;
             button_wait2.Enabled = false;
             button_wait2.ForeColor = SystemColors.ControlLightLight;
             button_wait2.Location = new Point(15, 72);

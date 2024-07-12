@@ -78,15 +78,20 @@ namespace POS_Project_Team2
             foreach (var button in wait_buttons)
                 button.Enabled = false;
 
-            // 색상도 모두 회색으로 설정
+            int index = (int)wait_number - 1;
+            // 활성화된 이외의 버튼을 회색으로
             foreach (var button in wait_buttons)
-                button.BackColor = Color.Gray;
+            {
+                if (button != wait_buttons[index])
+                    button.BackColor = Color.LightGray;
+            }
+
 
             // 해당 버튼만 활성화 시킨다
             wait_buttons[(int)wait_number - 1].Enabled = true;
 
             // 활성화된 버튼을 파란색으로
-            wait_buttons[(int)wait_number - 1].BackColor = Color.Blue;
+            wait_buttons[(int)wait_number - 1].BackColor = SystemColors.MenuHighlight;
         }
         // 통합 조회 버튼
         private void button_get_all_Click(object sender, EventArgs e)
