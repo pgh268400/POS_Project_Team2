@@ -57,15 +57,15 @@
             picture_box_alarm = new PictureBox();
             picture_box_menu = new PictureBox();
             realtime_timer = new System.Windows.Forms.Timer(components);
-            picture_box_top = new PictureBox();
             button_clear_all = new Button();
+            panel1 = new Panel();
             group_get.SuspendLayout();
             group_main.SuspendLayout();
             groupBox3.SuspendLayout();
             group_etc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)picture_box_alarm).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picture_box_menu).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)picture_box_top).BeginInit();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // label_realtime_clock
@@ -356,7 +356,7 @@
             // 
             picture_box_alarm.BackColor = Color.Transparent;
             picture_box_alarm.Image = Properties.Resources.alarm_white;
-            picture_box_alarm.Location = new Point(920, 7);
+            picture_box_alarm.Location = new Point(918, 9);
             picture_box_alarm.Name = "picture_box_alarm";
             picture_box_alarm.Size = new Size(37, 39);
             picture_box_alarm.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -366,7 +366,7 @@
             // picture_box_menu
             // 
             picture_box_menu.Image = Properties.Resources.menu_white;
-            picture_box_menu.Location = new Point(963, 7);
+            picture_box_menu.Location = new Point(961, 9);
             picture_box_menu.Name = "picture_box_menu";
             picture_box_menu.Size = new Size(37, 39);
             picture_box_menu.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -376,15 +376,6 @@
             // realtime_timer
             // 
             realtime_timer.Interval = 1000;
-            // 
-            // picture_box_top
-            // 
-            picture_box_top.Image = Properties.Resources.kwangwoon_top;
-            picture_box_top.Location = new Point(0, -1);
-            picture_box_top.Name = "picture_box_top";
-            picture_box_top.Size = new Size(1016, 53);
-            picture_box_top.TabIndex = 15;
-            picture_box_top.TabStop = false;
             // 
             // button_clear_all
             // 
@@ -399,16 +390,25 @@
             button_clear_all.UseVisualStyleBackColor = false;
             button_clear_all.Click += button_clear_all_Click;
             // 
+            // panel1
+            // 
+            panel1.BackColor = Color.FromArgb(153, 204, 255);
+            panel1.Controls.Add(picture_box_alarm);
+            panel1.Controls.Add(picture_box_menu);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1016, 54);
+            panel1.TabIndex = 14;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1016, 398);
+            Controls.Add(panel1);
             Controls.Add(button_clear_all);
-            Controls.Add(picture_box_menu);
-            Controls.Add(picture_box_alarm);
-            Controls.Add(picture_box_top);
             Controls.Add(group_etc);
             Controls.Add(group_main);
             Controls.Add(group_get);
@@ -427,7 +427,7 @@
             group_etc.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)picture_box_alarm).EndInit();
             ((System.ComponentModel.ISupportInitialize)picture_box_menu).EndInit();
-            ((System.ComponentModel.ISupportInitialize)picture_box_top).EndInit();
+            panel1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -457,7 +457,6 @@
         private PictureBox picture_box_alarm;
         private PictureBox picture_box_menu;
         private System.Windows.Forms.Timer realtime_timer;
-        private PictureBox picture_box_top;
         private Button button3;
         private Button button2;
         private Button button_get_refund;
@@ -466,5 +465,6 @@
         private Button button_wait1;
         private Button button_wait2;
         private Button button_wait3;
+        private Panel panel1;
     }
 }

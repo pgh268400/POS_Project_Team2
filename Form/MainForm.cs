@@ -56,10 +56,10 @@ namespace POS_Project_Team2
             picture_box_alarm.BackColor = Color.Transparent;
 
             // picturebox 투명을 위해선 자신이 겹쳐있는 컨트롤을 부모로 설정해야 제대로 설정된다 : 중요
-            picture_box_alarm.Parent = picture_box_top;
+            //picture_box_alarm.Parent = picture_box_top;
 
             picture_box_menu.BackColor = Color.Transparent;
-            picture_box_menu.Parent = picture_box_top;
+            //picture_box_menu.Parent = picture_box_top;
         }
 
         // 결제 버튼
