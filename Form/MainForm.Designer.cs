@@ -94,22 +94,21 @@
             // 
             button_get_receipt.BackColor = SystemColors.WindowFrame;
             button_get_receipt.ForeColor = SystemColors.ControlLightLight;
-            button_get_receipt.Location = new Point(252, 60);
+            button_get_receipt.Location = new Point(138, 166);
             button_get_receipt.Name = "button_get_receipt";
-            button_get_receipt.Size = new Size(121, 37);
+            button_get_receipt.Size = new Size(113, 60);
             button_get_receipt.TabIndex = 3;
             button_get_receipt.Text = "영수증 조회";
             button_get_receipt.UseVisualStyleBackColor = false;
-            button_get_receipt.Visible = false;
             button_get_receipt.Click += button_get_receipt_Click;
             // 
             // button_get_stock
             // 
             button_get_stock.BackColor = SystemColors.WindowFrame;
             button_get_stock.ForeColor = SystemColors.ControlLightLight;
-            button_get_stock.Location = new Point(20, 167);
+            button_get_stock.Location = new Point(20, 166);
             button_get_stock.Name = "button_get_stock";
-            button_get_stock.Size = new Size(231, 60);
+            button_get_stock.Size = new Size(112, 60);
             button_get_stock.TabIndex = 4;
             button_get_stock.Text = "재고 조회";
             button_get_stock.UseVisualStyleBackColor = false;
@@ -132,6 +131,7 @@
             // 
             group_get.Controls.Add(button_get_refund);
             group_get.Controls.Add(button_get_all);
+            group_get.Controls.Add(button_get_receipt);
             group_get.Controls.Add(button_get_tpt);
             group_get.Controls.Add(button_get_stock);
             group_get.Controls.Add(label_realtime_clock);
@@ -186,7 +186,6 @@
             // 
             groupBox3.Controls.Add(label9);
             groupBox3.Controls.Add(label_total_previous_payment);
-            groupBox3.Controls.Add(button_get_receipt);
             groupBox3.Controls.Add(label_total_previous_purchase);
             groupBox3.Controls.Add(button_receipt);
             groupBox3.Controls.Add(label6);
@@ -306,7 +305,6 @@
             // button_wait3
             // 
             button_wait3.BackColor = Color.LightGray;
-            button_wait3.Enabled = false;
             button_wait3.ForeColor = SystemColors.ControlLightLight;
             button_wait3.Location = new Point(15, 120);
             button_wait3.Name = "button_wait3";
@@ -318,7 +316,6 @@
             // button_wait2
             // 
             button_wait2.BackColor = Color.LightGray;
-            button_wait2.Enabled = false;
             button_wait2.ForeColor = SystemColors.ControlLightLight;
             button_wait2.Location = new Point(15, 72);
             button_wait2.Name = "button_wait2";

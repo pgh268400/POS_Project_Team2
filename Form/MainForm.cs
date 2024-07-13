@@ -5,7 +5,6 @@ namespace POS_Project_Team2
 
     public partial class MainForm : Form
     {
-        private List<List<StockRecord>> saved_products = new();
         private Button[] wait_buttons;
 
         public bool paymentform_purchase = false;   // PaymentForm이 구매로 닫힐 때 대기로 닫힐 때를 구분하기 위해 생성
@@ -46,7 +45,7 @@ namespace POS_Project_Team2
         {
             wait_buttons = new Button[] { button_wait1, button_wait2, button_wait3 };
             foreach (var button in wait_buttons)
-                button.Click += WaitButton_Click;
+                button.Click += wait_button_Click;
         }
 
         // picturebox 배경 투명으로 설정하기
@@ -75,8 +74,8 @@ namespace POS_Project_Team2
         public void enable_wait_button(WaitNumber wait_number)
         {
             // 버튼 전체를 우선 다 비활성화 시킨다
-            foreach (var button in wait_buttons)
-                button.Enabled = false;
+            // foreach (var button in wait_buttons)
+            //    button.Enabled = false;
 
             int index = (int)wait_number - 1;
             // 활성화된 이외의 버튼을 회색으로
@@ -88,7 +87,7 @@ namespace POS_Project_Team2
 
 
             // 해당 버튼만 활성화 시킨다
-            wait_buttons[(int)wait_number - 1].Enabled = true;
+            //wait_buttons[(int)wait_number - 1].Enabled = true;
 
             // 활성화된 버튼을 파란색으로
             wait_buttons[(int)wait_number - 1].BackColor = SystemColors.MenuHighlight;
@@ -98,7 +97,7 @@ namespace POS_Project_Team2
         {
             // DB 에서 결제 내역을 가져온다
             DBMaster db_master = DBMaster.Instance;
-            List<TotalRecord> payment_data = db_master.get_all_total_records();
+            List<TotalRecord> payment_data = db_master.get_all_total_records_data();
 
             // 총 결제 내역 창 열기
             MultiPurposeShowForm log_form = new MultiPurposeShowForm();
@@ -122,7 +121,7 @@ namespace POS_Project_Team2
         {
             // DB 에서 결제 내역을 가져온다
             DBMaster db_master = DBMaster.Instance;
-            var payment_data = db_master.get_all_payments_table();
+            var payment_data = db_master.get_all_payments_table_data();
 
             // 총 결제 내역 창 열기
             MultiPurposeShowForm log_form = new MultiPurposeShowForm();
@@ -138,50 +137,50 @@ namespace POS_Project_Team2
             // MessageBox.Show("현재 대기열 1에서만 작동합니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-
-        private void WaitButton_Click(object sender, EventArgs e)
+        // 대기열 버튼 1/2/3 클릭시 발생
+        private void wait_button_Click(object sender, EventArgs e)
         {
-            //var clickedButton = sender as Button;
-            //int index = Array.IndexOf(wait_buttons, clickedButton);
+            // 대기열 버튼을 클릭하면 해당 대기열 이외에 다른 대기열 버튼의 색을 회색으로 변경
+            Button button = (Button)sender;
+            foreach (var wait_button in wait_buttons)
+            {
+                if (wait_button != button)
+                    wait_button.BackColor = Color.LightGray;
+            }
 
-            //if (index >= 0 && index < saved_products.Count)
-            //{
-            //    var products = saved_products[index];
-            //    var paymentForm = new PaymentForm(products);
-            //    paymentForm.FormClosing += PaymentForm_FormClosing;
-            //    paymentForm.Owner = this;
-            //    FormHelper.show(paymentForm);
-            //}
+            // 누른 버튼을 파란색으로 변경
+            button.BackColor = SystemColors.MenuHighlight;
+
+            // 누른 버튼에 따라 wait_number를 결정
+            WaitNumber active_wait_number = WaitNumber.None;
+            if (button == button_wait1)
+                active_wait_number = WaitNumber.Wait1;
+            else if (button == button_wait2)
+                active_wait_number = WaitNumber.Wait2;
+            else if (button == button_wait3)
+                active_wait_number = WaitNumber.Wait3;
+
+            // 이미 PaymentForm이 열려온 경우 참조(주소)를 얻고
+            // 이미 열려있는 창에 대해 자식폼에 대기열 라벨 클릭을 요구한다.
+            foreach (Form form in Application.OpenForms)
+            {
+                if (form is PaymentForm)
+                {
+                    PaymentForm existing_form = (PaymentForm)form;
+                    existing_form.click_wait_button(active_wait_number);
+                    return;
+                }
+            }
+            // 활성화 내역을 PaymentForm에 전달해 창을 연다
+            PaymentForm payment_form = new PaymentForm(this, active_wait_number);
+            FormHelper.show(payment_form);
+            payment_form.click_wait_button(active_wait_number);
         }
+
+
 
         private void PaymentForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //var closing_form = sender as PaymentForm;
-
-            //if (closing_form != null && !paymentform_purchase)
-            //{
-            //    int index = saved_products.FindIndex(products => products.SequenceEqual(closing_form.get_active_products()));
-            //    if (index >= 0)
-            //    {
-            //        saved_products[index] = closing_form.get_active_products();
-            //    }
-            //    else
-            //    {
-            //        saved_products.Add(closing_form.get_active_products());
-            //        int wait_button_index = saved_products.Count - 1;
-            //        if (wait_button_index < wait_buttons.Length && !paymentform_purchase)
-            //        {
-            //            wait_buttons[wait_button_index].BackColor = Color.Red;
-            //        }
-            //    }
-            //}
-            //else if (closing_form != null && paymentform_purchase)
-            //{
-            //    label_tatal_num_sales.Text = "금일 총 판매 " + total_num_sales + "건";
-            //    label_total_num_profit.Text = "금일 총 수익 " + total_num_profit + "원";
-            //    label_total_previous_payment.Text = total_previous_purchase + "원";
-            //    label_total_previous_purchase.Text = total_previous_purchase + "원";
-            //}
         }
         public void update_wait_button(int index, Color color)
         {
@@ -234,7 +233,7 @@ namespace POS_Project_Team2
         private void button_refund_Click(object sender, EventArgs e)
         {
             DBMaster db_master = DBMaster.Instance;
-            var payment_data = db_master.get_all_payments_table();
+            var payment_data = db_master.get_all_payments_table_data();
 
             // 총 결제 내역 창 열기
             MultiPurposeShowForm log_form = new MultiPurposeShowForm();
@@ -252,7 +251,7 @@ namespace POS_Project_Team2
         {
             // 환불 내역 조회
             DBMaster db_master = DBMaster.Instance;
-            var refund_data = db_master.get_all_refunds_table();
+            var refund_data = db_master.get_all_refunds_table_data();
 
             MultiPurposeShowForm log_form = new MultiPurposeShowForm();
             FormHelper.show(log_form);
@@ -273,10 +272,13 @@ namespace POS_Project_Team2
         // 영수증 조회 버튼
         private void button_get_receipt_Click(object sender, EventArgs e)
         {
-            // 영수증 출력을 위해 영수증 출력 모드로 변경하여 창 열기
-            MultiPurposeShowForm log_form = new MultiPurposeShowForm();
-            log_form.enable_recepit_mode();
-            FormHelper.show(log_form);
+            // DB 에서 영수증 데이터 모두 가져오기
+            DBMaster db_master = DBMaster.Instance;
+            var receipt_data = db_master.get_all_receipt_table_data();
+
+            // 영수증 출력시 별도의 폼 이용
+            ReceiptViewForm receipt_view_form = new ReceiptViewForm(receipt_data);
+            FormHelper.show(receipt_view_form);
         }
 
         // 영수증 출력 버튼
@@ -284,7 +286,7 @@ namespace POS_Project_Team2
         {
             // DB 에서 결제 내역을 가져온다
             DBMaster db_master = DBMaster.Instance;
-            var payment_data = db_master.get_all_payments_table();
+            var payment_data = db_master.get_all_payments_table_data();
 
             MultiPurposeShowForm log_form = new MultiPurposeShowForm();
 
@@ -297,5 +299,6 @@ namespace POS_Project_Team2
             // 총 결제 내역 창 열기
             FormHelper.show(log_form);
         }
+
     }
 }

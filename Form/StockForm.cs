@@ -193,7 +193,7 @@ namespace POS_Project_Team2
         {
             // stock_items 가 비어있으면 DB에서 로드후 stock_items 에 저장
             var db_master = DBMaster.Instance;
-            List<StockRecord> all_stock_list = db_master.get_all_stock_table();
+            List<StockRecord> all_stock_list = db_master.get_all_stock_table_data();
 
             stock_items.Clear();
 
@@ -230,7 +230,7 @@ namespace POS_Project_Team2
         {
             // stock_items 가 비어있으면 DB에서 로드후 stock_items 에 저장
             var db_master = DBMaster.Instance;
-            List<StockRecord> all_stock_list = db_master.get_all_stock_table();
+            List<StockRecord> all_stock_list = db_master.get_all_stock_table_data();
 
             // stock_items를 새로운 BindingList로 초기화하고 all_stock_list의 항목들을 추가합니다.
             stock_items = new BindingList<StockRecord>(all_stock_list);

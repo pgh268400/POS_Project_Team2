@@ -16,6 +16,8 @@ namespace POS_Project_Team2.Class
     {
         // 정적 인스턴스 변수
         private static DBMaster _instance;
+
+        // lock 을 위해 사용하는 변수 (뮤텍스 변수 같은 것)
         private static readonly object _lock = new object();
 
         // 멤버 변수
@@ -23,28 +25,41 @@ namespace POS_Project_Team2.Class
         private const string total_db_path = "total.db";
 
         // 해당 connection 변수를 이용해 db에 접근한다.
+        // 첫 생성자때 연결이 이루어지며, 계속 유지하며 사용하다가 소멸자에서 연결을 끊는다.
         private SQLiteConnection connection;
 
-        // 유저, 총 결제 내역, 환불 내역, 통합 기록 테이블, 등등 테이블의 이름을 저장할 변수
+        // 각 테이블들의 이름
         /*
-          readonly 와 const 의 차이?
-          const는 컴파일 시점에 값이 저장되는 상수
-          readonly는 런타임 시점에 값이 저장되는 상수
+         readonly 와 const 의 차이?
+         const는 컴파일 시점에 값이 저장되는 상수
+         readonly는 런타임 시점에 값이 저장되는 상수
 
-          const : 선언과 동시에 초기화해야 하며, 이후에 변경할 수 없습니다.
-          readonly : 선언 시 또는 클래스 생성자에서 초기화할 수 있으며, 초기화된 후에는 변경할 수 없습니다.
+         const : 선언과 동시에 초기화해야 하며, 이후에 변경할 수 없습니다.
+         readonly : 선언 시 또는 클래스 생성자에서 초기화할 수 있으며, 초기화된 후에는 변경할 수 없습니다.
 
-          readonly는 로그인 id를 객체에 담을 경우 같이, 객체 생성마다 값이 바뀌지만 이후 수정을 하면 안되는 경우에 사용하면 됩니다.
-          const는 절대 변하지 않는 경우, 예를 들어 URI 값이라던가 규정된 연동 키값 등에 활용하면 됩니다.
+         readonly는 로그인 id를 객체에 담을 경우 같이, 객체 생성마다 값이 바뀌지만 이후 수정을 하면 안되는 경우에 사용하면 됩니다.
+         const는 절대 변하지 않는 경우, 예를 들어 URI 값이라던가 규정된 연동 키값 등에 활용하면 됩니다.
 
-          참고 : https://woojoolog.tistory.com/6
-        */
+         참고 : https://woojoolog.tistory.com/6
+       */
         private const string user_table_name = "User",
-                       payment_table_name = "Payment",
-                       refund_table_name = "Refund",
-                       total_record_table_name = "TotalRecord",
-                       stock_table_name = "Stock";
+            payment_table_name = "Payment",
+            refund_table_name = "Refund",
+            total_record_table_name = "TotalRecord",
+            stock_table_name = "Stock",
+            receipt_table_name = "Receipt";
 
+        // 유저, 총 결제 내역, 환불 내역, 통합 기록 테이블, 등등 테이블의 (이름 : 타입) 묶어서 리스트로 저장
+
+        private List<SQLiteTable> all_tables = new()
+        {
+            new SQLiteTable(user_table_name, typeof(UserRecord)),
+            new SQLiteTable(payment_table_name, typeof(PayMentRefundRecord)),
+            new SQLiteTable(refund_table_name, typeof(PayMentRefundRecord)),
+            new SQLiteTable(total_record_table_name, typeof(TotalRecord)),
+            new SQLiteTable(stock_table_name, typeof(StockRecord)),
+            new SQLiteTable(receipt_table_name, typeof(ReceiptRecord))
+        };
 
         // private 생성자 = 싱글톤으로 Instance 프로퍼티에 접근해서만 생성할 수 있게 제한한다.
         private DBMaster()
@@ -65,23 +80,42 @@ namespace POS_Project_Team2.Class
             connection = new SQLiteConnection(connection_string);
             connection.Open();
 
+            // 기존에 테이블이 있는지 확인한다.
+            bool user_table_exist = is_table_exist(user_table_name);
+            bool stock_table_exist = is_table_exist(stock_table_name);
+
             // db 파일 안에 table 들이 없다면 생성한다.
-            if (!is_table_exist(user_table_name))
-                create_user_table();
+            foreach (var table in all_tables)
+            {
+                if (!is_table_exist(table.table_name))
+                {
+                    string create_table_query = generate_create_table_query(table.record_type, table.table_name, true);
+                    create_table(create_table_query, table.table_name, true);
+                }
+            }
 
-            if (!is_table_exist(payment_table_name))
-                create_payment_table();
+            // 유저 테이블이 존재하지 않았던 경우에만 기본 데이터 생성
+            if (!user_table_exist)
+            {
+                set_default_user_table_value();
+            }
 
-            if (!is_table_exist(refund_table_name))
-                create_refund_table();
-
-            if (!is_table_exist(total_record_table_name))
-                create_total_record_table();
-
-            if (!is_table_exist(stock_table_name))
-                create_stock_table();
+            // 재고 테이블이 존재하지 않았던 경우에만 기본 데이터 생성
+            if (!stock_table_exist)
+            {
+                set_default_stock_table_value();
+            }
         }
 
+        // 소멸자
+        ~DBMaster()
+        {
+            // 소멸시 db 연결을 끊는다.
+            connection.Close();
+        }
+
+        // ======================================================================================================
+        // DBMasterType에 정의된 DB의 타입을 스키마로 이용해 Table 쿼리를 생성한다.
         /*
           Class 타입을 참고해서 자동으로 테이블 생성 쿼리를 작성하는 함수
           이 함수를 호출함으로써 테이블의 스키마를 지키며 테이블을 생성할 수 있다.
@@ -89,12 +123,15 @@ namespace POS_Project_Team2.Class
 
           + 무조건 첫 번째 열은 Id로 지정하며, AUTO INCREMENT로 설정한다.
         */
-        public string generate_create_table_query<T>(string table_name, bool if_not_exists = true)
+        public string generate_create_table_query(Type table_type, string table_name, bool if_not_exists = true)
         {
-            PropertyInfo[] properties = typeof(T).GetProperties();
+            PropertyInfo[] inherited_properties = table_type.BaseType?.GetProperties(BindingFlags.Public | BindingFlags.Instance) ?? Array.Empty<PropertyInfo>();
+            PropertyInfo[] current_properties = table_type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+
             string columns = "";
 
-            foreach (PropertyInfo property in properties)
+            // 상속된 속성들을 먼저 처리
+            foreach (PropertyInfo property in inherited_properties)
             {
                 string column_name = property.Name;
                 string column_type = get_sqlite_type(property.PropertyType);
@@ -113,6 +150,28 @@ namespace POS_Project_Team2.Class
                     nullability = "";
                 }
 
+                columns += $"{column_name} {column_type} {nullability}, ";
+            }
+
+            // 현재 클래스의 속성들을 처리
+            foreach (PropertyInfo property in current_properties)
+            {
+                string column_name = property.Name;
+                string column_type = get_sqlite_type(property.PropertyType);
+
+                bool is_nullable = !property.PropertyType.IsValueType
+                                   ||
+                                   (property.PropertyType.IsGenericType
+                                    &&
+                                    property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>));
+                string nullability = is_nullable ? "NULL" : "NOT NULL";
+
+                // Id 열에 대해 AUTOINCREMENT 추가
+                if (string.Equals(column_name, "Id", StringComparison.OrdinalIgnoreCase))
+                {
+                    column_type = "INTEGER PRIMARY KEY AUTOINCREMENT";
+                    nullability = "";
+                }
 
                 columns += $"{column_name} {column_type} {nullability}, ";
             }
@@ -121,10 +180,12 @@ namespace POS_Project_Team2.Class
 
             string if_not_exists_clause = if_not_exists ? "IF NOT EXISTS " : "";
 
-            string create_table_query = $"CREATE TABLE {if_not_exists_clause} {table_name} ({columns});";
+            string create_table_query = $"CREATE TABLE {if_not_exists_clause}{table_name} ({columns});";
             return create_table_query;
         }
 
+        // generate_create_table_query 에서 사용하는 함수
+        // C#의 데이터 타입을 SQLite 데이터 타입으로 변환하는 함수
         public string get_sqlite_type(Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
@@ -166,15 +227,9 @@ namespace POS_Project_Team2.Class
             }
             throw new NotSupportedException($"Type {type.Name} is not supported");
         }
+        // ======================================================================================================
 
-        // 소멸자
-        ~DBMaster()
-        {
-            // 소멸시 db 연결을 끊는다.
-            connection.Close();
-        }
-
-        // db 파일 삭제 함수
+        // db 파일 전체 삭제 함수
         public void clear_db_file()
         {
             try
@@ -201,7 +256,6 @@ namespace POS_Project_Team2.Class
             // _instance 초기화, 이 구문에 의해 현재 싱글턴 객체는 버려지고
             // 다음에 DBMaster.Instance 로 접근할 때 새로운 객체가 생성된다.
             _instance = null;
-
         }
 
         // 테이블이 존재하는지 확인하는 함수
@@ -215,19 +269,18 @@ namespace POS_Project_Team2.Class
             }
         }
 
-        // 생성 관련 ==============================================================
+        // 생성 & 기본값 관련 ==============================================================
         // 테이블 생성 공통 함수
         private void create_table(string full_query, string table_name, bool enable_debug_text = false)
         {
             using (var command = new SQLiteCommand(full_query, connection))
             {
                 /*
-                     SQL에서는 테이블 이름과 같은 객체 식별자는 매개 변수로 전달할 수 없다.
+                     주의 : SQL에서는 테이블 이름과 같은 객체 식별자는 매개 변수로 전달할 수 없다.
                      C#의 문자열 보간을 이용해야 한다. / 다만 이러면 SQL 인젝션에 취약해진다.
                      물론 여기선 사용자가 입력하는 부분이 없으니 상관없다.
                      // command.Parameters.AddWithValue("@Tablename", user_table_name);
                 */
-
                 // ExecuteNonQuery = SQL 명령문을 실행하지만 결과를 반환하지 않는 경우에 사용
                 // NonQuery = 결과 집합을 반환하지 않는다는 의미
                 command.ExecuteNonQuery();
@@ -237,13 +290,9 @@ namespace POS_Project_Team2.Class
             }
         }
 
-        // 유저 테이블 생성
-        private void create_user_table()
+        // 유저 테이블 기본값 설정
+        private void set_default_user_table_value()
         {
-            // 파일로 작업하지만 다루는건 당연히 SQL문법으로 다룬다.
-            string create_table_query = generate_create_table_query<UserRecord>(user_table_name);
-            create_table(create_table_query, user_table_name, true);
-
             // 새로 만들었으면 기본 유저 3개를 추가한다. (관리자)
             // 비밀번호의 경우 bcrypt로 해싱한 값을 넣어준다.
             insert_user_data("pgh268400@naver.com", "$2a$11$AGSymNxbp5.vNByqEVqx0OnEuml73PhmDcs4P.qdWF66uf7CdnZV2");
@@ -251,33 +300,9 @@ namespace POS_Project_Team2.Class
             insert_user_data("admin", "$2a$12$fayeaZIXIEqMVv4IkMDDaOb0KhE4a65/zel5oHJ9k..E2Q/EytTFu");
         }
 
-        // 결제 테이블 생성
-        private void create_payment_table()
+        // 재고 테이블 기본값 설정
+        private void set_default_stock_table_value()
         {
-            string query = generate_create_table_query<PayMentRefundRecord>(payment_table_name);
-            create_table(query, payment_table_name, true);
-        }
-
-        // 환불 테이블 생성
-        private void create_refund_table()
-        {
-            string query = generate_create_table_query<PayMentRefundRecord>(refund_table_name);
-            create_table(query, refund_table_name, true);
-        }
-
-        // 총 결제 기록 테이블 생성
-        private void create_total_record_table()
-        {
-            string query = generate_create_table_query<TotalRecord>(total_record_table_name);
-            create_table(query, total_record_table_name, true);
-        }
-
-        // 재고 테이블 생성
-        private void create_stock_table()
-        {
-            string query = generate_create_table_query<StockRecord>(stock_table_name);
-            create_table(query, stock_table_name, true);
-
             // 기본 재고 데이터 설정
             // 데이터 추가
             insert_stock_data(new StockRecord { Id = 1, ItemName = "싸인펜", Cost = 1000, Count = 30 });
@@ -297,7 +322,7 @@ namespace POS_Project_Team2.Class
 
         // 조회 관련 ==============================================================
         // 모든 행을 전체 조회하는 공통 함수 (제네릭 사용)
-        private List<T> get_all_table<T>(string table_name, Func<SQLiteDataReader, T> read_record)
+        private List<T> get_all_table_data<T>(string table_name, Func<SQLiteDataReader, T> read_record)
         {
             var records = new List<T>();
             string select_query = $"SELECT * FROM {table_name}";
@@ -310,14 +335,13 @@ namespace POS_Project_Team2.Class
                     records.Add(read_record(reader));
                 }
             }
-
             return records;
         }
 
         // 유저 테이블의 모든 데이터 가져오기
-        public List<UserRecord> get_all_users_table()
+        public List<UserRecord> get_all_users_table_data()
         {
-            return get_all_table(user_table_name, reader => new UserRecord
+            return get_all_table_data(user_table_name, reader => new UserRecord
             {
                 Id = reader.GetInt32(0),
                 Username = reader.GetString(1),
@@ -326,9 +350,9 @@ namespace POS_Project_Team2.Class
         }
 
         // 결제 테이블의 모든 데이터 가져오기
-        public List<PayMentRefundRecord> get_all_payments_table()
+        public List<PayMentRefundRecord> get_all_payments_table_data()
         {
-            return get_all_table(payment_table_name, reader => new PayMentRefundRecord
+            return get_all_table_data(payment_table_name, reader => new PayMentRefundRecord
             {
                 Id = reader.GetInt32(0),
                 Time = reader.GetDateTime(1),
@@ -342,9 +366,9 @@ namespace POS_Project_Team2.Class
         }
 
         // 환불 테이블의 모든 데이터 가져오기
-        public List<PayMentRefundRecord> get_all_refunds_table()
+        public List<PayMentRefundRecord> get_all_refunds_table_data()
         {
-            return get_all_table(refund_table_name, reader => new PayMentRefundRecord
+            return get_all_table_data(refund_table_name, reader => new PayMentRefundRecord
             {
                 Id = reader.GetInt32(0),
                 Time = reader.GetDateTime(1),
@@ -359,9 +383,9 @@ namespace POS_Project_Team2.Class
 
         // 총 결제기록의 모든 데이터 가져오기
         // 총 결제 기록을 조회하는 메서드
-        public List<TotalRecord> get_all_total_records()
+        public List<TotalRecord> get_all_total_records_data()
         {
-            return get_all_table(total_record_table_name, reader => new TotalRecord
+            return get_all_table_data(total_record_table_name, reader => new TotalRecord
             {
                 Id = reader.GetInt32(0),
                 Time = reader.GetDateTime(1),
@@ -376,14 +400,37 @@ namespace POS_Project_Team2.Class
         }
 
         // 재고 테이블의 모든 데이터 가져오기
-        public List<StockRecord> get_all_stock_table()
+        public List<StockRecord> get_all_stock_table_data()
         {
-            return get_all_table(stock_table_name, reader => new StockRecord
+            return get_all_table_data(stock_table_name, reader => new StockRecord
             {
                 Id = reader.GetInt32(0),
                 ItemName = reader.GetString(1),
                 Cost = reader.GetInt32(2),
                 Count = reader.GetInt32(3)
+            });
+        }
+
+        // 영수증 테이블의 모든 데이터 가져오기
+        public List<ReceiptRecord> get_all_receipt_table_data()
+        {
+            return get_all_table_data(receipt_table_name, reader => new ReceiptRecord
+            {
+                Id = reader.GetInt32(0),
+                TerminalNumber = reader.GetString(1),
+                SlipNumber = reader.GetString(2),
+                Merchant = reader.GetString(3),
+                PointHolder = reader.GetString(4),
+                BusinessNumber = reader.GetString(5),
+                TelNumber = reader.GetString(6),
+                Amount = reader.GetInt32(7),
+                Vat = reader.GetInt32(8),
+                Total = reader.GetInt32(9),
+                CardName = reader.GetString(10),
+                CardNumber = reader.GetString(11),
+                IsInstallment = reader.GetBoolean(12),
+                PayDay = reader.GetDateTime(13),
+                ApprovalNumber = reader.GetString(14)
             });
         }
 
@@ -540,6 +587,33 @@ namespace POS_Project_Team2.Class
                 command.Parameters.AddWithValue("@ItemName", record.ItemName);
                 command.Parameters.AddWithValue("@Cost", record.Cost);
                 command.Parameters.AddWithValue("@Count", record.Count);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        // 영수증 테이블에 데이터 삽입
+        public void insert_receipt_data(ReceiptRecord record)
+        {
+            string insert_query = $@"
+                                    INSERT INTO {receipt_table_name} 
+                                    (TerminalNumber, SlipNumber, Merchant, PointHolder, BusinessNumber, TelNumber, Amount, Vat, Total, CardName, CardNumber, IsInstallment, PayDay, ApprovalNumber) 
+                                    VALUES (@TerminalNumber, @SlipNumber, @Merchant, @PointHolder, @BusinessNumber, @TelNumber, @Amount, @Vat, @Total, @CardName, @CardNumber, @IsInstallment, @PayDay, @ApprovalNumber)";
+            using (var command = new SQLiteCommand(insert_query, connection))
+            {
+                command.Parameters.AddWithValue("@TerminalNumber", record.TerminalNumber);
+                command.Parameters.AddWithValue("@SlipNumber", record.SlipNumber);
+                command.Parameters.AddWithValue("@Merchant", record.Merchant);
+                command.Parameters.AddWithValue("@PointHolder", record.PointHolder);
+                command.Parameters.AddWithValue("@BusinessNumber", record.BusinessNumber);
+                command.Parameters.AddWithValue("@TelNumber", record.TelNumber);
+                command.Parameters.AddWithValue("@Amount", record.Amount);
+                command.Parameters.AddWithValue("@Vat", record.Vat);
+                command.Parameters.AddWithValue("@Total", record.Total);
+                command.Parameters.AddWithValue("@CardName", record.CardName);
+                command.Parameters.AddWithValue("@CardNumber", record.CardNumber);
+                command.Parameters.AddWithValue("@IsInstallment", record.IsInstallment);
+                command.Parameters.AddWithValue("@PayDay", record.PayDay);
+                command.Parameters.AddWithValue("@ApprovalNumber", record.ApprovalNumber);
                 command.ExecuteNonQuery();
             }
         }

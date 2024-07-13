@@ -31,4 +31,5 @@ namespace POS_Project_Team2.Class
         Number,
         Name
     }
+
 }

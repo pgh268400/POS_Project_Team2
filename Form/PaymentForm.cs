@@ -33,15 +33,35 @@ namespace POS_Project_Team2
         int total_price_purchase = 0;
 
         // 부모 폼 참조(=주소로 원본 접근)를 위해 생성자에서 받아온다.
-        public PaymentForm(MainForm main_form = null)
+        public PaymentForm(MainForm main_form = null, WaitNumber init_wait_number = WaitNumber.None)
         {
             InitializeComponent();
 
             if (main_form != null)
                 this.main_form = main_form;
 
+            // 대기열 번호가 비어있다면 기본은 1번 대기열로 설정
+            if (active_wait_number == WaitNumber.None)
+                active_wait_number = WaitNumber.Wait1;
+
+            // 생성자의 init_wait_number가 WaitNumber.None 이 아니면 그 값으로 설정
+            // 반드시 위 기본 대기열 1번 설정 이후에 읽어들여야 한다.
+            if (init_wait_number != WaitNumber.None)
+                active_wait_number = init_wait_number;
+
             // 창 수정 하지 못하게 막기
             FormHelper.disable_resize(this);
+        }
+
+        // 대기열 번호를 입력으로 받아 대기열 라벨을 클릭해주는 함수
+        public void click_wait_button(WaitNumber wait_number)
+        {
+            if (wait_number == WaitNumber.Wait1)
+                wait_click_event(label_wait1, EventArgs.Empty);
+            else if (wait_number == WaitNumber.Wait2)
+                wait_click_event(label_wait2, EventArgs.Empty);
+            else if (wait_number == WaitNumber.Wait3)
+                wait_click_event(label_wait3, EventArgs.Empty);
         }
 
         private void PaymentForm_Load(object sender, EventArgs e)
@@ -50,9 +70,6 @@ namespace POS_Project_Team2
             if (products == null)
                 init_products();
 
-            // 대기열 번호가 비어있다면 기본은 1번 대기열로 설정
-            if (active_wait_number == WaitNumber.None)
-                active_wait_number = WaitNumber.Wait1;
 
             // 실시간 시계 등록 및 시작
             register_realtime_clock();
@@ -206,7 +223,7 @@ namespace POS_Project_Team2
         // 선택한 물품을 입력받아, 리스트뷰에 뿌리는 함수
         private void set_listview_item_and_update_money(List<StockRecord> products)
         {
-            // 기존에 있던 물품 지움. 이전 물건들 List Products에 저장되어있어서 지우지않으면 중복으로 생김
+            // 기존에 있던 물품 지움. 이전 물건들 list Products에 저장되어있어서 지우지않으면 중복으로 생김
             listview_product.Items.Clear();
 
             // 기존 물품 정보 초기화
@@ -317,6 +334,7 @@ namespace POS_Project_Team2
             // 이렇게 설계한 이유는 재고 선택 창을 껐다 켜도 그대로 데이터를 유지시키기 위해서다.
             if (stock_form.ShowDialog() == DialogResult.OK)
             {
+
                 // 선택 성공한 아이템을 가져와 변수로 저장한다.
                 List<StockRecord> selected_items = stock_form.select_items;
 
@@ -328,7 +346,19 @@ namespace POS_Project_Team2
                   참조(주소로 접근) 하는 방식으로 추가하므로,
                   원본 리스트 안에 추가되는 것이다.
                 */
+                active_products.Clear(); // 추가전 기존 리스트 초기화
                 active_products.AddRange(selected_items);
+
+
+                // active_products 리스트 출력
+                Console.WriteLine("active_products===========");
+                foreach (var product in active_products)
+                {
+                    Console.WriteLine(product.Id);
+                    Console.WriteLine(product.ItemName);
+                    Console.WriteLine(product.Cost);
+                    Console.WriteLine(product.Count);
+                }
 
                 // 리스트뷰를 업데이트한다
                 set_listview_item_and_update_money(active_products);
@@ -476,13 +506,6 @@ namespace POS_Project_Team2
             var active_product = get_active_products();
             active_product.Clear();
 
-            MainForm main_form = (MainForm)this.Owner;
-            main_form.update_wait_button(0, Color.Gray);
-            main_form.paymentform_purchase = true;
-            main_form.total_num_sales += 1;
-            main_form.total_num_profit += total_price_purchase;
-            main_form.total_previous_purchase = total_price_purchase;
-
             // 받을 금액 초기화
             label_total_amount.Text = "0";
 
@@ -527,8 +550,34 @@ namespace POS_Project_Team2
             MessageBox.Show("결제시 포인트 등록이 가능합니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        // 대기 버튼
         private void button_wait_Click(object sender, EventArgs e)
         {
+            // 빈 대기열이 있는지 체크하는 변수
+            bool is_empty = false;
+
+            // 대기열을 검색하면서 현재 대기열을 제외하고 빈 대기열이 있는지 확인하고,
+            // 빈 대기열이 있는 경우 그 대기열로 이동한다.
+            for (int i = 0; i < products.Count; i++)
+            {
+                if (products[i].wait_number != active_wait_number)
+                {
+                    // 현재 대기열을 제외하고 빈 대기열이 있는지 확인한다.
+                    if (products[i].stock_records.Count == 0)
+                    {
+                        // 빈 대기열이 있는 경우 그 대기열로 이동한다.
+                        click_wait_button(products[i].wait_number);
+                        is_empty = true;
+                        MessageBox.Show($"빈 대기열인 {(int)products[i].wait_number}번 으로 이동했습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+            }
+
+            if (!is_empty)
+            {
+                MessageBox.Show("빈 대기열이 없습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         // 매번 get_products_by_wait_number(active_wait_number) 로 호출해서
