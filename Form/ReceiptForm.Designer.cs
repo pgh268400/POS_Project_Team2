@@ -355,7 +355,7 @@
             Controls.Add(label_ic_approval);
             ForeColor = SystemColors.ControlLight;
             Name = "ReceiptForm";
-            Text = "ReceiptForm";
+            Text = "POS System";
             Load += ReceiptForm_Load;
             table_layout_panel_amounts.ResumeLayout(false);
             table_layout_panel_amounts.PerformLayout();

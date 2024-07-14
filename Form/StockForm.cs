@@ -270,32 +270,58 @@ namespace POS_Project_Team2
         }
 
 
+
+        // data grid view 의 특정 행(인덱스)을 인자로 받아서, 그 행의 모든 데이터를 반환
+        private StockRecord get_grid_view_data_by_index(int index)
+        {
+            return new StockRecord
+            {
+                Id = Convert.ToInt32(datagridview_stock.Rows[index].Cells[0].Value),
+                ItemName = datagridview_stock.Rows[index].Cells[1].Value.ToString(),
+                Cost = Convert.ToInt32(datagridview_stock.Rows[index].Cells[2].Value),
+                Count = Convert.ToInt32(datagridview_stock.Rows[index].Cells[3].Value)
+            };
+        }
+
+        // Stock Record 를 받아서 data grid view 의 특정 행에 Update 하는 함수
+        private void update_grid_view_by_index(int index, StockRecord stock_record)
+        {
+            datagridview_stock.Rows[index].Cells[0].Value = stock_record.Id;
+            datagridview_stock.Rows[index].Cells[1].Value = stock_record.ItemName;
+            datagridview_stock.Rows[index].Cells[2].Value = stock_record.Cost;
+            datagridview_stock.Rows[index].Cells[3].Value = stock_record.Count;
+        }
+
         private bool search_item(SearchBy search_by, string keyword)
         {
+            // 모든 행을 반복하며 검색어와 일치하는 행을 찾는다.
             for (int i = 0; i < datagridview_stock.Rows.Count; i++)
             {
+                // 먼저 해당 행의 모든 데이터를 얻는다.
+                StockRecord row_data = get_grid_view_data_by_index(i);
+
+                // 찾을 때 비교할 값
                 string cell_value = "";
-                string item_name = "";
-                string item_count = "";
+
+                // 아이템 이름과 개수
+                string item_name = row_data.ItemName;
+                string item_count = row_data.Count.ToString();
 
                 if (search_by == SearchBy.Number)
-                {
-                    cell_value = datagridview_stock.Rows[i].Cells[0].Value?.ToString(); // No 컬럼은 인덱스 0
-                    item_name = datagridview_stock.Rows[i].Cells[1].Value?.ToString(); // 물품명은 인덱스 1
-                    item_count = datagridview_stock.Rows[i].Cells[3].Value?.ToString(); // 수량은 인덱스 3
-                }
+                    cell_value = row_data.Id.ToString(); // 검색 방식이 숫자인 경우 비교할 셀 값은 아이템 번호 (id)
                 else if (search_by == SearchBy.Name)
-                {
-                    cell_value = datagridview_stock.Rows[i].Cells[1].Value?.ToString(); // 물품명 컬럼은 인덱스 1
-                    item_count = datagridview_stock.Rows[i].Cells[3].Value?.ToString(); // 수량은 인덱스 3
-                }
+                    cell_value = row_data.ItemName; // 검색 방식이 이름인 경우 비교할 셀 값은 아이템 이름
 
+                // cell_value 가 비지 않았으면서, cell_value 가 검색어와 일치하는 경우
                 if (cell_value != null && cell_value == keyword)
                 {
-                    select_item(i, item_name, Int32.Parse(item_count));
+                    // 해당 행을 선택한다.
+                    select_item(i, item_name, Convert.ToInt32(item_count));
                     return true;
                 }
             }
+
+            // 위 for문이 다 돌았는데 return 되지 않았다면 검색에 실패한 것. false 값을 반환.
             return false;
         }
 
@@ -377,18 +403,18 @@ namespace POS_Project_Team2
                 return;
             }
 
-            int id = int.Parse(datagridview_stock.Rows[selected].Cells[0].Value.ToString()); // 아이템 번호 (unique id)
-            string str_item_cost = datagridview_stock.Rows[selected].Cells[2].Value.ToString(); // 문자열로 나타난 가격
-            int item_cost = Convert.ToInt32(str_item_cost); // 아이템 가격을 정수로 변환
+            // 선택된 행의 데이터 가져오기
+            StockRecord selected_item = get_grid_view_data_by_index(selected);
 
-            int item_count = int.Parse(textbox_count.Text); // 아이템 개수를 정수로 변환
-            string item_name = datagridview_stock.Rows[selected].Cells[1].Value.ToString(); // 아이템 이름
+            int id = selected_item.Id; // 아이템 번호 (unique id)
+            int item_cost = selected_item.Cost; // 아이템 가격
 
-            string str_stock = datagridview_stock.Rows[selected].Cells[3].Value.ToString(); // 문자열로 나타난 재고
-            int stock = Convert.ToInt32(str_stock);
+            int request_item_count = int.Parse(textbox_count.Text); // 요구한 아이템 개수
+            string item_name = selected_item.ItemName; // 아이템 이름
+            int stock = selected_item.Count; // 존재하는 아이템 재고
 
             // 선택전에 재고 이상의 물건을 주문하는지 검사
-            if (item_count > stock)
+            if (request_item_count > stock)
             {
                 MessageBox.Show("재고 이상의 물품을 주문할 수 없습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -404,7 +430,7 @@ namespace POS_Project_Team2
                 {
                     // 이미 존재하는 아이템의 수량과 총 가격을 업데이트
                     int existing_count = int.Parse(item.SubItems[2].Text);
-                    int new_count = existing_count + item_count;
+                    int new_count = existing_count + request_item_count;
                     item.SubItems[2].Text = new_count.ToString();
                     item.SubItems[4].Text = (new_count * item_cost).ToString();
                     is_item_already_exist = true;
@@ -417,15 +443,15 @@ namespace POS_Project_Team2
             {
                 ListViewItem listview_item = new ListViewItem(id.ToString());
                 listview_item.SubItems.Add(item_name);
-                listview_item.SubItems.Add(item_count.ToString());
+                listview_item.SubItems.Add(request_item_count.ToString());
                 listview_item.SubItems.Add(item_cost.ToString());
-                listview_item.SubItems.Add((item_cost * item_count).ToString());
+                listview_item.SubItems.Add((item_cost * request_item_count).ToString());
 
                 listview_selected.Items.Add(listview_item); // Listview에 추가
             }
 
             // 선택하기가 완료된 경우 재고 개수를 stock items 에 반영 시킨다
-            stock_items[selected].Count -= item_count;
+            stock_items[selected].Count -= request_item_count;
 
             /*
               주의 : 결제 전까진 제고 데이터를 DB에 쓰기 하지 않는다.
@@ -458,9 +484,6 @@ namespace POS_Project_Team2
             // 수량 옆에 선택 버튼도 비활성화
             button_select.Enabled = false;
         }
-
-
-
 
         // 결제창 추가하기
         private void button_add_into_payment_Click(object sender, EventArgs e)
@@ -674,32 +697,6 @@ namespace POS_Project_Team2
             }
 
             return items;
-        }
-
-
-        private void StockForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            //if (is_closed_by_payment)
-            //{
-            //    is_closed_by_payment = !is_closed_by_payment;
-            //    return;
-            //}
-
-            //// 결제창에서 리스트뷰 아이템을 가져온다
-            //List<string> payment_list_item = payment_form.get_all_listview_item();
-
-            //// 현재 폼의 리스트뷰 아이템을 가져온다
-            //List<string> stock_list_item = get_all_listview_item();
-
-            //// 두 리스트를 비교한다
-            //bool is_different = !payment_list_item.SequenceEqual(stock_list_item);
-
-            //if (is_different)
-            //{
-            //    DialogResult result = MessageBox.Show("선택한 항목을 결제창에 추가하시거나, 주문을 취소해주세요.", "경고", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    e.Cancel = true; // 종료 취소
-            //}
-
         }
     }
 }

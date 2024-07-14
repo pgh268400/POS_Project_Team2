@@ -62,6 +62,7 @@ namespace POS_Project_Team2.Class
         };
 
         // private 생성자 = 싱글톤으로 Instance 프로퍼티에 접근해서만 생성할 수 있게 제한한다.
+        // 해당 생성자는 직접 호출이 불가하다.
         private DBMaster()
         {
             /*
@@ -72,15 +73,15 @@ namespace POS_Project_Team2.Class
             string connection_string = $"Data Source={total_db_path};Version=3;";
 
             /*
-              db 연결
+              SQLite DB 연결
               속도 저하를 막기 위해 연결을 유지할 것이기에, 자동으로 해제 시키는 using은 사용하지 않고 소멸자에서 Close 한다.
               매번 Open 하는 경우 db 파일을 열기 위해 File I/O 가 지속적으로 발생해서 성능이 떨어진다.
-              일반적으로 db에서 성능 저하가 가장 큰 부분(비용이 큰 부분) 이 첫 접속이라고 한다.
+              어디에선가 줏어들은 기억으로는 일반적으로 DB에서 성능 저하가 가장 큰 부분(= 비용이 큰 부분)이 첫 접속이라고 한다.
             */
             connection = new SQLiteConnection(connection_string);
             connection.Open();
 
-            // 기존에 테이블이 있는지 확인한다.
+            // 기존에 유저, 재고 테이블이 있는지 확인한다.
             bool user_table_exist = is_table_exist(user_table_name);
             bool stock_table_exist = is_table_exist(stock_table_name);
 
@@ -94,23 +95,21 @@ namespace POS_Project_Team2.Class
                 }
             }
 
-            // 유저 테이블이 존재하지 않았던 경우에만 기본 데이터 생성
+            // 유저 테이블이 존재하지 않았던 경우에만 기본 데이터 생성 (초기 1회만 실행)
             if (!user_table_exist)
-            {
                 set_default_user_table_value();
-            }
 
-            // 재고 테이블이 존재하지 않았던 경우에만 기본 데이터 생성
+
+            // 재고 테이블이 존재하지 않았던 경우에만 기본 데이터 생성 (초기 1회만 실행)
             if (!stock_table_exist)
-            {
                 set_default_stock_table_value();
-            }
         }
 
         // 소멸자
         ~DBMaster()
         {
-            // 소멸시 db 연결을 끊는다.
+            // 소멸시 DB 연결을 끊는다.
+            // 그 전까지 DB 연결은 유지된다.
             connection.Close();
         }
 
@@ -123,7 +122,7 @@ namespace POS_Project_Team2.Class
 
           + 무조건 첫 번째 열은 Id로 지정하며, AUTO INCREMENT로 설정한다.
         */
-        public string generate_create_table_query(Type table_type, string table_name, bool if_not_exists = true)
+        private string generate_create_table_query(Type table_type, string table_name, bool if_not_exists = true)
         {
             PropertyInfo[] inherited_properties = table_type.BaseType?.GetProperties(BindingFlags.Public | BindingFlags.Instance) ?? Array.Empty<PropertyInfo>();
             PropertyInfo[] current_properties = table_type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
@@ -186,7 +185,7 @@ namespace POS_Project_Team2.Class
 
         // generate_create_table_query 에서 사용하는 함수
         // C#의 데이터 타입을 SQLite 데이터 타입으로 변환하는 함수
-        public string get_sqlite_type(Type type)
+        private string get_sqlite_type(Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {

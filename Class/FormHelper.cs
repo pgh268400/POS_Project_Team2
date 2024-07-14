@@ -1,11 +1,10 @@
 ﻿namespace POS_Project_Team2.Class
 {
-    // 폼과 관련된 모든것의 작업을 도와주는 도우미 클래스
-
     using System.Collections.Generic;
     using System.Drawing.Drawing2D;
     using System.Windows.Forms;
 
+    // 폼과 관련된 모든것의 작업을 도와주는 FormHelper 객체의 설계도 (Class)
     public static class FormHelper
     {
 

@@ -258,7 +258,6 @@
             Controls.Add(groupbox_current_stock);
             Name = "StockForm";
             Text = "POS System";
-            FormClosing += StockForm_FormClosing;
             Load += DataForm_Load;
             ((System.ComponentModel.ISupportInitialize)datagridview_stock).EndInit();
             groupbox_current_stock.ResumeLayout(false);

@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             listView1 = new ListView();
+            columnHeaderId = new ColumnHeader();
             columnHeaderTerminalNumber = new ColumnHeader();
             columnHeaderSlipNumber = new ColumnHeader();
             columnHeaderMerchant = new ColumnHeader();
@@ -43,7 +44,6 @@
             columnHeaderIsInstallment = new ColumnHeader();
             columnHeaderTransactionDatetime = new ColumnHeader();
             columnHeaderApprovalNumber = new ColumnHeader();
-            columnHeaderId = new ColumnHeader();
             SuspendLayout();
             // 
             // listView1
@@ -55,6 +55,10 @@
             listView1.TabIndex = 0;
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.View = View.Details;
+            // 
+            // columnHeaderId
+            // 
+            columnHeaderId.Text = "Id";
             // 
             // columnHeaderTerminalNumber
             // 
@@ -126,10 +130,6 @@
             columnHeaderApprovalNumber.Text = "승인번호";
             columnHeaderApprovalNumber.Width = 120;
             // 
-            // columnHeaderId
-            // 
-            columnHeaderId.Text = "Id";
-            // 
             // ReceiptViewForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -137,7 +137,7 @@
             ClientSize = new Size(947, 516);
             Controls.Add(listView1);
             Name = "ReceiptViewForm";
-            Text = "ReceiptViewForm";
+            Text = "POS System";
             ResumeLayout(false);
         }
 
