@@ -86,7 +86,7 @@ namespace POS_Project_Team2
 
 
         // 영수증 출력 활성화시 해당 함수 호출
-        public void enable_recepit_mode()
+        public void enable_receipt_mode()
         {
             label_show.Text = "* 영수증 출력을 원하시는 경우 요소를 오른쪽 클릭후 출력을 눌러주세요";
 
@@ -103,14 +103,14 @@ namespace POS_Project_Team2
             // label_show.Text = "* 환불을 원하시는 경우 요소를 오른쪽 클릭후 환불을 눌러주세요";
 
             context_menu = new ContextMenuStrip();
-            var refundMenuItem = new ToolStripMenuItem("환불", null, OnRefundMenuItemClick);
+            var refundMenuItem = new ToolStripMenuItem("환불", null, on_refund_menu_item_Click);
             context_menu.Items.Add(refundMenuItem);
 
             listView1.MouseUp += ListView1_MouseUp;
         }
 
         // 환불 메뉴 클릭시
-        private void OnRefundMenuItemClick(object? sender, EventArgs e)
+        private void on_refund_menu_item_Click(object? sender, EventArgs e)
         {
             if (selected_item == null) return;
 

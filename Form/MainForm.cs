@@ -1,18 +1,10 @@
 ﻿using POS_Project_Team2.Class;
-
 namespace POS_Project_Team2
 {
 
     public partial class MainForm : Form
     {
         private Button[] wait_buttons;
-
-        public bool paymentform_purchase = false;   // PaymentForm이 구매로 닫힐 때 대기로 닫힐 때를 구분하기 위해 생성
-        public int total_num_sales = 0;             // 금일 총 판매 건수
-        public int total_num_refund = 0;            // 금일 총 환불 건수
-        public int total_num_profit = 0;            // 금일 총 수익
-        public int total_previous_purchase = 0;     // 이전 구매액
-
 
         public MainForm()
         {
@@ -68,7 +60,6 @@ namespace POS_Project_Team2
         private void button_payment_Click(object sender, EventArgs e)
         {
             PaymentForm payment_form = new PaymentForm(this);
-            payment_form.FormClosing += PaymentForm_FormClosing;
             payment_form.Owner = this;
             FormHelper.show(payment_form);
         }
@@ -180,20 +171,6 @@ namespace POS_Project_Team2
             payment_form.click_wait_button(active_wait_number);
         }
 
-
-
-        private void PaymentForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-        }
-        public void update_wait_button(int index, Color color)
-        {
-            if (index >= 0 && index < wait_buttons.Length)
-            {
-                wait_buttons[index].BackColor = color;
-            }
-        }
-
-
         // 모든 기록 삭제 버튼
         private void button_clear_all_Click(object sender, EventArgs e)
         {
@@ -223,13 +200,6 @@ namespace POS_Project_Team2
                 }
 
             }
-        }
-
-        // 환불 라벨 업데이트 함수
-        public void update_refund_label()
-        {
-            total_num_refund++;
-            label_total_num_refund.Text = "금일 총 환불 " + total_num_refund + "건";
         }
 
         // 환불 버튼
@@ -262,16 +232,6 @@ namespace POS_Project_Team2
 
         }
 
-        // 환불 후 MainForm의 라벨 업데이트하는 함수
-        public void update_label()
-        {
-            label_tatal_num_sales.Text = "금일 총 판매 " + total_num_sales + "건";
-            label_total_num_profit.Text = "금일 총 수익 " + total_num_profit + "원";
-            label_total_num_refund.Text = "금일 총 환불 " + total_num_refund + "건";
-            label_total_previous_payment.Text = total_previous_purchase + "원";
-            label_total_previous_purchase.Text = total_previous_purchase + "원";
-        }
-
         // 영수증 조회 버튼
         private void button_get_receipt_Click(object sender, EventArgs e)
         {
@@ -297,7 +257,7 @@ namespace POS_Project_Team2
             log_form.set_form_role(payment_data, "");
 
             // 영수증 모드 활성화
-            log_form.enable_recepit_mode();
+            log_form.enable_receipt_mode();
 
             // 총 결제 내역 창 열기
             FormHelper.show(log_form);
