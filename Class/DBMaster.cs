@@ -28,6 +28,9 @@ namespace POS_Project_Team2.Class
         // 첫 생성자때 연결이 이루어지며, 계속 유지하며 사용하다가 소멸자에서 연결을 끊는다.
         private SQLiteConnection connection;
 
+        // 환불폼 & 재고 선택폼 통신용, 환불여부 판단 변수
+        public bool is_refund = false;
+
         // 각 테이블들의 이름
         /*
          readonly 와 const 의 차이?

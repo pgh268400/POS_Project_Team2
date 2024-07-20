@@ -12,7 +12,6 @@ namespace POS_Project_Team2
         // null 대신 사용할 문자
         string null_string = "없음";
 
-
         private ContextMenuStrip context_menu;
         private ListViewItem selected_item; // 선택된 아이템을 저장할 변수
 
@@ -192,6 +191,9 @@ namespace POS_Project_Team2
 
             // 재고를 업데이트 한다
             db_master.update_stock_data(stock_record);
+
+            // 환불상황 update
+            db_master.is_refund = true;
 
             MessageBox.Show("환불 처리가 완료되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

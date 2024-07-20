@@ -56,6 +56,15 @@ namespace POS_Project_Team2
             // 아이템이 비어있는 경우 (첫 번째 창 연 경우) UI 기본 설정
             first_init_ui();
 
+
+            // 환불폼에서 넘어온 경우 다시 바인딩
+            var db_master = DBMaster.Instance;
+            if (db_master.is_refund)
+            {
+                set_item_and_bind();
+                db_master.is_refund = false;
+            }
+
             /*
               리스트뷰에 아이템이 남아 있는 경우
               == 창을 닫고 다시 열었을 때
