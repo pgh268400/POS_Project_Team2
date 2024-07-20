@@ -496,6 +496,26 @@ namespace POS_Project_Team2
                 db_master.update_stock_data(stock_record);
             }
 
+            // 오늘 총 판매 요약, 직전 판매 요약을 DB에 업데이트
+            db_master.add_today_total_payment(
+                new TodayTotalPayment
+                {
+                    Date = DateTime.Now,
+                    SalesCount = active_products.Sum(product => product.Count),
+                    SalesAmount = active_products.Sum(product => product.Cost * product.Count),
+                    RefundAmount = 0
+                }
+            );
+
+            db_master.overwrite_today_recent_payment(
+                new TodayRecentPayment
+                {
+                    Date = DateTime.Now,
+                    PurchaseAmount = active_products.Sum(product => product.Cost * product.Count),
+                    PaymentAmount = active_products.Sum(product => product.Cost * product.Count),
+                    ChangeAmount = 0
+                });
+
             // 결제한 내역을 재고창 폼에 넘긴다
             stock_form.remove_selected_items(active_products);
 
@@ -515,6 +535,8 @@ namespace POS_Project_Team2
             // 회색 글자들도 초기화
             label_num_product.Text = "0개";
             label_amount_money.Text = "0원";
+
+
 
             MessageBox.Show("결제되었습니다.", "알림", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }

@@ -38,17 +38,18 @@
             button_get_refund = new Button();
             button_payment = new Button();
             group_main = new GroupBox();
+            label_tatal_num_sales = new Label();
+            label_total_num_profit = new Label();
+            label_total_net_profit = new Label();
+            label_total_num_refund = new Label();
             groupBox3 = new GroupBox();
-            label9 = new Label();
+            label_change = new Label();
             label_total_previous_payment = new Label();
             label_total_previous_purchase = new Label();
             button_receipt = new Button();
             label6 = new Label();
             label5 = new Label();
             label4 = new Label();
-            label_total_num_profit = new Label();
-            label_total_num_refund = new Label();
-            label_tatal_num_sales = new Label();
             group_etc = new GroupBox();
             button_wait3 = new Button();
             button_wait2 = new Button();
@@ -56,9 +57,10 @@
             button_refund = new Button();
             picture_box_alarm = new PictureBox();
             picture_box_menu = new PictureBox();
-            realtime_timer = new System.Windows.Forms.Timer(components);
+            timer_realtime = new System.Windows.Forms.Timer(components);
             button_clear_all = new Button();
             panel1 = new Panel();
+            timer_update_label = new System.Windows.Forms.Timer(components);
             group_get.SuspendLayout();
             group_main.SuspendLayout();
             groupBox3.SuspendLayout();
@@ -162,7 +164,7 @@
             button_payment.ForeColor = SystemColors.Window;
             button_payment.Location = new Point(15, 24);
             button_payment.Name = "button_payment";
-            button_payment.Size = new Size(178, 81);
+            button_payment.Size = new Size(178, 93);
             button_payment.TabIndex = 7;
             button_payment.Text = "결제";
             button_payment.UseVisualStyleBackColor = false;
@@ -170,10 +172,11 @@
             // 
             // group_main
             // 
-            group_main.Controls.Add(groupBox3);
-            group_main.Controls.Add(label_total_num_profit);
-            group_main.Controls.Add(label_total_num_refund);
             group_main.Controls.Add(label_tatal_num_sales);
+            group_main.Controls.Add(label_total_num_profit);
+            group_main.Controls.Add(label_total_net_profit);
+            group_main.Controls.Add(label_total_num_refund);
+            group_main.Controls.Add(groupBox3);
             group_main.Controls.Add(button_payment);
             group_main.Location = new Point(317, 67);
             group_main.Name = "group_main";
@@ -182,9 +185,49 @@
             group_main.TabStop = false;
             group_main.Text = "메인";
             // 
+            // label_tatal_num_sales
+            // 
+            label_tatal_num_sales.AutoSize = true;
+            label_tatal_num_sales.Location = new Point(202, 27);
+            label_tatal_num_sales.Name = "label_tatal_num_sales";
+            label_tatal_num_sales.Size = new Size(116, 19);
+            label_tatal_num_sales.TabIndex = 8;
+            label_tatal_num_sales.Text = "금일 총 판매 0건";
+            label_tatal_num_sales.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label_total_num_profit
+            // 
+            label_total_num_profit.AutoSize = true;
+            label_total_num_profit.Location = new Point(202, 50);
+            label_total_num_profit.Name = "label_total_num_profit";
+            label_total_num_profit.Size = new Size(130, 19);
+            label_total_num_profit.TabIndex = 10;
+            label_total_num_profit.Text = "금일 총 판매액 0원";
+            label_total_num_profit.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label_total_net_profit
+            // 
+            label_total_net_profit.AutoSize = true;
+            label_total_net_profit.Location = new Point(202, 98);
+            label_total_net_profit.Name = "label_total_net_profit";
+            label_total_net_profit.Size = new Size(130, 19);
+            label_total_net_profit.TabIndex = 14;
+            label_total_net_profit.Text = "금일 총 순수익 0원";
+            label_total_net_profit.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label_total_num_refund
+            // 
+            label_total_num_refund.AutoSize = true;
+            label_total_num_refund.Location = new Point(202, 74);
+            label_total_num_refund.Name = "label_total_num_refund";
+            label_total_num_refund.Size = new Size(130, 19);
+            label_total_num_refund.TabIndex = 13;
+            label_total_num_refund.Text = "금일 총 환불액 0원";
+            label_total_num_refund.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // groupBox3
             // 
-            groupBox3.Controls.Add(label9);
+            groupBox3.Controls.Add(label_change);
             groupBox3.Controls.Add(label_total_previous_payment);
             groupBox3.Controls.Add(label_total_previous_purchase);
             groupBox3.Controls.Add(button_receipt);
@@ -198,14 +241,14 @@
             groupBox3.TabStop = false;
             groupBox3.Text = "직전 결제 내역";
             // 
-            // label9
+            // label_change
             // 
-            label9.AutoSize = true;
-            label9.Location = new Point(179, 104);
-            label9.Name = "label9";
-            label9.Size = new Size(31, 19);
-            label9.TabIndex = 18;
-            label9.Text = "0원";
+            label_change.AutoSize = true;
+            label_change.Location = new Point(179, 104);
+            label_change.Name = "label_change";
+            label_change.Size = new Size(31, 19);
+            label_change.TabIndex = 18;
+            label_change.Text = "0원";
             // 
             // label_total_previous_payment
             // 
@@ -262,32 +305,6 @@
             label4.Size = new Size(70, 19);
             label4.TabIndex = 12;
             label4.Text = "총 구매액";
-            // 
-            // label_total_num_profit
-            // 
-            label_total_num_profit.AutoSize = true;
-            label_total_num_profit.Location = new Point(214, 59);
-            label_total_num_profit.Name = "label_total_num_profit";
-            label_total_num_profit.Size = new Size(116, 19);
-            label_total_num_profit.TabIndex = 10;
-            label_total_num_profit.Text = "금일 총 수익 0원";
-            // 
-            // label_total_num_refund
-            // 
-            label_total_num_refund.AutoSize = true;
-            label_total_num_refund.Location = new Point(214, 56);
-            label_total_num_refund.Name = "label_total_num_refund";
-            label_total_num_refund.Size = new Size(0, 19);
-            label_total_num_refund.TabIndex = 9;
-            // 
-            // label_tatal_num_sales
-            // 
-            label_tatal_num_sales.AutoSize = true;
-            label_tatal_num_sales.Location = new Point(214, 37);
-            label_tatal_num_sales.Name = "label_tatal_num_sales";
-            label_tatal_num_sales.Size = new Size(116, 19);
-            label_tatal_num_sales.TabIndex = 8;
-            label_tatal_num_sales.Text = "금일 총 판매 0건";
             // 
             // group_etc
             // 
@@ -370,9 +387,9 @@
             picture_box_menu.TabIndex = 13;
             picture_box_menu.TabStop = false;
             // 
-            // realtime_timer
+            // timer_realtime
             // 
-            realtime_timer.Interval = 1000;
+            timer_realtime.Interval = 1000;
             // 
             // button_clear_all
             // 
@@ -397,6 +414,11 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1016, 54);
             panel1.TabIndex = 14;
+            // 
+            // timer_update_label
+            // 
+            timer_update_label.Interval = 1000;
+            timer_update_label.Tick += timer_update_label_Tick;
             // 
             // MainForm
             // 
@@ -446,14 +468,14 @@
         private Label label6;
         private Label label5;
         private Label label4;
-        private Label label9;
+        private Label label_change;
         private Label label_total_previous_payment;
         private Label label_total_previous_purchase;
         private GroupBox group_etc;
         private Button button_refund;
         private PictureBox picture_box_alarm;
         private PictureBox picture_box_menu;
-        private System.Windows.Forms.Timer realtime_timer;
+        private System.Windows.Forms.Timer timer_realtime;
         private Button button3;
         private Button button2;
         private Button button_get_refund;
@@ -463,5 +485,8 @@
         private Button button_wait2;
         private Button button_wait3;
         private Panel panel1;
+        private Label label2;
+        private Label label_total_net_profit;
+        private System.Windows.Forms.Timer timer_update_label;
     }
 }

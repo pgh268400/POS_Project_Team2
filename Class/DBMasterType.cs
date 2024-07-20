@@ -78,3 +78,48 @@ public class SQLiteTable
         this.record_type = record_type;
     }
 }
+
+// 오늘 총 판매 요약을 담을 클래스
+// 메인 화면의 금일 총 판매건, 총 판매액, 총 환불액, 순수익을 표시하는데 이용
+
+public class TodayTotalPayment
+{
+    // 고유 식별자
+    public int Id { get; set; }
+
+    // 판매 요약의 날짜
+    public DateTime Date { get; set; }
+
+    // 총 판매 건수
+    public int SalesCount { get; set; }
+
+    // 총 판매액
+    public int SalesAmount { get; set; }
+
+    // 총 환불액
+    public int RefundAmount { get; set; }
+
+    // 순 수익 (총 판매액 - 환불액)
+    public int NetProfit { get; set; }
+}
+
+
+// 하루(금일)의 직전 결제 기록을 담을 클래스
+// 일종의 임시 데이터를 담을때 사용
+public class TodayRecentPayment
+{
+    // 고유 식별자
+    public int Id { get; set; }
+
+    // 결제 기록의 날짜
+    public DateTime Date { get; set; }
+
+    // 총 구매액
+    public int PurchaseAmount { get; set; }
+
+    // 결제 금액
+    public int PaymentAmount { get; set; }
+
+    // 거스름돈
+    public int ChangeAmount { get; set; }
+}

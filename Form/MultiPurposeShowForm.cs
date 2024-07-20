@@ -160,6 +160,16 @@ namespace POS_Project_Team2
             // 환불 기록을 DB에 저장
             db_master.insert_refund_data(refund_record);
 
+            // 환불 기록을 메인 화면에 표시하기 위해 역시 총결산 DB에 저장
+            db_master.add_today_total_payment(
+                new TodayTotalPayment
+                {
+                    Date = DateTime.Now,
+                    SalesCount = 0,
+                    SalesAmount = 0,
+                    RefundAmount = Convert.ToInt32(total_price),
+                });
+
             // 삭제한 아이템의 인덱스 번호
             int selected_item_index = listView1.Items.IndexOf(selected_item);
 
@@ -204,7 +214,7 @@ namespace POS_Project_Team2
             if (selected_item != null)
             {
                 string item_details = string.Join(", ", selected_item.SubItems.Cast<ListViewItem.ListViewSubItem>().Select(subItem => subItem.Text));
-                MessageBox.Show($"출력 버튼이 클릭되었습니다. 선택된 행의 정보: {item_details}");
+                //MessageBox.Show($"출력 버튼이 클릭되었습니다. 선택된 행의 정보: {item_details}");
 
                 // 출력을 위해 영수증 출력창을 연다.
                 ReceiptForm receipt_form = new ReceiptForm();

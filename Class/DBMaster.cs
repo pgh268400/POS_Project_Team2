@@ -47,7 +47,9 @@ namespace POS_Project_Team2.Class
             refund_table_name = "Refund",
             total_record_table_name = "TotalRecord",
             stock_table_name = "Stock",
-            receipt_table_name = "Receipt";
+            receipt_table_name = "Receipt",
+            today_total_payment = "TodayTotalPayment",
+            today_recent_payment = "TodayRecentPayment";
 
         // 유저, 총 결제 내역, 환불 내역, 통합 기록 테이블, 등등 테이블의 (이름 : 타입) 묶어서 리스트로 저장
 
@@ -58,7 +60,9 @@ namespace POS_Project_Team2.Class
             new SQLiteTable(refund_table_name, typeof(PayMentRefundRecord)),
             new SQLiteTable(total_record_table_name, typeof(TotalRecord)),
             new SQLiteTable(stock_table_name, typeof(StockRecord)),
-            new SQLiteTable(receipt_table_name, typeof(ReceiptRecord))
+            new SQLiteTable(receipt_table_name, typeof(ReceiptRecord)),
+            new SQLiteTable(today_total_payment, typeof(TodayTotalPayment)),
+            new SQLiteTable(today_recent_payment, typeof(TodayRecentPayment))
         };
 
         // private 생성자 = 싱글톤으로 Instance 프로퍼티에 접근해서만 생성할 수 있게 제한한다.
@@ -667,6 +671,193 @@ namespace POS_Project_Team2.Class
                 Console.WriteLine("Completed Query: " + completed_query);
 
                 command.ExecuteNonQuery();
+            }
+        }
+
+        // ========================================================================
+        // 오늘의 총 판매 요약, 직전 판매 요약을 다루는 함수.
+        // DB 내역을 편리하게 (특수하게) 조작하는 함수들이므로 이곳에 따로 정의
+
+        /*
+          오늘의 총 판매 요약을 추가하는 함수
+          오늘 날짜의 데이터가 없다면 새로 생성하여 기록, 이미 있다면 오늘 날짜의 데이터를 업데이트한다.
+          오늘 날짜의 데이터는 최상단, 첫 번째 줄에 있으며 그 이후로는 과거 데이터가 쌓이게 된다.
+
+          들어온 데이터 만큼 원래 데이터에 더해주는 방식으로 진행한다.
+        */
+        public void add_today_total_payment(TodayTotalPayment record)
+        {
+            // 오늘 날짜의 데이터가 있는지 확인
+            string select_query = $"SELECT * FROM {today_total_payment} WHERE Date = @Date";
+            using (var command = new SQLiteCommand(select_query, connection))
+            {
+                // record.Date는 호출하는 쪽에서 현재 시간을 입력한다.
+                // 이를 년 - 월 - 일 형태로 변환한다. / 이렇게 변환하면 DB 내에서 Date 비교가 가능하다.
+                string formatted_date = record.Date.ToString("yyyy-MM-dd");
+                command.Parameters.AddWithValue("@Date", formatted_date);
+
+                using var reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    // 이미 오늘 날짜의 데이터가 있다면 원래 데이터에 더해준다.
+
+                    // 총 판매 건수
+                    int total_sales = reader.GetInt32(2) + record.SalesCount;
+
+                    // 총 판매액
+                    int total_price = reader.GetInt32(3) + record.SalesAmount;
+
+                    // 총 환불액
+                    int total_refund = reader.GetInt32(4) + record.RefundAmount;
+
+                    // 총 순 수익
+                    int total_netprofit = total_price - total_refund;
+
+                    // 위 데이터를 기반으로 업데이트 쿼리를 작성한다.
+                    string update_query = $"UPDATE {today_total_payment} " +
+                                          $"SET SalesCount = @SalesCount, " +
+                                          $"SalesAmount = @SalesAmount, " +
+                                          $"RefundAmount = @RefundAmount, " +
+                                          $"NetProfit = @NetProfit " +
+                                          $"WHERE Date = @Date";
+
+                    using var update_command = new SQLiteCommand(update_query, connection);
+                    update_command.Parameters.AddWithValue("@SalesCount", total_sales);
+                    update_command.Parameters.AddWithValue("@SalesAmount", total_price);
+                    update_command.Parameters.AddWithValue("@RefundAmount", total_refund);
+                    update_command.Parameters.AddWithValue("@NetProfit", total_netprofit);
+                    update_command.Parameters.AddWithValue("@Date", formatted_date);
+                    update_command.ExecuteNonQuery();
+                }
+                else
+                {
+                    // 오늘 날짜의 데이터가 없다면 새로 생성
+                    string insert_query = $"INSERT INTO {today_total_payment} " +
+                                          $"(Date, SalesCount, SalesAmount, RefundAmount, NetProfit) " +
+                                          $"VALUES (@Date, @SalesCount, @SalesAmount, @RefundAmount, @NetProfit)";
+
+                    using var insert_command = new SQLiteCommand(insert_query, connection);
+                    insert_command.Parameters.AddWithValue("@Date", formatted_date);
+                    insert_command.Parameters.AddWithValue("@SalesCount", record.SalesCount);
+                    insert_command.Parameters.AddWithValue("@SalesAmount", record.SalesAmount);
+                    insert_command.Parameters.AddWithValue("@RefundAmount", record.RefundAmount);
+                    insert_command.Parameters.AddWithValue("@NetProfit", record.SalesAmount - record.RefundAmount);
+                    insert_command.ExecuteNonQuery();
+
+                    Console.WriteLine("오늘 날짜의 데이터가 생성되었습니다.");
+                }
+            }
+        }
+
+
+        // 오늘의 총 판매 요약을 가져오는 함수
+        public TodayTotalPayment get_today_total_payment()
+        {
+            DateTime date = DateTime.Now;
+            string select_query = $"SELECT * FROM {today_total_payment} WHERE Date = @Date";
+            using (var command = new SQLiteCommand(select_query, connection))
+            {
+                string formated_date = date.ToString("yyyy-MM-dd");
+                command.Parameters.AddWithValue("@Date", formated_date);
+
+                using var reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return new TodayTotalPayment
+                    {
+                        Date = reader.GetDateTime(1),
+                        SalesCount = reader.GetInt32(2),
+                        SalesAmount = reader.GetInt32(3),
+                        RefundAmount = reader.GetInt32(4),
+                        NetProfit = reader.GetInt32(5)
+                    };
+                }
+                return null;
+            }
+        }
+
+        // 직전 판매 요약을 추가하는 함수.
+        // 오늘의 직전 판매 요약은 항상 하나만 존재하며, 새로운 데이터가 들어오면 기존 데이터를 덮어쓴다.
+        public void overwrite_today_recent_payment(TodayRecentPayment record)
+        {
+            // 오늘 날짜의 데이터가 있는지 확인
+            string select_query = $"SELECT * FROM {today_recent_payment} WHERE Date = @Date";
+            using (var command = new SQLiteCommand(select_query, connection))
+            {
+                // record.Date는 호출하는 쪽에서 현재 시간을 입력한다.
+                // 이를 년 - 월 - 일 형태로 변환한다. / 이렇게 변환하면 DB 내에서 Date 비교가 가능하다.
+                string formated_date = record.Date.ToString("yyyy-MM-dd");
+                command.Parameters.AddWithValue("@Date", formated_date);
+
+                using var reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    // 이미 오늘 날짜의 데이터가 있다면 원래 데이터에 덮어쓴다.
+
+
+                    // 총 구매액
+                    int total_purchase = record.PurchaseAmount;
+
+                    // 결제 금액
+                    int total_payment = record.PaymentAmount;
+
+                    // 거스름 돈
+                    int total_change = record.ChangeAmount;
+
+
+                    // 위 데이터를 기반으로 업데이트 쿼리를 작성한다.
+                    string update_query = $"UPDATE {today_recent_payment} " +
+                                          $"SET PurchaseAmount = @PurchaseAmount, " +
+                                          $"PaymentAmount = @PaymentAmount, " +
+                                          $"ChangeAmount = @ChangeAmount " +
+                                          $"WHERE Date = @Date";
+
+                    using var update_command = new SQLiteCommand(update_query, connection);
+                    update_command.Parameters.AddWithValue("@PurchaseAmount", total_purchase);
+                    update_command.Parameters.AddWithValue("@PaymentAmount", total_payment);
+                    update_command.Parameters.AddWithValue("@ChangeAmount", total_change);
+                    update_command.Parameters.AddWithValue("@Date", formated_date);
+                    update_command.ExecuteNonQuery();
+                }
+                else
+                {
+                    // 오늘 날짜의 데이터가 없다면 새로 생성
+                    string insert_query = $"INSERT INTO {today_recent_payment} " +
+                                          $"(Date, PurchaseAmount, PaymentAmount, ChangeAmount) " +
+                                          $"VALUES (@Date, @PurchaseAmount, @PaymentAmount, @ChangeAmount)";
+
+                    using var insert_command = new SQLiteCommand(insert_query, connection);
+                    insert_command.Parameters.AddWithValue("@Date", formated_date);
+                    insert_command.Parameters.AddWithValue("@PurchaseAmount", record.PurchaseAmount);
+                    insert_command.Parameters.AddWithValue("@PaymentAmount", record.PaymentAmount);
+                    insert_command.Parameters.AddWithValue("@ChangeAmount", record.ChangeAmount);
+                    insert_command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // 직전 판매 요약 데이터를 가져오는 함수
+        public TodayRecentPayment get_today_recent_payment()
+        {
+            DateTime date = DateTime.Now;
+            string select_query = $"SELECT * FROM {today_recent_payment} WHERE Date = @Date";
+            using (var command = new SQLiteCommand(select_query, connection))
+            {
+                string formated_date = date.ToString("yyyy-MM-dd");
+                command.Parameters.AddWithValue("@Date", formated_date);
+
+                using var reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    return new TodayRecentPayment
+                    {
+                        Date = reader.GetDateTime(1),
+                        PurchaseAmount = reader.GetInt32(2),
+                        PaymentAmount = reader.GetInt32(3),
+                        ChangeAmount = reader.GetInt32(4)
+                    };
+                }
+                return null;
             }
         }
 

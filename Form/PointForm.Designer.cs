@@ -91,7 +91,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(296, 164);
+            ClientSize = new Size(296, 165);
             Controls.Add(button_point_cancle);
             Controls.Add(button_point_ok);
             Controls.Add(textbox_phone_4);

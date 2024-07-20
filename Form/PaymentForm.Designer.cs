@@ -43,12 +43,13 @@
             columnHeader5 = new ColumnHeader();
             label1 = new Label();
             groupBox1 = new GroupBox();
+            panel3 = new Panel();
+            label_total_amount = new Label();
             groupBox2 = new GroupBox();
             label_change = new Label();
             label8 = new Label();
             label4 = new Label();
             label2 = new Label();
-            label_total_amount = new Label();
             panel2 = new Panel();
             button1 = new Button();
             tableLayoutPanel1 = new TableLayoutPanel();
@@ -59,13 +60,16 @@
             button_all_cancle = new Button();
             button_pay = new Button();
             button_select_product = new Button();
+            panel4 = new Panel();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             panel1.SuspendLayout();
             groupBox1.SuspendLayout();
+            panel3.SuspendLayout();
             groupBox2.SuspendLayout();
             panel2.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
+            panel4.SuspendLayout();
             SuspendLayout();
             // 
             // pictureBox1
@@ -183,9 +187,9 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(panel3);
             groupBox1.Controls.Add(groupBox2);
             groupBox1.Controls.Add(label2);
-            groupBox1.Controls.Add(label_total_amount);
             groupBox1.Controls.Add(label1);
             groupBox1.Location = new Point(353, 273);
             groupBox1.Name = "groupBox1";
@@ -193,9 +197,29 @@
             groupBox1.TabIndex = 18;
             groupBox1.TabStop = false;
             // 
+            // panel3
+            // 
+            panel3.Controls.Add(label_total_amount);
+            panel3.Location = new Point(114, 13);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(120, 31);
+            panel3.TabIndex = 34;
+            // 
+            // label_total_amount
+            // 
+            label_total_amount.Dock = DockStyle.Fill;
+            label_total_amount.Font = new Font("맑은 고딕", 18F, FontStyle.Regular, GraphicsUnit.Point);
+            label_total_amount.ForeColor = Color.Red;
+            label_total_amount.Location = new Point(0, 0);
+            label_total_amount.Name = "label_total_amount";
+            label_total_amount.Size = new Size(120, 31);
+            label_total_amount.TabIndex = 18;
+            label_total_amount.Text = "0";
+            label_total_amount.TextAlign = ContentAlignment.MiddleRight;
+            // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(label_change);
+            groupBox2.Controls.Add(panel4);
             groupBox2.Controls.Add(label8);
             groupBox2.Controls.Add(label4);
             groupBox2.Location = new Point(6, 43);
@@ -206,14 +230,15 @@
             // 
             // label_change
             // 
-            label_change.AutoSize = true;
+            label_change.Dock = DockStyle.Fill;
             label_change.Font = new Font("맑은 고딕", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             label_change.ForeColor = Color.Red;
-            label_change.Location = new Point(142, 15);
+            label_change.Location = new Point(0, 0);
             label_change.Name = "label_change";
-            label_change.Size = new Size(22, 25);
+            label_change.Size = new Size(104, 32);
             label_change.TabIndex = 20;
             label_change.Text = "0";
+            label_change.TextAlign = ContentAlignment.MiddleRight;
             // 
             // label8
             // 
@@ -245,17 +270,6 @@
             label2.TabIndex = 19;
             label2.Text = "원";
             // 
-            // label_total_amount
-            // 
-            label_total_amount.AutoSize = true;
-            label_total_amount.Font = new Font("맑은 고딕", 18F, FontStyle.Regular, GraphicsUnit.Point);
-            label_total_amount.ForeColor = Color.Red;
-            label_total_amount.Location = new Point(146, 14);
-            label_total_amount.Name = "label_total_amount";
-            label_total_amount.Size = new Size(27, 32);
-            label_total_amount.TabIndex = 18;
-            label_total_amount.Text = "0";
-            // 
             // panel2
             // 
             panel2.Controls.Add(button1);
@@ -282,7 +296,7 @@
             button1.Name = "button1";
             button1.Size = new Size(171, 43);
             button1.TabIndex = 33;
-            button1.Text = "포인트 등록";
+            button1.Text = "포인트 조회";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
             // 
@@ -392,6 +406,14 @@
             button_select_product.UseVisualStyleBackColor = false;
             button_select_product.Click += button_select_product_Click;
             // 
+            // panel4
+            // 
+            panel4.Controls.Add(label_change);
+            panel4.Location = new Point(121, 10);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(104, 32);
+            panel4.TabIndex = 34;
+            // 
             // PaymentForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -409,12 +431,14 @@
             panel1.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            panel3.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
+            panel4.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -455,6 +479,7 @@
         private Button button_wait1;
         private Button button_wait2;
         private Button button_wait3;
-
+        private Panel panel3;
+        private Panel panel4;
     }
 }

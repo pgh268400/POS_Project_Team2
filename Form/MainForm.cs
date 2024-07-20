@@ -38,6 +38,9 @@ namespace POS_Project_Team2
 
             // picturebox 배경 투명으로 설정하기
             set_picture_box_transparent();
+
+            // label update 용 타이머 활성화
+            timer_update_label.Start();
         }
 
         // 대기열 버튼 이벤트 핸들러 등록
@@ -298,6 +301,34 @@ namespace POS_Project_Team2
 
             // 총 결제 내역 창 열기
             FormHelper.show(log_form);
+        }
+
+        // DB에서 총 결산을 가져와서 라벨에 표시
+        private void timer_update_label_Tick(object sender, EventArgs e)
+        {
+            // 오늘 총 판매 요약 가져오기
+            DBMaster db_master = DBMaster.Instance;
+            TodayTotalPayment today_total_payment = db_master.get_today_total_payment();
+
+            // 오늘 총 판매 요약이 null이 아닌 경우에만 라벨 업데이트
+            if (today_total_payment != null)
+            {
+                label_tatal_num_sales.Text = "금일 총 판매 " + today_total_payment.SalesCount + "건";
+                label_total_num_profit.Text = "금일 총 판매액 " + today_total_payment.SalesAmount + "원";
+                label_total_num_refund.Text = "금일 총 환불액 " + today_total_payment.RefundAmount + "원";
+                label_total_net_profit.Text = "금일 총 순수익 " + today_total_payment.NetProfit + "원";
+            }
+
+            // 직전 결제 기록 가져오기
+            TodayRecentPayment today_recent_payment = db_master.get_today_recent_payment();
+
+            // 직전 결제 기록이 null이 아닌 경우에만 라벨 업데이트
+            if (today_recent_payment != null)
+            {
+                label_total_previous_purchase.Text = today_recent_payment.PurchaseAmount + "원";
+                label_total_previous_payment.Text = today_recent_payment.PaymentAmount + "원";
+                label_change.Text = today_recent_payment.ChangeAmount + "원";
+            }
         }
 
     }
